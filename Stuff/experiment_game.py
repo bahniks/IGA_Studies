@@ -227,7 +227,7 @@ class ExperimentGame(ExperimentFrame):
         self.round_result_recorded = False
 
     def _record_round_outcome(self):
-        if not self._round_context_enabled:
+        if not getattr(self, "_round_context_enabled", False):
             return
         if self.round_result_recorded:
             return
