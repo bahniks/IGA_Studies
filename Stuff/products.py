@@ -77,9 +77,12 @@ Rozhodujte se prosím tak, jako by se právě toto rozhodnutí mohlo stát tím,
 finalText = """V úloze s nákupem výrobků jste byly vylosovány tyto dvě volby:
 {}
 {}
-Zakoupené produkty obdržíte od experimentátora.
+{}
 Zbytek Vašeho rozpočtu, tj. {} je připočten k odměně za studii."""
 chosenText = "Rozhodl/a jste se {}koupit {} za cenu {}."
+receivedText = "Zakoupené produkty obdržíte od experimentátora."
+oneReceivedText = "Zakoupený produkt obdržíte od experimentátora."
+noProductsText = "Nezakoupil(a) jste žádný z vylosovaných produktů."
 
 transparent = "Předchozí cena v tomto experimentu: {}"
 
@@ -165,17 +168,25 @@ class Choices(ExperimentFrame):
                     drawn.append(drawn[0] if drawn else {"label": "", "shown_price": "", "choice": "no"})
                 lines = []
                 total_spent = 0
+                bought_number = 0
                 for ch in drawn:
                     bought = ch["choice"] == "yes"
                     prefix = "" if bought else "ne"
                     lines.append(chosenText.format(prefix, ch["label"], ch["shown_price"]))
                     if bought:
+                        bought_number += 1
                         price_val = self._price_to_float(ch["shown_price"])
                         if price_val is not None:
                             total_spent += price_val
                 remainder = BUDGET - total_spent
                 remainder_str = f"{remainder:.2f} Kč"
-                self.root.status["results"] += [finalText.format(lines[0].replace(",", "."), lines[1].replace(",", "."), remainder_str)]
+                if bought_number == 0:
+                    receive = noProductsText
+                elif bought_number == 1:
+                    receive = oneReceivedText
+                else:
+                    receive = receivedText
+                self.root.status["results"] += [finalText.format(lines[0].replace(",", "."), lines[1].replace(",", "."), receive, remainder_str)]
                 self.root.status["reward"] += (BUDGET - total_spent)
             self.nextFun()
         else:
