@@ -233,10 +233,13 @@ class ExperimentGame(ExperimentFrame):
             return
         self.round_result_recorded = True
 
+        reward_crowns = (int(self.score) + 50) // 100
+        # Keep per-round reward available for the immediate result screen.
+        self.root.status["fires_round_reward"] = reward_crowns
+
         if self.round_condition != self.round_chosen:
             return
 
-        reward_crowns = (int(self.score) + 50) // 100
         if self.round_chosen == "self":
             text = selfEndingText.format(reward_crowns)
         else:
@@ -247,7 +250,6 @@ class ExperimentGame(ExperimentFrame):
             results = []
         results.append(text)
         self.root.status["results"] = results
-        self.root.status["fires_round_reward"] = reward_crowns
 
         if self.round_chosen == "self":
             reward = self.root.status.get("reward", 0)
@@ -872,6 +874,7 @@ class ExperimentGame(ExperimentFrame):
             self.sprinkler_anim_after_id = None
             if self.finish_overlay_after_sprinkler:
                 self.finish_overlay_after_sprinkler = False
+                self._record_round_outcome()
                 self.show_end_overlay()
             return
 
@@ -1371,6 +1374,7 @@ class ExperimentGame(ExperimentFrame):
         self.show_end_overlay()
 
     def nextFun(self):
+        self._record_round_outcome()
         self.root.unbind_all("<KeyPress-space>")
         self.root.unbind("<Configure>")
         for attr in ("end_overlay", "start_overlay", "countdown_label"):

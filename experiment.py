@@ -26,51 +26,99 @@ except Exception as e:
     # If logging fails, continue without it
     log_file = None
 
+from Stuff.gui import GUI
 
-from gui import GUI
+from Stuff.intros import Initial, Intro, Ending
+from Stuff.demo import Demographics
+from Stuff.comments import Comments
+from Stuff.login import Login
+from Stuff.questionnaire import (
+    QuestInstructions,
+    QuestInstructions2,
+    Numeracy,
+    Narcissism,
+    SalesProneness,
+    TransactionValue,
+)
+from Stuff.groups import InstructionsGroups, Groups
+from Stuff.games import games as GamesIntro, WaitResults
+from Stuff.coordination import IntroCoordination, InstructionsCoordination, CoordinationGame, WaitCoordination, CoordinationRoundResult
+from Stuff.marketentry import IntroMarketEntry, InstructionsMarketEntry, MarketEntryQuiz, MarketEntryGame
+from Stuff.trustgame import WaitGroups, IntroTrust, InstructionsTrust, Trust
+from Stuff.fires import (
+    FiresIntro1,
+    FiresIntro2,
+    FiresRules,
+    FiresTutorialBucket,
+    FiresTutorialSprinkler,
+    FiresTutorialLayout,
+    FiresUnderstanding,
+    FiresRoundIntro,
+    ResultGame,
+    FiresQuestionnaire,
+)
+from Stuff.Tutorial_fire import FireTutorialGame
+from Stuff.Tutorial_sprinkler import SprinklerTutorialGame
+from Stuff.Tutorial_layout import LayoutTutorialGame
+from Stuff.experiment_game import ExperimentGame
+from Stuff.products import ProductsIntro1, ProductsIntro2, ProductsIntroUnderstanding, ProductsIntro4, Choices
+from Stuff.constants import COORDINATION_ROUNDS, MARKET_ROUNDS, TRUST_ROUNDS
 
-from intros import Initial, Intro, Ending
-from demo import Demographics
-from comments import Comments
-from login import Login
-from videointros import Sound, VideoIntro, StartVideos, SecondModuleIntro, QuizIntroduction
-from videos import Videos, Attention, Quiz, EndQuestionnaire, Videos2, Postdiction
-from questionnaire import UPPS, SCI, SAMS, Mindset, QuestInstructions
-from intervention import Intervention
 
 
-
-frames = [Initial,
-          Login, 
-          Intro,             
-          Sound,
-          VideoIntro,
-          Intervention,
-          StartVideos,
-          Videos2, Attention,
-          Videos2, Attention,
-          Videos2, Attention,
-          Videos2, Attention,
-          SecondModuleIntro, 
-          Videos2, Attention,
-          Videos2, Attention,
-          Videos2, Attention,
-          Videos2, Attention,
-          EndQuestionnaire,
-          QuestInstructions,
-          UPPS,
-          SCI,
-          SAMS,
-          Mindset,
-          QuizIntroduction,
-          Quiz,
-          Postdiction,
-          Demographics,
-          Comments,
+frames = [Login,          
+          Initial,
+          Intro,
+          InstructionsGroups,
+          Groups,
+          GamesIntro,
+          IntroCoordination,
+          InstructionsCoordination,
+          *([CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame] * COORDINATION_ROUNDS),
+		  IntroMarketEntry,
+		  InstructionsMarketEntry,
+		  *([MarketEntryQuiz, MarketEntryGame] * MARKET_ROUNDS),	  
+          WaitGroups,
+          IntroTrust,
+          InstructionsTrust,
+          *([Trust] * TRUST_ROUNDS),
+        FiresIntro1,
+        FiresIntro2,
+        FiresRules,
+        FiresTutorialBucket,
+        FireTutorialGame,
+        FiresTutorialSprinkler,
+        SprinklerTutorialGame,
+        FiresTutorialLayout,
+        LayoutTutorialGame,
+        FiresUnderstanding,
+        FiresRoundIntro,
+        ExperimentGame,
+        ResultGame,
+        FiresQuestionnaire,
+        FiresRoundIntro,
+        ExperimentGame,
+        ResultGame,
+        FiresQuestionnaire,
+        ProductsIntro1,
+        ProductsIntro2,
+        ProductsIntroUnderstanding,
+        ProductsIntro4,
+        Choices,       
+        QuestInstructions,
+          Numeracy,
+          Narcissism,
+        Choices,
+        QuestInstructions2,
+        SalesProneness, 
+        TransactionValue, 
+        Demographics,
+        Comments,
+          WaitResults,
           Ending
          ]
 
-#frames = [Login, Videos2]
+
 
 if __name__ == "__main__":
     try:

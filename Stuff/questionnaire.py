@@ -20,11 +20,9 @@ from constants import TESTING, AUTOFILL, ATTENTION_BONUS
 ################################################################################
 # TEXTS questionnaire
 
-questintro = f"""V následující části studie budete odpovídat na otázky o sobě, Vašich postojích a názorech. Tato část by měla trvat asi 10 minut.
+questintro = """V následující části studie budete odpovídat na otázky o sobě a řešit krátké číselné úlohy."""
 
-Každou otázku si pečlivě přečtěte. Snažte se však na otázky nemyslet příliš dlouho; první odpověď, která Vám přijde na mysl, je obvykle nejlepší.
-
-V této a další částech studie jsou dvě položky měřící Vaší pozornost, pokud odpovíte správně, dostanete dodatečných {ATTENTION_BONUS} Kč za každou položku."""
+questintro2 = """V následující části studie budete odpovídat na otázky o sobě, Vašich postojích a názorech."""
 
 attentiontext = "Chcete-li prokázat, že zadání věnujete pozornost, vyberte možnost "
 
@@ -678,6 +676,7 @@ SalesProneness = (MeasureQuestionnaire,
 
 
 QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 15})
+QuestInstructions2 = (InstructionsFrame, {"text": questintro2, "height": 15})
 
 
 if __name__ == "__main__":

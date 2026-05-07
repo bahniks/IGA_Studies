@@ -17,23 +17,35 @@ from experiment_game import ExperimentGame
 ################################################################################
 # TEXTS
 
-fires_intro_1 = """V této části studie budete hrát počítačovou hru, ve které se na poli objevují ohně. Na situaci můžete reagovat dvěma různými způsoby."""
+fires_intro_1 = """Tímto skončila část studie s úlohami, kde jste interagovali s ostatními účastníky. 
 
-fires_intro_2 = """V této části studie budete hrát počítačovou hru, ve které se na poli objevují ohně. Na situaci můžete reagovat dvěma způsoby: hasit jednotlivé ohně pomocí kyblíku, nebo opravit zavlažovací systém.
+Nyní Vás čeká další část studie."""
+
+fires_intro_2 = """V této části studie budete hrát počítačovou hru.
+
 Nejprve absolvujete krátký trénink, ve kterém se naučíte, jak hra funguje. Poté odehrajete dvě hlavní kola hry.
+
 Před každým kolem dostanete přesné informace o tom, jak se bude výsledek daného kola vyhodnocovat.
+
 Po skončení této části bude jedno z hlavních kol náhodně vybráno jako rozhodné pro výplatu podle pravidel, která budou uvedena v průběhu experimentu.
+
 Prosíme, čtěte veškeré instrukce pozorně."""
 
-fires_rules = """V každém kole je Vaším cílem zabránit finančním ztrátám co nejúčinněji. Každé hlavní kolo začíná částkou 100,00 Kč a trvá nejdéle 120 sekund. Kolo může skončit také dříve, pokud se částka sníží na 0 Kč nebo pokud spustíte zavlažovací systém.
-Během kola se na poli objevují ohně. Za každý nový oheň se z částky okamžitě odečte 1,50 Kč. Za každou sekundu, kdy oheň zůstává aktivní, se odečítá dalších 0,04 Kč za každý aktivní oheň. Pokud tedy hoří více ohňů najednou, ztráty se sčítají.
-Na situaci můžete reagovat dvěma způsoby. První možností je hasit jednotlivé ohně pomocí kyblíku. Uhašení jednoho ohně zastaví další průběžné ztráty z tohoto ohně, ale další ohně se mohou objevovat dál.
-Druhou možností je opravit zavlažovací systém. To provedete tak, že postupně aktivujete čtyři ventily ve správném pořadí. Jakmile dokončíte čtvrtý ventil, spustí se zavlažovací systém, aktivní ohně se automaticky uhasí a kolo skončí. Započítá se částka, která v tu chvíli zůstala.
+fires_rules = """Na začátku každého kola budete mít 100,00 Kč.
+
+Hra spočívá v tom, že se na obrazovce budou v intervalech objevovat ohně. Za každý nový oheň se z částky okamžitě odečte 0,85 Kč. Za každou sekundu, kdy oheň zůstává aktivní, se odečítá dalších 0,04 Kč za každý aktivní oheň. Pokud tedy hoří více ohňů najednou, ztráty se sčítají.
+
+V každém kole je Vaším cílem zabránit finančním ztrátám co nejúčinněji. Každé hlavní kolo začíná částkou 100,00 Kč a trvá 120 sekund. Kolo může skončit také dříve, pokud se částka sníží na 0 Kč.
+
+Na situaci můžete reagovat dvěma způsoby. První možností je hasit jednotlivé ohně pomocí kyblíku. Uhašení jednoho ohně zastaví další průběžné ztráty z tohoto ohně, ale další ohně se budou objevovat dál.
+
+Druhou možností je opravit zavlažovací systém. To provedete tak, že postupně aktivujete čtyři ventily ve správném pořadí. Jakmile dokončíte čtvrtý ventil, spustí se zavlažovací systém, aktivní ohně se automaticky uhasí a další ohně se už nebudou objevovat. 
+
 V tutoriálu si nyní vyzkoušíte oba způsoby ovládání."""
 
-fires_tutorial_bucket = """V této části si vyzkoušíte hašení jednotlivých ohňů pomocí kyblíku."""
+fires_tutorial_bucket = """<center>V této části si vyzkoušíte hašení jednotlivých ohňů pomocí kyblíku.</center>"""
 
-fires_tutorial_sprinkler = """V této části si vyzkoušíte opravu zavlažovacího systému."""
+fires_tutorial_sprinkler = """<center>V této části si vyzkoušíte opravu zavlažovacího systému.</center>"""
 
 fires_tutorial_layout = """Poslední část tutoriálu Vám ukáže celkové rozložení obrazovky, jak bude vypadat při hře."""
 
@@ -81,14 +93,14 @@ fires_understanding_questions = [
     ],
 ]
 
-fires_round_self = """V tomto kole hrajete o svou vlastní finanční odměnu.
-V případě, že bude vylosováno toto kolo, tak částka, kterou se Vám podaří v tomto kole uchránit, bude přičtena k Vaší finální odměně.
+fires_round_self = """V tomto kole hrajete <b>o svou vlastní finanční odměnu</b>.
+V případě, že bude vylosováno toto kolo, tak částka, kterou se Vám podaří v tomto kole uchránit, <b>bude přičtena k Vaší finální odměně</b>.
 
 Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude dále způsobovat další ztráty v čase.
 Na situaci můžete reagovat dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete opravovat zavlažovací systém postupným dokončením ventilů ve správném pořadí."""
 
-fires_round_charity = """V tomto kole hrajete o finanční výsledek určený pro charitativní účel.
-V případě, že bude vylosováno toto kolo, tak částka, kterou se Vám podaří v tomto kole uchránit, bude poslána na účet charity Dobrý Anděl.
+fires_round_charity = """V tomto kole hrajete <b>o finanční výsledek určený pro charitativní účel</b>.
+V případě, že bude vylosováno toto kolo, tak částka, kterou se Vám podaří v tomto kole uchránit, <b>bude poslána na účet Nadace Dobrý anděl</b>.
 
 Nadace Dobrý anděl je charitativní organizace, která díky příspěvkům dárců, Dobrých andělů, každý měsíc podporuje tisíce rodin s dětmi, které se ocitly v těžké životní situaci vlivem vážného onemocnění některého z členů rodiny, ať už dítěte, maminky nebo tatínka.
 Dobří andělé podporují rodiny, v nichž se dítě nebo jeden z rodičů potýká s onkologickým nebo jiným vážným onemocněním a které se vlivem této nemoci ocitly ve složité životní situaci. Každý dar jim může pomoci lépe zvládat těžké chvíle související s náročnou léčbou.
@@ -97,7 +109,7 @@ Cílem nadace je vytvořit svět, kde naděje a podpora mají své místo a kde 
 Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude dále způsobovat další ztráty v čase.
 Na situaci můžete reagovat dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete opravovat zavlažovací systém postupným dokončením ventilů ve správném pořadí."""
 
-fires_questionnaire_intro = """Nakonec prosím ohodnoťte následující tvrzení podle toho, jak jste hru prožíval(a).
+fires_questionnaire_intro = """Ohodnoťte prosím následující tvrzení podle toho, jak jste hru prožíval(a).
 Použijte škálu od 1 (silně nesouhlasím) do 7 (silně souhlasím)."""
 
 selfResult = """V tomto kole se Vám podařilo uchránit {} Kč z původních 100 Kč. Pokud bude vylosováno toto kolo, tak tato částka bude přičtena k Vaší finální odměně."""
@@ -182,16 +194,16 @@ def main():
 
     GUI([
         Login,
-        FiresIntro1,
-        FiresIntro2,
-        FiresRules,
-        FiresTutorialBucket,
-        FireTutorialGame,
-        FiresTutorialSprinkler,
-        SprinklerTutorialGame,
-        FiresTutorialLayout,
-        LayoutTutorialGame,
-        FiresUnderstanding,
+        # FiresIntro1,
+        # FiresIntro2,
+        # FiresRules,
+        # FiresTutorialBucket,
+        # FireTutorialGame,
+        # FiresTutorialSprinkler,
+        # SprinklerTutorialGame,
+        # FiresTutorialLayout,
+        # LayoutTutorialGame,
+        # FiresUnderstanding,
         FiresRoundIntro,
         ExperimentGame,
         ResultGame,
