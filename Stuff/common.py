@@ -284,6 +284,9 @@ class Wait(InstructionsFrame):
     def processResponse(self, response):
         pass
 
+    def gothrough(self):
+        self.run()
+
     def write(self, response):
         self.file.write(self.what.capitalize() + " Results" + "\n")
         self.file.write(self.id + "\t" + response.replace("_", "\t") + "\n\n")
@@ -717,6 +720,21 @@ class InstructionsAndUnderstanding(InstructionsFrame):
                 self.next["text"] = self.finalButton
 
     def gothrough(self):
+        # If there's a prompt, handle the initial prompt display first
+        if self.prompt and not self.controlNum:
+            sleep(0.1)
+            self.update()
+            if self.winfo_exists():
+                try:
+                    self.focus_force()
+                except Exception as e:
+                    print(f"DEBUG: Focus force failed in prompt display: {e}")
+            if hasattr(self, 'next') and self.next.winfo_exists():
+                self.next.invoke()
+                self.update()
+                sleep(0.1)
+        
+        # Now iterate through all control questions
         for i in range(len(self.controlTexts)):
             sleep(0.1)
             self.update()

@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from time import sleep
 
 import random
 import os
@@ -60,10 +61,10 @@ trustAnswers1 = [
     "Hráč A se rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí. Hráč B může vzít hráči A\njakékoli množství peněz, které hráči A zůstaly.",
 ]
 trustFeedback1 = [
-    "Chybná odpověď. Hráč A rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí a hráč B může poslat hráči B jakékoli množství dostupných peněz zpět.",
+    "Chybná odpověď. Hráč A rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí a hráč B může poslat hráči A jakékoli množství dostupných peněz zpět.",
     "Správná odpověď.",
-    "Chybná odpověď. Hráč A rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí a hráč B může poslat hráči B jakékoli množství dostupných peněz zpět.",
-    "Chybná odpověď. Hráč A rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí a hráč B může poslat hráči B jakékoli množství dostupných peněz zpět.",
+    "Chybná odpověď. Hráč A rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí a hráč B může poslat hráči A jakékoli množství dostupných peněz zpět.",
+    "Chybná odpověď. Hráč A rozhoduje, kolik hráči B pošle peněz. Poslané peníze se ztrojnásobí a hráč B může poslat hráči A jakékoli množství dostupných peněz zpět.",
 ]
 
 
@@ -321,6 +322,34 @@ class Trust(InstructionsFrame):
             "sentB_list": [int(self.frames[i].valueVar.get()) for i in range(6)],
         }
         self.root.status["trustblock"] = block + 1
+
+    def gothrough(self):
+        # Phase A: choose how much to send as player A.
+        sent_a = random.choice([0, 20, 40, 60, 80, 100])
+        self.frames[6].value.set(sent_a)
+        self.checkVar.set(True)
+        self.checkbuttoned()
+        sleep(0.05)
+        self.nextFun()
+
+        # Prediction phase.
+        prediction_max = self.frames[7].maximum
+        prediction = random.randint(0, prediction_max // 10) * 10
+        self.frames[7].value.set(prediction)
+        self.checkVar.set(True)
+        self.checkbuttoned()
+        sleep(0.05)
+        self.nextFun()
+
+        # Phase B: for each possible sent amount, choose return amount.
+        for i in range(6):
+            max_return = self.frames[i].maximum
+            returned = random.randint(0, max_return // 10) * 10
+            self.frames[i].value.set(returned)
+        self.checkVar.set(True)
+        self.checkbuttoned()
+        sleep(0.05)
+        self.nextFun()
 
 
 class WaitGroups(Wait):

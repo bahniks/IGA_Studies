@@ -32,7 +32,7 @@ from gui import GUI
 from intros import Ending
 from login import Login
 from questionnaire import SalesProneness, TransactionValue, Numeracy
-from products import ProductsIntro1, ProductsIntro2, ProductsIntroUnderstanding, ProductsIntro4, Choices
+from products import ProductsIntro1, ProductsIntro2, ProductsIntroUnderstanding, ProductsIntro4, Choices, ProductsIntro5, ProductsEnd1
 
 
 
@@ -41,9 +41,12 @@ frames = [Login,
         ProductsIntro2,
         ProductsIntroUnderstanding,
         ProductsIntro4,
+        Choices,        
+        ProductsEnd1,
+        Numeracy,
+        ProductsIntro5,
         Choices,
-        SalesProneness, TransactionValue, Numeracy,
-        Choices,
+        SalesProneness, TransactionValue, 
         Ending
          ]
 

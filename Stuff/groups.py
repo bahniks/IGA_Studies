@@ -98,6 +98,24 @@ class Groups(InstructionsFrame):
             for group, button in self.buttons.items():
                 button["state"] = "normal"
 
+    def gothrough(self):
+        # Simulate participant clicking: select NUMGROUPS groups naturally
+        for group in random.sample(self.groups, NUMGROUPS):
+            if not self.winfo_exists():
+                return
+            if group not in self.chosen:
+                self.clicked(group)
+            self.update_idletasks()
+            sleep(0.05)  # Brief delay between clicks, like human speed
+        
+        sleep(0.5)  # Wait a moment before proceeding to mimic natural pause
+        self.nextFun()
+
+        # Participant clicks Next to proceed
+        #if self.winfo_exists() and self.next.winfo_exists() and str(self.next["state"]) != "disabled":
+        #    self.next.invoke()
+        #    self.next
+
 
 InstructionsGroups = (InstructionsFrame, {"text": introGroups, "height": 5})
 
@@ -106,5 +124,6 @@ InstructionsGroups = (InstructionsFrame, {"text": introGroups, "height": 5})
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
     GUI([#InstructionsGroups,
-         Groups
+         Groups,
+         InstructionsGroups
          ])

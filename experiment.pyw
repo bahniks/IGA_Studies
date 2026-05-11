@@ -61,7 +61,7 @@ from Stuff.Tutorial_fire import FireTutorialGame
 from Stuff.Tutorial_sprinkler import SprinklerTutorialGame
 from Stuff.Tutorial_layout import LayoutTutorialGame
 from Stuff.experiment_game import ExperimentGame
-from Stuff.products import ProductsIntro1, ProductsIntro2, ProductsIntroUnderstanding, ProductsIntro4, Choices
+from Stuff.products import ProductsIntro1, ProductsIntro2, ProductsIntroUnderstanding, ProductsIntro4, Choices, ProductsIntro5, ProductsEnd1
 from Stuff.constants import COORDINATION_ROUNDS, MARKET_ROUNDS, TRUST_ROUNDS
 
 
@@ -71,7 +71,7 @@ frames = [Login,
           Intro,
           InstructionsGroups,
           Groups,
-          GamesIntro,
+          #GamesIntro,
           IntroCoordination,
           InstructionsCoordination,
           *([CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame] * COORDINATION_ROUNDS),
@@ -103,11 +103,13 @@ frames = [Login,
         ProductsIntro1,
         ProductsIntro2,
         ProductsIntroUnderstanding,
-        ProductsIntro4,
+        ProductsIntro4,        
         Choices,       
+        ProductsEnd1,
         QuestInstructions,
-          Numeracy,
-          Narcissism,
+        Numeracy,
+        Narcissism,
+        ProductsIntro5,
         Choices,
         QuestInstructions2,
         SalesProneness, 

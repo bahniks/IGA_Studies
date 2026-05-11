@@ -5,7 +5,7 @@ import random
 import urllib.request
 import urllib.parse
 
-from common import InstructionsFrame
+from common import InstructionsFrame, Wait
 from constants import URL, TRUST_ENDOWMENT, MARKET_ENDOWMENT, MARKET_WIN, MARKET_LOSS, COORDINATION_SUCCESS
 
 
@@ -28,18 +28,16 @@ coordinationResultText = """V koordinační úloze bylo náhodně vybráno kolo 
 
 
 
-class WaitResults(InstructionsFrame):
+class WaitResults(Wait):
     def __init__(self, root):
         super().__init__(
             root,
-            text="Čekejte na finální výsledky od ostatních účastníků studie",
-            height=3,
-            font=15,
-            proceed=False,
-            width=55,
+            what="results"
         )
-        self.progressBar = ttk.Progressbar(self, orient=HORIZONTAL, length=400, mode="indeterminate")
-        self.progressBar.grid(row=2, column=1, sticky=N)
+        # Override the text and progress bar are already set by Wait.__init__
+        # which sets:
+        # text="Čekejte na data od ostatních účastníků studie"
+        # and creates progressBar
 
     def _has_trust_data(self):
         return bool(self.root.status.get("trust_decisions"))

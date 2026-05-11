@@ -3,7 +3,7 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.font as tkfont
-from time import time
+from time import time, sleep
 import csv
 import random
 import os.path
@@ -21,21 +21,25 @@ from constants import TESTING, BUDGET
 
 questionText = "Chcete koupit tento produkt?"
 
-products_intro_1 = """Tímto končí první část studie.
+products_intro_1 = """Tímto končí další část studie.
 
-Nyní bude následovat druhá část, která se týká rozhodování o nákupu běžných spotřebních produktů. Tato část má vlastní instrukce a vlastní mechanismus odměňování. Před jejím začátkem si prosím pečlivě přečtěte následující pravidla.
+Nyní bude následovat druhá část, která se týká rozhodování o nákupu produktů. Tato část má vlastní mechanismus odměňování. Před jejím začátkem si prosím pečlivě přečtěte následující instrukce.
 
 Během této studie budete činit sérii nákupních rozhodnutí u běžných spotřebních produktů.
 V každém kroku uvidíte produkt, jeho charakteristiky, kategorii a cenu. Vaším úkolem bude rozhodnout, zda byste si daný produkt za uvedenou cenu koupil/a.
-Původní ceny uvedené u slevových nabídek produktů použitých ve studii vycházejí z cen, za které výzkumný tým produkty nakoupil."""
 
-products_intro_2 = f"""K této nákupní části studie máte k dispozici experimentální rozpočet {BUDGET} Kč.
+U některých produktů budou uvedeny původní ceny a sleva. Původní ceny uvedené u takovýchto slevových nabídek odpovídají cenám, za které výzkumný tým produkty nakoupil."""
 
-Během studie učiníte sérii rozhodnutí typu: "Koupil/a byste si tento produkt za uvedenou cenu?"
-Na konci studie budou náhodně vybrány dvě produktové kategorie. Z každé z těchto kategorií bude následně náhodně vybráno právě jedno Vaše rozhodnutí k realizaci. Celkem tedy budou realizována dvě Vaše rozhodnutí.
-Pokud jste u vybraného produktu zvolil/a ANO, produkt za uvedenou cenu skutečně koupíte, tato částka se odečte z Vašeho rozpočtu a produkt obdržíte.
-Pokud jste u vybraného produktu zvolil/a NE, produkt neobdržíte a žádná částka Vám nebude z Vašeho rozpočtu odečtena.
-Zbytek experimentálního rozpočtu bude připočten k Vaší fixní odměně za účast."""
+products_intro_2 = f"""V této nákupní části studie máte k dispozici rozpočet {BUDGET} Kč.
+
+Nákupní úloha bude rozdělena do dvou částí. Mezi nimi budete požádán/a o vyplnění krátkých úloh a dotazníků.
+
+Na konci studie budou náhodně vybrány dvě produktové kategorie. Z každé z těchto kategorií bude následně náhodně vybráno právě jedno Vaše rozhodnutí k realizaci. <b>Celkem tedy budou realizována dvě Vaše rozhodnutí</b>.
+
+Pokud jste u vybraného produktu zvolil/a <b>ANO</b>, produkt za uvedenou cenu skutečně koupíte, tato částka se odečte z Vašeho rozpočtu a produkt obdržíte.
+Pokud jste u vybraného produktu zvolil/a <b>NE</b>, produkt neobdržíte a žádná částka Vám nebude z Vašeho rozpočtu odečtena.
+
+Zbytek rozpočtu z této části studie bude připočten k Vaší celkové odměně."""
 
 products_understanding_intro = """Než budete pokračovat, odpovězte prosím na následující kontrolní otázky, které ověří, zda rozumíte pravidlům nákupní části studie a způsobu realizace rozhodnutí."""
 
@@ -73,6 +77,19 @@ V této části uvidíte sérii produktů. U každého produktu odpovězte, zda 
 Rozhodujte se prosím tak, jako by se právě toto rozhodnutí mohlo stát tím, které bude na konci studie realizováno."""
 
 
+questionnaires_trans_intro = """Tímto končí první část nákupní úlohy.
+
+Než přejdeme k druhé části nákupní úlohy, čekají Vás krátké úlohy a dotazníky. Prosím odpovídejte pozorně."""
+
+
+products_intro_5 = """Nyní bude pokračovat druhá část nákupní úlohy.
+
+Tato část bude probíhat stejným způsobem jako první část. Opět budete činit nákupní rozhodnutí u běžných spotřebních produktů. U každého produktu odpovězte, zda byste si jej za uvedenou cenu koupil/a.
+
+Mohou se Vám zobrazit i produkty, které jste již viděl/a v předchozí části, avšak s jinou cenovou nabídkou.
+
+Rozhodujte se prosím opět tak, jako by se právě toto rozhodnutí mohlo stát tím, které bude na konci studie realizováno."""
+
 
 finalText = """V úloze s nákupem výrobků byly vylosovány tyto dvě volby:
 {}
@@ -85,6 +102,7 @@ oneReceivedText = "Zakoupený produkt obdržíte od experimentátora."
 noProductsText = "Nezakoupil(a) jste žádný z vylosovaných produktů."
 
 transparent = "Předchozí cena v tomto experimentu: {}"
+
 
 
 
@@ -109,9 +127,16 @@ class Choices(ExperimentFrame):
             self.infos = [row for row in reader if row.get("file")]
         random.shuffle(self.infos)
 
+        control_file_path = os.path.join(os.path.dirname(__file__), "products_control.tsv")
+        with open(control_file_path, encoding = "utf-8", newline = "") as f:
+            reader = csv.DictReader(f, delimiter = "\t")
+            self.control_infos = [row for row in reader if row.get("file")]
+
         self.run_index = int(self.root.status.get("products_run_index", 0))
         self.condition_index = min(self.run_index, 1)
         self.root.status["products_conditions"] = self._get_or_create_conditions()
+        self.control_product = self._get_control_product_for_run()
+        self.trials = self._build_trials_with_control(self.control_product)
 
         self.file.write("Products\n")
 
@@ -135,6 +160,33 @@ class Choices(ExperimentFrame):
 
         self.proceed()
 
+    def _get_control_product_for_run(self):
+        if not self.control_infos:
+            return None
+
+        order = self.root.status.get("products_control_order")
+        if not isinstance(order, list) or len(order) != len(self.control_infos):
+            order = list(range(len(self.control_infos)))
+            random.shuffle(order)
+            self.root.status["products_control_order"] = order
+
+        control_idx = order[self.run_index % len(order)]
+        return dict(self.control_infos[control_idx])
+
+    def _build_trials_with_control(self, control_product):
+        trials = list(self.infos)
+        if control_product is None:
+            return trials
+
+        mid = len(trials) // 2
+        start = max(0, mid - 2)
+        end = min(len(trials), mid + 2)
+        insert_at = random.randint(start, end)
+        control_item = dict(control_product)
+        control_item["is_control"] = True
+        trials.insert(insert_at, control_item)
+        return trials
+
     def _get_or_create_conditions(self):
         existing = self.root.status.get("products_conditions")
         product_ids = {info["id"] for info in self.infos}
@@ -142,12 +194,27 @@ class Choices(ExperimentFrame):
         if isinstance(existing, dict) and all(pid in existing for pid in product_ids):
             return existing
 
+        total_products = len(self.infos)
+        condition_price_pairs = [(condition_pair, price_level) for condition_pair in conditions for price_level in prices]
+        pair_count = len(condition_price_pairs)
+        per_pair = total_products // pair_count
+        remainder = total_products % pair_count
+
+        shuffled_condition_price_pairs = list(condition_price_pairs)
+        random.shuffle(shuffled_condition_price_pairs)
+
+        balanced_pairs = []
+        for idx, condition_price_pair in enumerate(shuffled_condition_price_pairs):
+            extra = 1 if idx < remainder else 0
+            balanced_pairs.extend([condition_price_pair] * (per_pair + extra))
+        random.shuffle(balanced_pairs)
+
         generated = {}
-        for info in self.infos:
+        for info, (condition_pair, price_level) in zip(self.infos, balanced_pairs):
             generated[info["id"]] = {
-                "condition_pair": random.choice(conditions),
-                "price_level": random.choice(prices),
-            }
+                "condition_pair": condition_pair,
+                "price_level": price_level,
+            }        
         return generated
 
     @staticmethod
@@ -159,9 +226,9 @@ class Choices(ExperimentFrame):
 
     def proceed(self):
         self.order += 1
-        self.trialText["text"] = f"Produkt {self.order + 1:>3}/{len(self.infos)}"
+        self.trialText["text"] = f"Produkt {self.order + 1:>3}/{len(self.trials)}"
 
-        if self.order == len(self.infos) or (TESTING and self.order == 10):
+        if self.order == len(self.trials) or (TESTING and self.order == 10):
             if self.condition_index == 1:
                 drawn = random.sample(self.all_choices, min(2, len(self.all_choices)))
                 while len(drawn) < 2:
@@ -190,38 +257,48 @@ class Choices(ExperimentFrame):
                 self.root.status["reward"] += (BUDGET - total_spent)
             self.nextFun()
         else:
-            self.current = dict(self.infos[self.order])
-            cond_info = self.root.status["products_conditions"][self.current["id"]]
-            pair = cond_info["condition_pair"]
-            if not isinstance(pair, (tuple, list)) or len(pair) != 2:
-                raise ValueError("condition_pair must be a 2-item tuple/list in products_conditions")
-
-            display_condition = pair[self.condition_index]
-            price_level = cond_info.get("price_level", "middle")
-            baseline_price = self.current.get(price_level, self.current.get("middle", ""))
-            high_price = self.current.get("high", "")
-            middle_price = self.current.get("middle", "")
-
-            self.current["display_condition"] = display_condition
-            self.current["price_level"] = price_level
-            self.current["baseline_price"] = baseline_price
-            self.current["high_price"] = high_price
-            self.current["middle_price"] = middle_price
-
-            if display_condition == "baseline":
-                self.current["shown_price"] = baseline_price
+            self.current = dict(self.trials[self.order])
+            if self.current.get("is_control"):
+                self.current["display_condition"] = "baseline"
+                self.current["price_level"] = "control"
+                self.current["baseline_price"] = self.current.get("price", "")
+                self.current["high_price"] = ""
+                self.current["middle_price"] = ""
+                self.current["shown_price"] = self.current.get("price", "")
                 self.current["discount_pct"] = None
                 self.current["transparent_text"] = ""
             else:
-                high_val = self._price_to_float(high_price)
-                middle_val = self._price_to_float(middle_price)
-                if high_val and middle_val is not None and high_val > 0:
-                    discount_pct = int(round((high_val - middle_val) / high_val * 100))
+                cond_info = self.root.status["products_conditions"][self.current["id"]]
+                pair = cond_info["condition_pair"]
+                if not isinstance(pair, (tuple, list)) or len(pair) != 2:
+                    raise ValueError("condition_pair must be a 2-item tuple/list in products_conditions")
+
+                display_condition = pair[self.condition_index]
+                price_level = cond_info.get("price_level", "middle")
+                baseline_price = self.current.get(price_level, self.current.get("middle", ""))
+                high_price = self.current.get("high", "")
+                middle_price = self.current.get("middle", "")
+
+                self.current["display_condition"] = display_condition
+                self.current["price_level"] = price_level
+                self.current["baseline_price"] = baseline_price
+                self.current["high_price"] = high_price
+                self.current["middle_price"] = middle_price
+
+                if display_condition == "baseline":
+                    self.current["shown_price"] = baseline_price
+                    self.current["discount_pct"] = None
+                    self.current["transparent_text"] = ""
                 else:
-                    discount_pct = 0
-                self.current["shown_price"] = middle_price
-                self.current["discount_pct"] = discount_pct
-                self.current["transparent_text"] = transparent.format(high_price) if display_condition == "transparent" else ""
+                    high_val = self._price_to_float(high_price)
+                    middle_val = self._price_to_float(middle_price)
+                    if high_val and middle_val is not None and high_val > 0:
+                        discount_pct = int(round((high_val - middle_val) / high_val * 100))
+                    else:
+                        discount_pct = 0
+                    self.current["shown_price"] = middle_price
+                    self.current["discount_pct"] = discount_pct
+                    self.current["transparent_text"] = transparent.format(high_price) if display_condition == "transparent" else ""
 
             self.product.showProduct(self.current)
             self.t0 = time()
@@ -264,6 +341,14 @@ class Choices(ExperimentFrame):
             self.sendData(data)
         super().nextFun()
 
+    def gothrough(self):
+        # Simulate a full run with random purchase decisions.
+        while self.order < len(self.trials) - 1 and (not TESTING or self.order < 10):
+            choice = random.choice(["yes", "no"])
+            self.record_choice(choice)
+            self.update()
+            sleep(0.02)
+
 
 class OneProduct(Canvas):
     def __init__(self, root):
@@ -276,7 +361,7 @@ class OneProduct(Canvas):
         self.product = Product(self)
         self.product.grid(column = 1, row = 0)
 
-        self.label = ttk.Label(self, text = "", background = "white", font = "helvetica 15 bold", width = 55, anchor = "center")
+        self.label = ttk.Label(self, text = "", background = "white", font = "helvetica 15 bold", width = 70, anchor = "center")
         self.label.grid(column = 1, row = 1, pady = 8)
 
         self.categoryLabel = ttk.Label(self, text = "", background = "white", font = "helvetica 11")
@@ -364,6 +449,8 @@ ProductsIntroUnderstanding = (
     },
 )
 ProductsIntro4 = (InstructionsFrame, {"text": products_intro_4, "height": "auto"})
+ProductsEnd1 = (InstructionsFrame, {"text": questionnaires_trans_intro, "height": "auto"})
+ProductsIntro5 = (InstructionsFrame, {"text": products_intro_5, "height": "auto"})
 
 
 
@@ -377,8 +464,10 @@ def main():
         Choices,
         ProductsIntro1,
         ProductsIntro2,
-        #ProductsIntroUnderstanding,
+        ProductsIntroUnderstanding,
         ProductsIntro4,
+        ProductsIntro5,
+        ProductsEnd1,
         Choices,
         Ending,
     ])

@@ -47,7 +47,6 @@ class GUI(Tk):
         super().__init__()
         self.restart_requested = False
         self.is_closing = False
-        self.heartbeat_job = None
         
         self.title("Experiment")
         self.config(bg = "white")
@@ -85,12 +84,11 @@ class GUI(Tk):
         writeTime = localtime()
         self.id = str(uuid4())
         self.outputfile = os.path.join("Data", strftime("%y_%m_%d_%H%M%S", writeTime) + "_" + self.id + ".txt")
-        self.heartbeat_file = os.path.join(os.getcwd(), "temp_heartbeat.json")
 
         self.bind("<Escape>", self.closeFun)
         # Emergency restart hotkey for operator use when UI becomes unstable.
-        self.bind_all("<Control-Shift-KeyPress-R>", self._manual_restart_request)
-        self.bind_all("<Control-Shift-KeyPress-r>", self._manual_restart_request)
+        #self.bind_all("<Control-Shift-KeyPress-R>", self._manual_restart_request)
+        #self.bind_all("<Control-Shift-KeyPress-r>", self._manual_restart_request)
 
         self.order = frames
         self._frame_aliases = self._build_frame_aliases()
@@ -124,21 +122,6 @@ class GUI(Tk):
                     if response == "continue":
                         for key, value in data.items():
                             setattr(self, key, value)  
-                        # Import intervention frames lazily to avoid circular imports during module load.
-                        from intervention import (
-                            NudgeInstructions,
-                            BoostInstructions,
-                            BoostVideo,
-                            BoostUnderstandingCheck,
-                            IfThenPlanChooser,
-                        )
-                        if self.status["condition"] == "nudge":
-                            self.order.insert(6, NudgeInstructions)
-                        elif self.status["condition"] == "boost":
-                            self.order.insert(6, BoostInstructions)
-                            self.order.insert(7, BoostVideo)
-                            self.order.insert(8, BoostUnderstandingCheck)
-                            self.order.insert(9, IfThenPlanChooser)
                     else:
                         load = False  
                 else:
@@ -157,7 +140,6 @@ class GUI(Tk):
         self.file = DurableAppendFile(self.outputfile, mode)
         if load:
             self.file.write("resume: " + str(time()) + f"\t{self.count}\tfrom_temp_json" + "\n")
-        self._schedule_heartbeat()
         self.nextFrame()
         self.after(100, self.frame.focus_force)
         self.mainloop()
@@ -165,12 +147,8 @@ class GUI(Tk):
 
     def destroy(self):
         self.is_closing = True
-        if self.heartbeat_job is not None:
-            self.after_cancel(self.heartbeat_job)
-            self.heartbeat_job = None
-        self._write_heartbeat("stopping")
-        self.unbind_all("<Control-Shift-KeyPress-R>")
-        self.unbind_all("<Control-Shift-KeyPress-r>")
+        #self.unbind_all("<Control-Shift-KeyPress-R>")
+        #self.unbind_all("<Control-Shift-KeyPress-r>")
         self.file.close()
         if URL != "TEST":
             self.uploadResults()        
@@ -198,111 +176,79 @@ class GUI(Tk):
                     f)
 
 
-    def _write_heartbeat(self, state = "running"):
-        payload = {
-            "pid": os.getpid(),
-            "id": self.id,
-            "count": self.count,
-            "state": state,
-            "timestamp": time(),
-            "restart_requested": self.restart_requested,
-        }
-        tmp_file = self.heartbeat_file + ".tmp"
-        with open(tmp_file, mode = "w", encoding = "utf-8") as f:
-            json.dump(payload, f)
-        os.replace(tmp_file, self.heartbeat_file)
+    # def report_callback_exception(self, exc, val, tb):
+    #     """Tkinter hook: catch unhandled callback exceptions and relaunch safely."""
+    #     traceback_text = "".join(traceback.format_exception(exc, val, tb))
+    #     print("Unhandled Tk callback exception:")
+    #     print(traceback_text)
+    #     try:
+    #         self.file.write("gui_exception\t" + str(time()) + "\t" + traceback_text.replace("\n", " | ") + "\n")
+    #     except Exception:
+    #         pass
+    #     if self.is_closing:
+    #         # During shutdown, late callbacks from destroyed widgets can raise harmlessly.
+    #         return
+    #     self._restart_process("tk_callback_exception")
 
 
-    def _schedule_heartbeat(self):
-        try:
-            self._write_heartbeat("running")
-        except Exception as e:
-            if TESTING:
-                print("Could not write heartbeat:", e)
-        self.heartbeat_job = self.after(1000, self._schedule_heartbeat)
+    # def _manual_restart_request(self, event = None):
+    #     if self.restart_requested:
+    #         return "break"
+
+    #     # Unbind immediately to avoid duplicate invocation from key-repeat/double press.
+    #     #self.unbind_all("<Control-Shift-KeyPress-R>")
+    #     #self.unbind_all("<Control-Shift-KeyPress-r>")
+
+    #     ans = messagebox.askyesno(
+    #         message="Aplikace se restartuje a bude nabídnuto pokračování z uloženého stavu. Pokračovat?",
+    #         icon="question",
+    #         parent=self,
+    #         title="Nouzový restart"
+    #     )
+    #     if ans:
+    #         self._restart_process("manual_hotkey")
+    #     else:
+    #         self.bind_all("<Control-Shift-KeyPress-R>", self._manual_restart_request)
+    #         self.bind_all("<Control-Shift-KeyPress-r>", self._manual_restart_request)
+    #     return "break"
 
 
-    def report_callback_exception(self, exc, val, tb):
-        """Tkinter hook: catch unhandled callback exceptions and relaunch safely."""
-        traceback_text = "".join(traceback.format_exception(exc, val, tb))
-        print("Unhandled Tk callback exception:")
-        print(traceback_text)
-        try:
-            self.file.write("gui_exception\t" + str(time()) + "\t" + traceback_text.replace("\n", " | ") + "\n")
-        except Exception:
-            pass
-        if self.is_closing:
-            # During shutdown, late callbacks from destroyed widgets can raise harmlessly.
-            return
-        self._restart_process("tk_callback_exception")
+    # def _restart_process(self, reason):
+    #     if self.restart_requested:
+    #         return
 
+    #     self.restart_requested = True
+    #     self.is_closing = True
+    #     try:
+    #         self.file.write("restart: " + str(time()) + "\t" + str(self.count) + "\t" + reason + "\n")
+    #     except Exception:
+    #         pass
 
-    def _manual_restart_request(self, event = None):
-        if self.restart_requested:
-            return "break"
+    #     try:
+    #         # Preserve the currently visible frame after restart.
+    #         self._write_temp_snapshot(count_override = max(-1, self.count - 1))
+    #     except Exception:
+    #         pass
 
-        # Unbind immediately to avoid duplicate invocation from key-repeat/double press.
-        self.unbind_all("<Control-Shift-KeyPress-R>")
-        self.unbind_all("<Control-Shift-KeyPress-r>")
+    #     try:
+    #         self.file.close()
+    #     except Exception:
+    #         pass
 
-        ans = messagebox.askyesno(
-            message="Aplikace se restartuje a bude nabídnuto pokračování z uloženého stavu. Pokračovat?",
-            icon="question",
-            parent=self,
-            title="Nouzový restart"
-        )
-        if ans:
-            self._restart_process("manual_hotkey")
-        else:
-            self.bind_all("<Control-Shift-KeyPress-R>", self._manual_restart_request)
-            self.bind_all("<Control-Shift-KeyPress-r>", self._manual_restart_request)
-        return "break"
-
-
-    def _restart_process(self, reason):
-        if self.restart_requested:
-            return
-
-        self.restart_requested = True
-        self.is_closing = True
-        try:
-            self.file.write("restart: " + str(time()) + "\t" + str(self.count) + "\t" + reason + "\n")
-        except Exception:
-            pass
-
-        try:
-            # Preserve the currently visible frame after restart.
-            self._write_temp_snapshot(count_override = max(-1, self.count - 1))
-        except Exception:
-            pass
-
-        try:
-            if self.heartbeat_job is not None:
-                self.after_cancel(self.heartbeat_job)
-                self.heartbeat_job = None
-            self._write_heartbeat("restarting")
-        except Exception:
-            pass
-
-        try:
-            self.file.close()
-        except Exception:
-            pass
-
-        try:
-            args = sys.argv[:] if sys.argv else [os.path.join(os.getcwd(), "experiment.py")]
-            os.execv(sys.executable, [sys.executable] + args)
-        except Exception:
-            traceback.print_exc()
-            self.restart_requested = False
-            try:
-                messagebox.showerror(
-                    title="Restart selhal",
-                    message="Automatický restart selhal. Zavřete prosím okno a spusťte experiment znovu.",
-                    parent=self,
-                )
-            except Exception:
-                pass
+    #     try:
+    #         args = sys.argv[:] if sys.argv else [os.path.join(os.getcwd(), "experiment.py")]
+    #         os.execv(sys.executable, [sys.executable] + args)
+    #     except Exception:
+    #         traceback.print_exc()
+    #         self.restart_requested = False
+    #         try:
+    #             messagebox.showerror(
+    #                 title="Restart selhal",
+    #                 message="Automatický restart selhal. Zavřete prosím okno a spusťte experiment znovu.",
+    #                 parent=self,
+    #             )
+    #         except Exception:
+    #             pass
 
 
     def nextFrame(self):
