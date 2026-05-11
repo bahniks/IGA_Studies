@@ -10,6 +10,29 @@ from experiment_game import (
 )
 
 
+SPRINKLER_TUTORIAL_STAGE_TEXTS = [
+    (
+        "Na pravé straně vidíte zavlažovací systém, ve kterém zatím není dostatečný tlak. "
+        "Vaším úkolem bude postupně aktivovat ventily, zvednout hladinu vody v potrubí "
+        "a tím spustit zavlažovací systém.",
+        "Stiskněte mezerník a přejděte k praktické ukázce.",
+    ),
+    (
+        "Ventil aktivujete tak, že na něj najedete myší, kliknete levým tlačítkem myši "
+        "a podržíte ho 15 vteřin. "
+        "Postup uvidíte na stoupajícím modrém sloupci vody v potrubí. "
+        "Ventily je potřeba aktivovat postupně podle čísel od 1 do 4.",
+        "Začněte ventilem 1 a sledujte, jak modrá voda stoupá do první úrovně.",
+    ),
+    (
+        "Jakmile dokončíte i poslední ventil, systém získá plný tlak a zavlažovací systém se automaticky spustí, uhasí všechny aktivní ohně, zabrání dalším ohňům a ukončí kolo.",
+        "Dokončete aktivaci ventilu 4, sledujte stoupající vodu a potom spuštění zavlažování.",
+    ),
+]
+
+SPRINKLER_TUTORIAL_STAGE_1_HINT_DONE = "První úroveň je hotová. Stiskněte mezerník a přejděte k závěrečnému kroku."
+
+
 class SprinklerTutorialGame(ExperimentGame):
     ROUND_CONTEXT_ENABLED = False
 
@@ -54,7 +77,7 @@ class SprinklerTutorialGame(ExperimentGame):
         self.countdown_value = 0
         self.countdown_after_id = None
 
-        self.tutorial_stage = -1
+        self.tutorial_stage = 0
         self.first_segment_done = False
         self.stage_two_ready = False
 
@@ -115,59 +138,6 @@ class SprinklerTutorialGame(ExperimentGame):
         self._build_right_scene()
         self.valve_hold_ms = 15000
 
-        self.end_overlay = tk.Frame(self.root, bg=RIGHT_BG)
-        self.end_overlay.place_forget()
-        self.end_title = tk.Label(
-            self.end_overlay,
-            text="TUTORIÁL DOKONČEN",
-            font=("Trebuchet MS", 24, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-        )
-        self.end_title.place(relx=0.5, rely=0.40, anchor="center")
-        self.end_label = tk.Label(
-            self.end_overlay,
-            text="Tutorial zavlažovacího systému je hotový. Mezerníkem pokračujte do další části tutorialu.",
-            font=("Trebuchet MS", 18, "bold"),
-            bg=RIGHT_BG,
-            fg="#2f78b2",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_label.place(relx=0.5, rely=0.54, anchor="center")
-        self.end_hint = tk.Label(
-            self.end_overlay,
-            text="Mezerník = pokračovat dál",
-            font=("Trebuchet MS", 16, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_hint.place(relx=0.5, rely=0.66, anchor="center")
-
-        self.start_overlay = tk.Frame(self.root, bg=RIGHT_BG)
-        self.start_title_label = tk.Label(
-            self.start_overlay,
-            text="Tutorial - Zavlažovací systém",
-            font=("Georgia", 34, "bold"),
-            bg=RIGHT_BG,
-            fg="#37515e",
-        )
-        self.start_title_label.place(relx=0.5, rely=0.42, anchor="center")
-        self.start_hint_label = tk.Label(
-            self.start_overlay,
-            text="Stiskněte mezerník a projděte si ovládání zavlažovacího systému",
-            font=("Trebuchet MS", 18, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.start_hint_label.place(relx=0.5, rely=0.54, anchor="center")
-        self.start_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.start_overlay.lift()
-
         self.root.bind_all("<KeyPress-space>", self.on_space_press)
         self.info_panel.bind("<Configure>", self._resize_instruction_wraps)
         self.root.after(100, self.root.focus_force)
@@ -185,29 +155,10 @@ class SprinklerTutorialGame(ExperimentGame):
             hint_label.config(wraplength=wraplength)
 
     def _update_stage_text(self):
-        stage_texts = [
-            (
-                "Na pravé straně vidíte zavlažovací systém, ve kterém zatím není dostatečný tlak. "
-                "Vaším úkolem bude postupně aktivovat ventily, zvednout hladinu vody v potrubí "
-                "a tím spustit zavlažovací systém.",
-                "Stiskněte mezerník a přejděte k praktické ukázce.",
-            ),
-            (
-                "Ventil aktivujete tak, že na něj najedete myší, kliknete levým tlačítkem myši "
-                "a podržíte ho 15 vteřin. "
-                "Postup uvidíte na stoupajícím modrém sloupci vody v potrubí. "
-                "Ventily je potřeba aktivovat postupně podle čísel od 1 do 4.",
-                (
-                    "První úroveň je hotová. Stiskněte mezerník a přejděte k závěrečnému kroku."
-                    if self.first_segment_done
-                    else "Začněte ventilem 1 a sledujte, jak modrá voda stoupá do první úrovně."
-                ),
-            ),
-            (
-                "Jakmile dokončíte i poslední ventil, systém získá plný tlak a zavlažovací systém se automaticky spustí, uhasí všechny aktivní ohně, zabrání dalším ohňům a ukončí kolo.",
-                "Dokončete aktivaci ventilu 4, sledujte stoupající vodu a potom spuštění zavlažování.",
-            ),
-        ]
+        stage_texts = list(SPRINKLER_TUTORIAL_STAGE_TEXTS)
+        if self.first_segment_done:
+            body_text, _ = stage_texts[1]
+            stage_texts[1] = (body_text, SPRINKLER_TUTORIAL_STAGE_1_HINT_DONE)
 
         inactive_body = "#94897f"
         inactive_hint = "#aaa39b"
@@ -231,17 +182,9 @@ class SprinklerTutorialGame(ExperimentGame):
                 )
 
     def on_space_press(self, event=None):
-        if self.game_over and self.end_overlay.winfo_ismapped():
-            self.nextFun()
-            return
         if self.game_over and self.sprinkler_on:
             return
-        if self.tutorial_stage == -1:
-            self.tutorial_stage = 0
-            self.start_overlay.place_forget()
-            self._update_stage_text()
-            self._draw_right_scene()
-        elif self.tutorial_stage == 0:
+        if self.tutorial_stage == 0:
             self.tutorial_stage = 1
             self.first_segment_done = False
             self.completed_valves = 0
@@ -276,12 +219,9 @@ class SprinklerTutorialGame(ExperimentGame):
         self.active_valve_index = None
         self.active_valve_progress = 0.0
         self.active_valve_start = 0.0
-        self.tutorial_stage = -1
+        self.tutorial_stage = 0
         self.first_segment_done = False
         self.stage_two_ready = False
-        self.end_overlay.place_forget()
-        self.start_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.start_overlay.lift()
         self._update_stage_text()
         self._draw_right_scene()
 
@@ -536,11 +476,10 @@ class SprinklerTutorialGame(ExperimentGame):
         self.active_valve_index = None
         self.active_valve_progress = 0.0
         self._draw_right_scene()
-        self.root.after(self.tutorial_end_delay_ms, self.show_end_overlay)
+        self.root.after(self.tutorial_end_delay_ms, self.nextFun)
 
     def show_end_overlay(self):
-        self.end_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.end_overlay.lift()
+        self.nextFun()
 
     def nextFun(self):
         self.root.unbind_all("<KeyPress-space>")

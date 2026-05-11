@@ -23,44 +23,50 @@ Nyní Vás čeká další část studie."""
 
 fires_intro_2 = """V této části studie budete hrát počítačovou hru.
 
-Nejprve absolvujete krátký trénink, ve kterém se naučíte, jak hra funguje. Poté odehrajete dvě hlavní kola hry.
+Nejprve absolvujete krátký trénink, ve kterém se naučíte, jak hra funguje. Poté odehrajete dvě kola hry.
 
 Před každým kolem dostanete přesné informace o tom, jak se bude výsledek daného kola vyhodnocovat.
 
-Po skončení této části bude jedno z hlavních kol náhodně vybráno jako rozhodné pro výplatu podle pravidel, která budou uvedena v průběhu experimentu.
+Na konci experimentu bude jedno z kol náhodně vybráno a jeho výsledek se projeví v konečné odměně za experiment podle pravidel, která budou vysvětlena dále.
 
-Prosíme, čtěte veškeré instrukce pozorně."""
+Prosíme, čtěte pozorně veškeré instrukce."""
 
-fires_rules = """Na začátku každého kola budete mít 100,00 Kč.
+fires_rules = """Každé kolo budete začínat s počáteční částkou 100 Kč.
 
-Hra spočívá v tom, že se na obrazovce budou v intervalech objevovat ohně. Za každý nový oheň se z částky okamžitě odečte 0,85 Kč. Za každou sekundu, kdy oheň zůstává aktivní, se odečítá dalších 0,04 Kč za každý aktivní oheň. Pokud tedy hoří více ohňů najednou, ztráty se sčítají.
+V průběhu hry se budou na obrazovce objevovat ohně. Za každý nový oheň se z částky okamžitě odečte 0,85 Kč. Každou sekundu se odečítá dalších 0,04 Kč za každý aktivní oheň. Pokud tedy hoří více ohňů najednou, ztráty se sčítají.
 
-V každém kole je Vaším cílem zabránit finančním ztrátám co nejúčinněji. Každé hlavní kolo začíná částkou 100,00 Kč a trvá 120 sekund. Kolo může skončit také dříve, pokud se částka sníží na 0 Kč.
+Každé kolo trvá 120 sekund, ale ihned skončí, pokud se částka sníží na 0 Kč.
 
-Na situaci můžete reagovat dvěma způsoby. První možností je hasit jednotlivé ohně pomocí kyblíku. Uhašení jednoho ohně zastaví další průběžné ztráty z tohoto ohně, ale další ohně se budou objevovat dál.
+Ohně můžete hasit dvěma způsoby: 
 
-Druhou možností je opravit zavlažovací systém. To provedete tak, že postupně aktivujete čtyři ventily ve správném pořadí. Jakmile dokončíte čtvrtý ventil, spustí se zavlažovací systém, aktivní ohně se automaticky uhasí a další ohně se už nebudou objevovat. 
+<i>První možností</i> je hasit jednotlivé ohně pomocí kyblíku. Uhašení jednoho ohně zastaví další průběžné ztráty z tohoto ohně, ale další ohně se budou objevovat dál do konce kola.
 
-V tutoriálu si nyní vyzkoušíte oba způsoby ovládání."""
+<i>Druhou možností</i> je spustit zavlažovací systém. To provedete tak, že postupně otevřete čtyři ventily ve správném pořadí. Jakmile otevřete čtvrtý ventil, spustí se zavlažovací systém, aktivní ohně se automaticky uhasí a další ohně se už nebudou objevovat. 
 
-fires_tutorial_bucket = """<center>V této části si vyzkoušíte hašení jednotlivých ohňů pomocí kyblíku.</center>"""
+V tutoriálu se nyní naučíte oba způsoby hašení ohňů."""
 
-fires_tutorial_sprinkler = """<center>V této části si vyzkoušíte opravu zavlažovacího systému.</center>"""
+fires_tutorial_bucket = """<center>V této části se naučíte, jak hasit jednotlivé ohně pomocí kyblíku.</center>"""
 
-fires_tutorial_layout = """Poslední část tutoriálu Vám ukáže celkové rozložení obrazovky, jak bude vypadat při hře."""
+fires_tutorial_sprinkler = """<center>Tutoriál hašení ohňů je hotový. 
 
-fires_understanding_intro = """Než začne hlavní hra, odpovíte na několik otázek, které ověří, že ovládání a pravidlům rozumíte."""
+Nyní se naučíte, jak spustit zavlažovací systém.</center>"""
+
+fires_tutorial_layout = """<center>Tutoriál zavlažovacího systému je hotový. 
+
+Poslední část tutoriálu Vám ukáže celkové rozložení obrazovky, jak bude vypadat při hře.</center>"""
+
+fires_understanding_intro = """Než hra začne, odpovězte na několik otázek, které ověří, že ovládání a pravidlům rozumíte."""
 
 fires_understanding_questions = [
     [
-        "Když uhasíte jeden oheň, co se děje dál?",
+        "Co se děje potom, co uhasíte jeden oheň pomocí kyblíku?",
         [
             "V daném kole se už žádné další ohně neobjeví.",
-            "Další ohně se budou objevovat i nadále.",
-            "Po uhašení jednoho ohně se automaticky spustí postřikovač.",
+            "Další ohně se budou objevovat do konce kola či dokud se přidělená částka nesníží na 0 Kč.",
+            "Po uhašení jednoho ohně se automaticky spustí zavlažovací systém.",
         ],
         [
-            "To není správně. Uhašení jednoho ohně zastaví pouze postupné ztráty daného ohně, další ohně se budou nadále objevovat.",
+            "To není správně. Uhašení jednoho ohně zastaví pouze postupné ztráty daného ohně; další ohně se budou nadále objevovat.",
             "Správně. Uhašení jednoho ohně zastaví pouze postupné ztráty daného ohně, další ohně se budou nadále objevovat.",
             "To není správně. Uhašení jednoho ohně zastaví pouze postupné ztráty daného ohně, další ohně se budou nadále objevovat. Postřikovač není možné spustit hašením ohňů.",
         ],
@@ -81,39 +87,41 @@ fires_understanding_questions = [
     [
         "Které tvrzení o zavlažovacím systému je správné?",
         [
-            "Ventily je možné dokončit v libovolném pořadí a každý z nich hned snižuje počet nových ohňů.",
-            "Stačí dokončit jeden ventil a postřikovač se spustí.",
-            "Ventily je potřeba dokončit ve správném pořadí a po dokončení všech čtyř se spustí postřikovač.",
+            "Ventily je možné otevřít v libovolném pořadí a každý z nich hned snižuje počet nových ohňů.",
+            "Stačí otevřít jeden ventil a postřikovač se spustí.",
+            "Ventily je potřeba otevřít ve správném pořadí a po dokončení všech čtyř se spustí zavlažovací systém.",
         ],
         [
-            "To není správně. Ventily je potřeba dokončit ve správném pořadí a po dokončení všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",
-            "To není správně. Ventily je potřeba dokončit ve správném pořadí a po dokončení všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",
-            "Správně. Ventily je potřeba dokončit ve správném pořadí a po dokončení všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",
+            "To není správně. Ventily je potřeba otevřít ve správném pořadí a po otevření všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",
+            "To není správně. Ventily je potřeba otevřít ve správném pořadí a po otevření všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",
+            "Správně. Ventily je potřeba otevřít ve správném pořadí a po otevření všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",
         ],
     ],
 ]
 
 fires_round_self = """V tomto kole hrajete <b>o svou vlastní finanční odměnu</b>.
-V případě, že bude vylosováno toto kolo, tak částka, kterou se Vám podaří v tomto kole uchránit, <b>bude přičtena k Vaší finální odměně</b>.
+V případě, že bude vylosováno toto kolo, tak částka, která Vám zbyde na konci tohoto kola, <b>bude přičtena k Vaší celkové odměně</b>.
 
-Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude dále způsobovat další ztráty v čase.
-Na situaci můžete reagovat dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete opravovat zavlažovací systém postupným dokončením ventilů ve správném pořadí."""
+Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude způsobovat další ztráty v čase.
+
+Ohně můžete hasit dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete spustit zavlažovací systém postupným otevřením ventilů ve správném pořadí."""
 
 fires_round_charity = """V tomto kole hrajete <b>o finanční výsledek určený pro charitativní účel</b>.
-V případě, že bude vylosováno toto kolo, tak částka, kterou se Vám podaří v tomto kole uchránit, <b>bude poslána na účet Nadace Dobrý anděl</b>.
+V případě, že bude vylosováno toto kolo, tak částka, která Vám zbyde na konci tohoto kola, <b>bude poslána na účet Nadace Dobrý anděl</b>.
 
 Nadace Dobrý anděl je charitativní organizace, která díky příspěvkům dárců, Dobrých andělů, každý měsíc podporuje tisíce rodin s dětmi, které se ocitly v těžké životní situaci vlivem vážného onemocnění některého z členů rodiny, ať už dítěte, maminky nebo tatínka.
 Dobří andělé podporují rodiny, v nichž se dítě nebo jeden z rodičů potýká s onkologickým nebo jiným vážným onemocněním a které se vlivem této nemoci ocitly ve složité životní situaci. Každý dar jim může pomoci lépe zvládat těžké chvíle související s náročnou léčbou.
 Cílem nadace je vytvořit svět, kde naděje a podpora mají své místo a kde se lidé spojují, aby si navzájem pomáhali překonávat ty nejtěžší chvíle spjaté s vážným onemocněním.
 
-Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude dále způsobovat další ztráty v čase.
-Na situaci můžete reagovat dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete opravovat zavlažovací systém postupným dokončením ventilů ve správném pořadí."""
+Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude způsobovat další ztráty v čase.
+
+Ohně můžete hasit dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete spustit zavlažovací systém postupným otevřením ventilů ve správném pořadí."""
 
 fires_questionnaire_intro = """Ohodnoťte prosím následující tvrzení podle toho, jak jste hru prožíval(a).
 Použijte škálu od 1 (silně nesouhlasím) do 7 (silně souhlasím)."""
 
-selfResult = """V tomto kole se Vám podařilo uchránit {} Kč z původních 100 Kč. Pokud bude vylosováno toto kolo, tak tato částka bude přičtena k Vaší finální odměně."""
-charityResult = """V tomto kole se Vám podařilo uchránit {} Kč z původních 100 Kč. Pokud bude vylosováno toto kolo, tak tato částka bude poslána na účet charity Nadace Dobrý Anděl."""
+selfResult = """V tomto kole zbylo {} Kč z původních 100 Kč. Pokud bude vylosováno toto kolo, tak bude tato částka přičtena k Vaší finální odměně."""
+charityResult = """V tomto kole zbylo {} Kč z původních 100 Kč. Pokud bude vylosováno toto kolo, tak bude tato částka poslána na účet Nadace Dobrý anděl."""
 
 
 ################################################################################

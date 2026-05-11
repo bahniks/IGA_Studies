@@ -74,7 +74,7 @@ Rozhodujte se prosím tak, jako by se právě toto rozhodnutí mohlo stát tím,
 
 
 
-finalText = """V úloze s nákupem výrobků jste byly vylosovány tyto dvě volby:
+finalText = """V úloze s nákupem výrobků byly vylosovány tyto dvě volby:
 {}
 {}
 {}

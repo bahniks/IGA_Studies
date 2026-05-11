@@ -12,6 +12,31 @@ from experiment_game import (
 )
 
 
+FIRE_TUTORIAL_STAGE_TEXTS = [
+    (
+        "Před sebou vidíte louku, na které se budou objevovat ohně.\n"
+        "K jejich hašení budete používat jezero jako zdroj vody a kyblík jako nástroj pro přenášení vody.",
+        "Stiskněte mezerník a přejděte k nácviku plnění kyblíku.",
+    ),
+    (
+        "Kyblík naplníte tak, že najedete kurzorem nad jezero, stisknete levé tlačítko myši "
+        "a podržíte ho 2 vteřiny. Pokud tlačítko pustíte dříve, "
+        "plnění se jen zastaví a po dalším stisku pokračuje od stejné úrovně.\n\n"
+        "Teď si plnění kyblíku vyzkoušejte.",
+        "Najeďte nad jezero, podržte tlačítko a naplňte kyblík.",
+    ),
+    (
+        "Plný kyblík stačí vždy jen na uhašení jednoho ohně. "
+        "První oheň uhasíte vodou, kterou už máte z předchozího kroku. "
+        "Potom se vraťte k jezeru, kyblík znovu naplňte a uhaste druhý oheň.\n\n"
+        "Teď si zkuste celý postup v praxi.",
+        "Uhaste první oheň plným kyblíkem, potom naberte vodu a uhaste druhý.",
+    ),
+]
+
+FIRE_TUTORIAL_STAGE_1_HINT_DONE = "Máte hotovo. Stiskněte mezerník a přejděte k hašení ohňů."
+
+
 class FireTutorialGame(ExperimentGame):
     ROUND_CONTEXT_ENABLED = False
 
@@ -61,7 +86,7 @@ class FireTutorialGame(ExperimentGame):
         self.countdown_overlay_bg = "#ff00ff"
         self.tutorial_end_after_id = None
 
-        self.tutorial_stage = -1
+        self.tutorial_stage = 0
         self.bucket_fill_practiced = False
 
         self.container = tk.Frame(self, bg=RIGHT_BG)
@@ -135,59 +160,6 @@ class FireTutorialGame(ExperimentGame):
             hint_label.pack(anchor="w", fill="x", pady=(14, 0))
             self.stage_blocks.append((body_label, hint_label))
 
-        self.end_overlay = tk.Frame(self.root, bg=RIGHT_BG)
-        self.end_overlay.place_forget()
-        self.end_title = tk.Label(
-            self.end_overlay,
-            text="TUTORIÁL DOKONČEN",
-            font=("Trebuchet MS", 24, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-        )
-        self.end_title.place(relx=0.5, rely=0.40, anchor="center")
-        self.end_label = tk.Label(
-            self.end_overlay,
-            text="Tutoriál hašení ohňů je hotový. Mezerníkem pokračujte do další části tutoriálu.",
-            font=("Trebuchet MS", 18, "bold"),
-            bg=RIGHT_BG,
-            fg="#c1121f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_label.place(relx=0.5, rely=0.54, anchor="center")
-        self.end_hint = tk.Label(
-            self.end_overlay,
-            text="Mezerník = pokračovat dál",
-            font=("Trebuchet MS", 16, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_hint.place(relx=0.5, rely=0.66, anchor="center")
-
-        self.start_overlay = tk.Frame(self.root, bg=RIGHT_BG)
-        self.start_title_label = tk.Label(
-            self.start_overlay,
-            text="Tutoriál - Hašení ohňů",
-            font=("Georgia", 34, "bold"),
-            bg=RIGHT_BG,
-            fg="#8b2f17",
-        )
-        self.start_title_label.place(relx=0.5, rely=0.42, anchor="center")
-        self.start_hint_label = tk.Label(
-            self.start_overlay,
-            text="Stiskněte mezerník a projděte si ovládání hašení ohně",
-            font=("Trebuchet MS", 18, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.start_hint_label.place(relx=0.5, rely=0.54, anchor="center")
-        self.start_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.start_overlay.lift()
-
         self.root.bind_all("<KeyPress-space>", self.on_space_press)
         self.info_panel.bind("<Configure>", self._resize_instruction_wraps)
         self.root.after(100, self.root.focus_force)
@@ -205,31 +177,10 @@ class FireTutorialGame(ExperimentGame):
             hint_label.config(wraplength=wraplength)
 
     def _update_stage_text(self):
-        stage_texts = [
-            (
-                "Před sebou vidíte louku, na které se budou objevovat ohně.\n"
-                "K jejich hašení budete používat jezero jako zdroj vody a kyblík jako nástroj pro přenášení vody.",
-                "Stiskněte mezerník a přejděte k nácviku plnění kyblíku.",
-            ),
-            (
-                "Kyblík naplníte tak, že najedete kurzorem nad jezero, stisknete levé tlačítko myši "
-                "a podržíte ho 2 vteřiny. Pokud tlačítko pustíte dříve, "
-                "plnění se jen zastaví a po dalším stisku pokračuje od stejné úrovně.\n\n"
-                "Teď si plnění kyblíku vyzkoušejte.",
-                (
-                    "Máte hotovo. Stiskněte mezerník a přejděte k hašení ohňů."
-                    if self.bucket_fill_practiced
-                    else "Najeďte nad jezero, podržte tlačítko a naplňte kyblík."
-                ),
-            ),
-            (
-                "Plný kyblík stačí vždy jen na uhašení jednoho ohně. "
-                "První oheň uhasíte vodou, kterou už máte z předchozího kroku. "
-                "Potom se vraťte k jezeru, kyblík znovu naplňte a uhaste druhý oheň.\n\n"
-                "Teď si zkuste celý postup v praxi.",
-                "Uhaste první oheň plným kyblíkem, potom naberte vodu a uhaste druhý.",
-            ),
-        ]
+        stage_texts = list(FIRE_TUTORIAL_STAGE_TEXTS)
+        if self.bucket_fill_practiced:
+            body_text, _ = stage_texts[1]
+            stage_texts[1] = (body_text, FIRE_TUTORIAL_STAGE_1_HINT_DONE)
 
         inactive_body = "#94897f"
         inactive_hint = "#aaa39b"
@@ -253,17 +204,9 @@ class FireTutorialGame(ExperimentGame):
                 )
 
     def on_space_press(self, event=None):
-        if self.game_over and self.end_overlay.winfo_ismapped():
-            self.nextFun()
-            return
         if self.game_over:
             return
-        if self.tutorial_stage == -1:
-            self.tutorial_stage = 0
-            self.start_overlay.place_forget()
-            self._show_initial_bucket_cursor()
-            self._update_stage_text()
-        elif self.tutorial_stage == 0:
+        if self.tutorial_stage == 0:
             self.tutorial_stage = 1
             self._cancel_bucket_fill()
             self.bucket_is_full = False
@@ -301,17 +244,14 @@ class FireTutorialGame(ExperimentGame):
         self.left_mouse_down = False
         self.pointer_x = 0
         self.pointer_y = 0
-        self.tutorial_stage = -1
+        self.tutorial_stage = 0
         self.active_fires.clear()
         self.fire_positions.clear()
-        self.end_overlay.place_forget()
         self.left_canvas.delete("fire")
         self.left_canvas.delete("bucket_cursor")
         self.left_canvas.delete("bucket_pour")
         self.left_canvas.delete("bucket_fill_ring")
         self.left_canvas.delete("sprinkler_splash")
-        self.start_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.start_overlay.lift()
         self._update_stage_text()
         self.root.after(150, self._show_initial_bucket_cursor)
 
@@ -408,11 +348,10 @@ class FireTutorialGame(ExperimentGame):
         if self.bucket_is_filling:
             self._cancel_bucket_fill()
         self.bucket_pour_state = None
-        self.show_end_overlay()
+        self.nextFun()
 
     def show_end_overlay(self):
-        self.end_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.end_overlay.lift()
+        self.nextFun()
 
     def nextFun(self):
         self.root.unbind_all("<KeyPress-space>")

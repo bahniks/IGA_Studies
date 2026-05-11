@@ -29,8 +29,8 @@ TIMER_SECONDS = 120 if not TESTING else 10
 
 
 
-charityEndingText = """Ve hře s hašením ohňů bylo náhodně vybráno kolo, kde jste hrál(a) pro charitu. V tomto kole jste získal {} Kč pro charitu, které budou organizaci Nadace Dobrý anděl vyplaceny po skončení studie."""
-selfEndingText = """Ve hře s hašením ohňů bylo náhodně vybráno kolo, kde jste hrál(a) pro sebe. V tomto kole jste získal {} Kč, které Vám byly přidány k celkové odměně."""
+charityEndingText = """Ve hře s hašením ohňů bylo náhodně vybráno kolo, kde jste hrál(a) pro charitu. V tomto kole jste získal(a) {} Kč pro charitu, které budou Nadaci Dobrý anděl vyplaceny po skončení studie."""
+selfEndingText = """Ve hře s hašením ohňů bylo náhodně vybráno kolo, kde jste hrál(a) pro sebe. V tomto kole jste získal(a) {} Kč, které Vám byly přidány k celkové odměně."""
 
 
 class ExperimentGame(ExperimentFrame):

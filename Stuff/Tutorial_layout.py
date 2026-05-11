@@ -10,6 +10,31 @@ from experiment_game import (
 )
 
 
+LAYOUT_TUTORIAL_STAGE_GUIDE_TEXTS = [
+    (
+        "Tady už vidíte celou obrazovku experimentu",
+        "Obě varianty už máte vyzkoušené, takže tady jde jen o rychlou orientaci. "
+        "Vlevo se objevují ohně, vpravo ovládáte zavlažovací systém a nahoře "
+        "po celou dobu sledujete peníze a zbývající čas.",
+        "Stiskněte mezerník a ukážeme si přesně, kde se odečítají peníze.",
+    ),
+    (
+        "Nahoře uprostřed vidíte, kolik peněz vám zbývá",
+        "Z této částky se průběžně odečítají ztráty. Za každý nový oheň zmizí 0,85 Kč. "
+        "Za každou sekundu, kdy oheň hoří, zmizí dalších 0,04 Kč za každý aktivní oheň. "
+        "Čím více ohňů necháte oheň hořet, tím rychleji peníze klesají.",
+        "Stiskněte mezerník a podíváme se na odpočet času.",
+    ),
+    (
+        "Vpravo nahoře běží odpočet času",
+        "Tento čas ukazuje, kolik ještě zbývá do konce kola. "
+        "Jakmile odpočet doběhne na 00:00, hra okamžitě skončí, "
+        "i kdyby na ploše ještě zůstaly aktivní ohně.",
+        "Stiskněte mezerník a tutorial ukončete.",
+    ),
+]
+
+
 class LayoutTutorialGame(ExperimentGame):
     ROUND_CONTEXT_ENABLED = False
 
@@ -19,25 +44,14 @@ class LayoutTutorialGame(ExperimentGame):
         self.game_started = False
         self.game_over = False
         self.fires_paused = True
-        self.tutorial_stage = -1
+        self.tutorial_stage = 0
 
         self.score = SCORE_START
         self.time_left = TIMER_SECONDS
         self.score_label.config(text=self._format_score())
         self.timer_label.config(text=self._format_time(self.time_left))
 
-        self.start_title_label.config(
-            text="Tutoriál - Rozložení obrazovky",
-            fg="#2f5f8f",
-        )
-        self.start_hint_label.config(
-            text=(
-                "Stiskněte mezerník a rychle si projděte,\n"
-                "kde během experimentu sledovat peníze a čas."
-            ),
-            font=("Trebuchet MS", 18, "bold"),
-            fg="#4f3c2f",
-        )
+        self.start_overlay.place_forget()
 
         self.guide_card = tk.Frame(
             self.root,
@@ -98,25 +112,6 @@ class LayoutTutorialGame(ExperimentGame):
             font=("Georgia", 54, "bold"),
             fg="#2f5f8f",
         )
-        self.end_message_label.config(
-            text=(
-                "Teď už jste si vyzkoušeli obě varianty řešení a viděli celou obrazovku experimentu.\n"
-                "Než začne hlavní hra, odpovíte na několik otázek, které ověří, že ovládání a pravidlům rozumíte."
-            ),
-            font=("Trebuchet MS", 20, "bold"),
-            fg="#4f3c2f",
-            wraplength=1040,
-        )
-        self.end_hint_label = tk.Label(
-            self.end_overlay,
-            text="Mezerník = pokračovat dál",
-            font=("Trebuchet MS", 16, "bold"),
-            bg=RIGHT_BG,
-            fg="#4f3c2f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_hint_label.place(relx=0.5, rely=0.78, anchor="center")
 
         self.guide_card.bind("<Configure>", self._resize_guide_wraps)
         self.root.after(120, self._prepare_demo_layout)
@@ -258,45 +253,17 @@ class LayoutTutorialGame(ExperimentGame):
         self.guide_card.place(relx=0.5, rely=0.98, relwidth=0.76, anchor="s")
         self.guide_card.lift()
 
+        title_text, body_text, hint_text = LAYOUT_TUTORIAL_STAGE_GUIDE_TEXTS[min(self.tutorial_stage, 2)]
+        self.guide_title_label.config(text=title_text)
+        self.guide_body_label.config(text=body_text)
+        self.guide_hint_label.config(text=hint_text)
+
         if self.tutorial_stage == 0:
-            self.guide_title_label.config(text="Tady už vidíte celou obrazovku experimentu")
-            self.guide_body_label.config(
-                text=(
-                    "Obě varianty už máte vyzkoušené, takže tady jde jen o rychlou orientaci. "
-                    "Vlevo se objevují ohně, vpravo ovládáte zavlažovací systém a nahoře "
-                    "po celou dobu sledujete peníze a zbývající čas."
-                )
-            )
-            self.guide_hint_label.config(
-                text="Stiskněte mezerník a ukážeme si přesně, kde se odečítají peníze."
-            )
             self._draw_left_overview_badge()
             self._draw_right_overview_badge()
         elif self.tutorial_stage == 1:
-            self.guide_title_label.config(text="Nahoře uprostřed vidíte, kolik peněz vám zbývá")
-            self.guide_body_label.config(
-                text=(
-                    "Z této částky se průběžně odečítají ztráty. Za každý nový oheň zmizí 0,85 Kč. "
-                    "Za každou sekundu, kdy oheň hoří, zmizí dalších 0,04 Kč za každý aktivní oheň. "
-                    "Čím více ohňů necháte oheň hořet, tím rychleji peníze klesají."
-                )
-            )
-            self.guide_hint_label.config(
-                text="Stiskněte mezerník a podíváme se na odpočet času."
-            )
             self._show_score_focus()
         else:
-            self.guide_title_label.config(text="Vpravo nahoře běží odpočet času")
-            self.guide_body_label.config(
-                text=(
-                    "Tento čas ukazuje, kolik ještě zbývá do konce kola. "
-                    "Jakmile odpočet doběhne na 00:00, hra okamžitě skončí, "
-                    "i kdyby na ploše ještě zůstaly aktivní ohně."
-                )
-            )
-            self.guide_hint_label.config(
-                text="Stiskněte mezerník a tutorial ukončete."
-            )
             self._show_timer_focus()
 
         self.score_label.lift()
@@ -379,18 +346,12 @@ class LayoutTutorialGame(ExperimentGame):
             self.nextFun()
             return
 
-        if self.tutorial_stage == -1:
-            self.tutorial_stage = 0
-            self.start_overlay.place_forget()
-            self._refresh_stage_view()
-            return
-
         if self.tutorial_stage < 2:
             self.tutorial_stage += 1
             self._refresh_stage_view()
             return
 
-        self.show_end_overlay()
+        self.nextFun()
 
     def on_enter_press(self, event=None):
         return
@@ -398,22 +359,15 @@ class LayoutTutorialGame(ExperimentGame):
     def restart_tutorial(self):
         self.game_over = False
         self.fires_paused = True
-        self.tutorial_stage = -1
+        self.tutorial_stage = 0
+        self.start_overlay.place_forget()
         self.end_overlay.place_forget()
-        self.start_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.start_overlay.lift()
         self._refresh_stage_view()
         self._draw_right_scene()
         self.root.after(100, self._prepare_demo_layout)
 
     def show_end_overlay(self):
-        self.guide_card.place_forget()
-        self.score_focus.place_forget()
-        self.timer_focus.place_forget()
-        self.left_canvas.delete("tutorial_layout_left")
-        self.right_canvas.delete("tutorial_layout_right")
-        self.end_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.end_overlay.lift()
+        self.nextFun()
 
     def nextFun(self):
         self.root.unbind_all("<KeyPress-space>")
