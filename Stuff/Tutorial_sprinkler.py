@@ -10,23 +10,24 @@ from experiment_game import (
 )
 
 
+
 SPRINKLER_TUTORIAL_STAGE_TEXTS = [
     (
         "Na pravé straně vidíte zavlažovací systém, ve kterém zatím není dostatečný tlak. "
-        "Vaším úkolem bude postupně aktivovat ventily, zvednout hladinu vody v potrubí "
+        "Vaším úkolem bude postupně otevřít ventily, zvednout hladinu vody v potrubí "
         "a tím spustit zavlažovací systém.",
         "Stiskněte mezerník a přejděte k praktické ukázce.",
     ),
     (
-        "Ventil aktivujete tak, že na něj najedete myší, kliknete levým tlačítkem myši "
+        "Ventil otevřete tak, že na něj najedete myší, kliknete levým tlačítkem myši "
         "a podržíte ho 15 vteřin. "
         "Postup uvidíte na stoupajícím modrém sloupci vody v potrubí. "
-        "Ventily je potřeba aktivovat postupně podle čísel od 1 do 4.",
+        "Nyní vyzkoušíte pouze první a poslední ventil, ale ve hře je potřeba ventily otevřít postupně podle čísel od 1 do 4.",
         "Začněte ventilem 1 a sledujte, jak modrá voda stoupá do první úrovně.",
     ),
     (
-        "Jakmile dokončíte i poslední ventil, systém získá plný tlak a zavlažovací systém se automaticky spustí, uhasí všechny aktivní ohně, zabrání dalším ohňům a ukončí kolo.",
-        "Dokončete aktivaci ventilu 4, sledujte stoupající vodu a potom spuštění zavlažování.",
+        "Jakmile otevřete i poslední ventil, systém získá plný tlak a zavlažovací systém se automaticky spustí, uhasí všechny aktivní ohně a zabrání dalším ohňům.",
+        "Otevřete poslední ventil, sledujte stoupající vodu a potom spuštění zavlažování.",
     ),
 ]
 
