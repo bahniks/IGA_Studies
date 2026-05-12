@@ -103,6 +103,13 @@ def _coordination_payoffs(my_choice, partner_choice):
         partner_payoff += COORDINATION_SUCCESS
     return my_payoff, partner_payoff
 
+
+def _coordination_role(root, block):
+    roles = root.status.setdefault("co_roles", {})
+    if block not in roles:
+        roles[block] = random.choice(["A", "B"])
+    return roles[block]
+
 nextRoundText = """Nyní budete hrát další kolo s jiným partnerem. Vaše role může zůstat stejná nebo se změnit."""
 
 
@@ -213,7 +220,8 @@ class CoordinationGame(InstructionsFrame):
     def __init__(self, root):
         block = root.status.get("co_block", 1)
         trial = root.status.get("co_trial", 1)
-        role_label = f"Hráč {trial}"
+        role = _coordination_role(root, block)
+        role_label = f"Hráč {role}"
         order_index = max(0, min(len(order) - 1, block - 1))
         partner_ordinal = order[order_index]
         text = instructionsC2.format(trial, partner_ordinal, role_label)
@@ -221,6 +229,7 @@ class CoordinationGame(InstructionsFrame):
 
         self.block = block
         self.trial = trial
+        self.role = role
         self.decision_var = StringVar()
         self.prediction_var = IntVar(value=50)
 
@@ -351,6 +360,7 @@ class CoordinationGame(InstructionsFrame):
         self.root.status["co_decisions"][self.block][self.trial] = {
             "decision": decision,
             "prediction": prediction,
+            "role": self.role,
         }
 
         data = {
@@ -389,6 +399,7 @@ class WaitCoordination(Wait):
     def processResponse(self, response):
         block = self.root.status.get("co_block", 1)
         trial = 1
+        role = self.root.status.get("co_roles", {}).get(block, "A")
 
         partner_decision = response.strip().upper()
         if partner_decision not in ("A", "B"):
@@ -410,6 +421,7 @@ class WaitCoordination(Wait):
             "payoff": my_payoff,
             "partner_payoff": partner_payoff,
             "prediction": prediction,
+            "role": role,
         }
 
         # After first-trial feedback, continue with trial 2 for the same participant.
@@ -424,7 +436,8 @@ class CoordinationRoundResult(InstructionsFrame):
 
         my_choice = result.get("my_decision", "-")
         partner_choice = result.get("partner_decision", "-")
-        role_label = "Hráč 1"
+        role = result.get("role") or self.root.status.get("co_roles", {}).get(block, "A")
+        role_label = f"Hráč {role}"
         payoff = result.get("payoff")
         partner_payoff = result.get("partner_payoff")
         if payoff is None or partner_payoff is None:

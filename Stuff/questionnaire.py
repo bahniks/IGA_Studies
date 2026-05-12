@@ -41,7 +41,7 @@ sciIntro2 = "\nKdyž se zamyslíte nad uplynulým měsícem, do jaké míry špa
 sciIntro3 = "\nNakonec…"
 mindsetIntro = "Do jaké míry souhlasíte nebo nesouhlasíte s těmito tvrzeními?"
 
-narcissismIntro = "Please indicate how much each of the following statements is typical of you. Use the scale provided."
+narcissismIntro = "Uveďte prosím, do jaké míry je pro Vás každé z následujících tvrzení typické. Použijte uvedenou škálu."
 
 transactionValueIntro = """Níže jsou uvedena tvrzení týkající se cenových nabídek. U každého tvrzení označte, nakolik s ním souhlasíte."""
 
@@ -615,33 +615,17 @@ class Likert(Canvas):
 Narcissism = (Questionnaire,
               {"words": "bpni.txt",
                "question": narcissismIntro,
-               "labels": ["Not at all\nlike me", "Very much\nlike me"],
+               "labels": ["Vůbec se mi\nnepodobá", "Velmi se mi\npodobá"],
                "values": 6,
                "randomize": True,
-               "perpage": 10,
-               "blocksize": 5,
-               "wraplength": 700,
-               "labelwidth": 6,
+               "perpage": 7,
+               "blocksize": 7,
+               "wraplength": 620,
+               "labelwidth": 8,
                "fixedlines": 2,
                "filetext": "Narcissism"})
 
 
-
-
-
-Mindset = (BlockQuestionnaire,
-                {"perpage": 4,
-                    "file": "mindset.txt",
-                    "name": "Mindset",
-                    "left": "silně nesouhlasím",
-                    "right": "silně souhlasím",
-                    "options": 6,
-                    "shuffle": True,
-                    "instructions": mindsetIntro,
-                    "wraplength": 800,
-                    "checks": 1,
-                    "endChecks": True,
-                    "center": True})
 
 
 TransactionValue = (MeasureQuestionnaire,
@@ -658,7 +642,7 @@ TransactionValue = (MeasureQuestionnaire,
 
 SalesProneness = (MeasureQuestionnaire,
                 {"text": salesPronenessIntro,
-                    "questions": "saleProneness",
+                    "questions": "salesProneness.txt",
                     "options": [1, 2, 3, 4, 5, 6, 7],
                     "filetext": "SalesProneness",
                     "left": "Rozhodně nesouhlasím",
@@ -681,4 +665,4 @@ QuestInstructions2 = (InstructionsFrame, {"text": questintro2, "height": 15})
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([Narcissism, SalesProneness, TransactionValue, Numeracy])
+    GUI([SalesProneness, Narcissism, TransactionValue, Numeracy])

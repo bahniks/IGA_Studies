@@ -20,22 +20,26 @@ Vaše rozhodnutí v této úloze budou mít finanční důsledky pro Vás a pro 
 
 Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) studii a své roli v ní."""
 
-meIntro1 = """V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávající z 5 odhadovacích otázek. U každé otázky uveďte svůj nejlepší odhad. Úloha se skládá z {} kol.
+meIntro1 = """Tato úloha se skládá z {} kol.
 
-V každém kole budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>Vstoupit na trh</i> nebo <i>Nevstoupit</i>
+V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávající z 5 odhadovacích otázek. 
+
+V každém kole budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>"Vstoupit na trh"</i> nebo <i>"Nevstoupit"</i>
 
 <b>Výplaty:</b>
 • Pokud oba účastníci nevstoupí, každý obdrží {} Kč
 • Pokud jeden vstoupí a druhý nevstoupí, vstupující obdrží {} Kč a druhý {} Kč
 • Pokud vstoupí oba, účastník s vyšším skóre v kvízu obdrží {} Kč a druhý {} Kč (v případě shody je vítěz vybrán náhodně)
 
-Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. O Vaší odměně za tuto část studie rozhodne jedno náhodně vybrané kolo. Výsledek se dozvíte na konci studie."""
+Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. 
 
-meIntro2 = """Odpovězte prosím na následující otázky. U každé otázky uveďte svůj nejlepší číselný odhad. Odpovědi, které jsou v rozmezí ±10 % od správné hodnoty, budou považovány za správné."""
+O Vaší odměně za tuto část studie rozhodne jedno náhodně vybrané kolo. Výsledek se dozvíte na konci studie."""
 
-meGameText = """Nyní učiníte své rozhodnutí pro kolo {}/{}.
+meIntro2 = """Odpovězte prosím na následující otázky. U každé otázky uveďte svůj nejlepší číselný odhad. Odpovědi, které jsou v rozmezí ±10 % od skutečné hodnoty, budou považovány za správné."""
 
-V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se současně a nezávisle rozhodnete, zda vstoupíte na trh, nebo nevstoupíte.
+meGameText = """Nyní učiníte své rozhodnutí pro kolo {} z {}.
+
+V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se rozhodnete, zda vstoupíte na trh, nebo nevstoupíte.
 
 <b>Připomenutí výplaty:</b>
 •  Oba nevstoupí: každý {} Kč
@@ -189,16 +193,12 @@ class MarketEntryQuiz(ExperimentFrame):
 
 		self.columnconfigure(0, weight=1)
 		self.columnconfigure(2, weight=1)
-		self.rowconfigure(0, weight=1)
+		self.rowconfigure(0, weight=2)
 		self.rowconfigure(2 + len(self.question_set), weight=2)
 
 	def _build_confidence(self):
 		for widget in self.winfo_children():
 			widget.destroy()
-
-		header = ttk.Label(self, text="Odhad úspěšnosti",
-						   font="helvetica 15 bold", background="white")
-		header.grid(row=0, column=0, columnspan=3, pady=15)
 
 		ttk.Label(self, text=meConfidenceText.format(len(self.question_set)),
 				  font="helvetica 15", background="white",
@@ -221,7 +221,7 @@ class MarketEntryQuiz(ExperimentFrame):
 
 		self.columnconfigure(0, weight=1)
 		self.columnconfigure(2, weight=1)
-		self.rowconfigure(0, weight=1)
+		self.rowconfigure(0, weight=2)
 		self.rowconfigure(3, weight=2)
 
 	def _enable_next(self):
@@ -297,38 +297,31 @@ class MarketEntryGame(InstructionsFrame):
 
 		self.block = block
 		self.decision_var = StringVar()
-		ttk.Style().configure("TRadiobutton", background="white", font="helvetica 15")
+		ttk.Style().configure("TButton", background="white", font="helvetica 15")
 
 		choice_frame = Canvas(self, background="white",
 							  highlightbackground="white", highlightcolor="white")
-		ttk.Radiobutton(choice_frame, text="Vstoupit na trh",
-						variable=self.decision_var, value="enter",
-						command=self._selected).grid(row=0, column=0, padx=20, pady=10, sticky=W)
-		ttk.Radiobutton(choice_frame, text="Nevstoupit",
-						variable=self.decision_var, value="stayout",
-						command=self._selected).grid(row=1, column=0, padx=20, pady=10, sticky=W)
-		choice_frame.grid(row=2, column=1, pady=15)
-
-		note = ttk.Label(self,
-						 text="Výsledek kvízu může rozhodnout o výsledku v případě, že oba účastníci vstoupí na trh.",
-						 font="helvetica 13 italic", background="white", wraplength=600)
-		note.grid(row=3, column=0, columnspan=3, pady=5)
+		ttk.Button(choice_frame, text="Vstoupit na trh",
+				   width=20,
+				   command=lambda: self._choose("enter")).grid(row=0, column=0, padx=30, pady=10, sticky=E)
+		ttk.Button(choice_frame, text="Nevstoupit",
+				   width=20,
+				   command=lambda: self._choose("stayout")).grid(row=0, column=1, padx=30, pady=10, sticky=W)
+		choice_frame.grid(row=2, column=0, columnspan=3, pady=15)
 
 		self.trialLabel = ttk.Label(self,
 									text="Kolo {}/{}".format(block, MARKET_ROUNDS),
 									font="helvetica 15", background="white")
 		self.trialLabel.grid(row=0, column=2, pady=15, padx=20, sticky=NE)
 
-		self.next.grid(row=4, column=1, pady=15)
-		self.next["state"] = "disabled"
-
-		self.rowconfigure(0, weight=1)
+		self.rowconfigure(0, weight=2)
 		self.rowconfigure(4, weight=2)
 		self.columnconfigure(0, weight=2)
 		self.columnconfigure(2, weight=2)
 
-	def _selected(self):
-		self.next["state"] = "normal"
+	def _choose(self, decision):
+		self.decision_var.set(decision)
+		self.nextFun()
 
 	def nextFun(self):
 		if not self.decision_var.get():
@@ -349,7 +342,6 @@ class MarketEntryGame(InstructionsFrame):
 	def gothrough(self):
 		sleep(0.1)
 		self.decision_var.set("enter")
-		self._selected()
 		sleep(0.1)
 		self.nextFun()
 
@@ -371,11 +363,11 @@ InstructionsMarketEntry = (InstructionsAndUnderstanding, {
 							MARKET_WIN, MARKET_LOSS) + "\n\n",
 	"height": "auto",
 	"width": 90,
-	"name": "Kontrolní otázky ke hře vstupu na trh",
+	"name": "Kontrolní otázky k úloze vstupu na trh",
 	"randomize": False,
 	"controlTexts": meControlTexts,
 	"fillerHeight": 150,
-	"finalButton": "Pokračovat ke hře",
+	"finalButton": "Pokračovat k úloze",
 	"prompt": understandingPrompt,
 })
 
@@ -387,8 +379,8 @@ if __name__ == "__main__":
 	from intros import Ending
 	from games import WaitResults
 	GUI([Login,
-		 IntroMarketEntry,
-		 InstructionsMarketEntry,
+		 #IntroMarketEntry,
+		 #InstructionsMarketEntry,
 		 *([MarketEntryQuiz, MarketEntryGame] * MARKET_ROUNDS),
 		 WaitResults,
 		 Ending

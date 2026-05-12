@@ -23,7 +23,7 @@ trustResultTextA = """V úloze s dělením peněz Vám byla náhodně vybrána r
 
 trustResultTextB = """V úloze s dělením peněz Vám byla náhodně vybrána role hráče B. Hráč A se rozhodl(a) poslat {} Kč. Tato částka byla ztrojnásobena na {} Kč. Ze svých {} Kč jste poslal(a) hráči A {} Kč. V této úloze jste tedy získal(a) {} Kč a hráč A {} Kč."""
 
-marketResultText = """V úloze vstupu na trh bylo náhodně vybráno kolo {}. Vy jste se rozhodl(a) {} a druhý účastník {}. Do trhu vstoupilo celkem {} hráč(ů). V tomto kole jste získal(a) {} Kč."""
+marketResultText = """V úloze vstupu na trh bylo náhodně vybráno kolo {}. Vy jste se rozhodl(a) {} a druhý účastník {}. V tomto kole jste tedy získal(a) {} Kč."""
 marketResultBothEnterText = """Oba jste vstoupili na trh. Váš výsledek v kvízu byl {} správně, druhý účastník měl {} správně."""
 marketResultTieText = """Skóre bylo shodné, proto byl výherce určen náhodně: {}."""
 
@@ -193,7 +193,8 @@ class WaitResults(Wait):
         partner_decision = selected.get("partner_decision", "A")
         payoff = int(selected.get("payoff", 0))
         partner_payoff = int(selected.get("partner_payoff", 0))
-        role_label = str(chosen_trial)
+        role = selected.get("role") or self.root.status.get("co_roles", {}).get(chosen_block, "A")
+        role_label = f"Hráč {role}"
         partner_ordinals = {
             1: "prvním",
             2: "druhým",
@@ -225,7 +226,7 @@ class WaitResults(Wait):
         self.root.status["coordination_result"] = {
             "round": chosen_block,
             "trial": chosen_trial,
-            "role": role_label,
+            "role": role,
             "partner": partner_label,
             "my_decision": my_decision,
             "partner_decision": partner_decision,

@@ -29,15 +29,17 @@ Bude Vám náhodně přidělena jedna ze dvou rolí: budete buď hráčem A, neb
 
 Předem nebudete vědět, jaká je Vaše role a uvedete tedy rozhodnutí pro obě role. Protože nebudete předem vědět, jak by se rozhodl druhý účastník jako hráč A, budete uvádět své volby pro různé možnosti jeho rozhodnutí.
 
-Tuto úlohu budete hrát celkem {}krát. Před každým kolem dostanete informaci o skupinách blízkých druhému hráči. Vaše odměna bude záviset na jednom náhodně vybraném kole. Na konci studie se dozvíte, jaká byla Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
+Tuto úlohu budete hrát celkem {}krát. Před každým kolem dostanete informaci o slovech blízkých druhému hráči, která vybral v dřívější části studie. On bude podobně vědět, jaká slova jsou Vám blízká. 
+
+Vaše odměna bude záviset na jednom náhodně vybraném kole. Na konci studie se dozvíte, jaká byla Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
 
 Pro ověření pochopení úlohy odpovězte na kontrolní otázky níže."""
 
 
-intstuctionsT2a = "Pro účastníka studie, s kterým jste spárován(a), jsou blízké tyto skupiny:"
+intstuctionsT2a = "Pro účastníka studie, s kterým jste spárován(a), jsou blízká tato slova:"
 
 
-instructionsT2 = """On podobně bude vědět, jaké skupiny jsou Vám blízké.
+instructionsT2 = """On podobně bude vědět, jaká slova jsou Vám blízká.
 
 <i>Hráč A:</i> Má možnost poslat hráči B od 0 do {} Kč (po {} Kč). Poslaná částka se ztrojnásobí a obdrží ji hráč B.
 <i>Hráč B:</i> Může poslat zpět hráči A jakékoli množství peněz získaných v této úloze, tedy úvodních {} Kč a ztrojnásobenou částku poslanou hráčem A.
@@ -189,7 +191,7 @@ class GroupsFrame(Canvas):
         self.label = ttk.Label(self, text=intstuctionsT2a, font="helvetica 15 bold", background="white")
         self.label.grid(row=0, column=0, pady=10, sticky=W)
 
-        self.closeText = Text(self, wrap=WORD, font="helvetica 15", height=7, width=45, background="white", relief="flat")
+        self.closeText = Text(self, wrap=WORD, font="helvetica 15", height=5, width=30, background="white", relief="flat")
         self.closeText.grid(row=1, column=0, pady=10)
         self.closeText.insert("1.0", "\n".join(close))
         self.closeText.config(state=DISABLED)
