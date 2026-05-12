@@ -14,71 +14,63 @@ from login import Login
 ################################################################################
 # TEXTS
 
-meIntro0 = """<center>Now you will proceed with another task.</center>"""
+meIntro0 = """Nyní začíná další úloha.
 
-meIntro1 = """First, you will complete a short quiz consisting of 5 estimation questions. For each question, please provide your best estimate.
+Vaše rozhodnutí v této úloze budou mít finanční důsledky pro Vás a pro dalšího přítomného účastníka v laboratoři.
 
-After the quiz, you will participate in a market entry game consisting of {} rounds. In each round, you will be randomly paired with another participant.
+Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) studii a své roli v ní."""
 
-In each round, you will choose between:
-  \u2022 Enter the market
-  \u2022 Stay out
+meIntro1 = """V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávající z 5 odhadovacích otázek. U každé otázky uveďte svůj nejlepší odhad. Úloha se skládá z {} kol.
 
-<b>Payoffs:</b>
-  \u2022 If both participants stay out, each receives CZK {}
-  \u2022 If one enters and the other stays out, the entrant receives CZK {} and the other receives CZK {}
-  \u2022 If both enter, the participant with the higher quiz score receives CZK {} and the other receives CZK {} (in case of a tie, the winner is chosen randomly)
+V každém kole budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>Vstoupit na trh</i> nebo <i>Nevstoupit</i>
 
-Your performance on the quiz will be used in determining outcomes in the market entry game. You will not receive feedback during the task. One randomly selected round will determine your payment for this part of the study."""
+<b>Výplaty:</b>
+• Pokud oba účastníci nevstoupí, každý obdrží {} Kč
+• Pokud jeden vstoupí a druhý nevstoupí, vstupující obdrží {} Kč a druhý {} Kč
+• Pokud vstoupí oba, účastník s vyšším skóre v kvízu obdrží {} Kč a druhý {} Kč (v případě shody je vítěz vybrán náhodně)
 
-meIntro2 = """Please answer the following questions. For each question, provide your best numerical estimate. There are no time limits, but answer as accurately as possible."""
+Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. O Vaší odměně za tuto část studie rozhodne jedno náhodně vybrané kolo. Výsledek se dozvíte na konci studie."""
 
-meGameText = """You will now make your decision for Round {}/{}.
+meIntro2 = """Odpovězte prosím na následující otázky. U každé otázky uveďte svůj nejlepší číselný odhad. Odpovědi, které jsou v rozmezí ±10 % od správné hodnoty, budou považovány za správné."""
 
-In this round, you will be randomly paired with another participant. Both of you choose simultaneously and independently whether to enter the market or stay out.
+meGameText = """Nyní učiníte své rozhodnutí pro kolo {}/{}.
 
-<b>Reminder \u2013 Payoffs:</b>
-  \u2022 Both stay out: CZK {} each
-  \u2022 One enters, one stays out: entrant CZK {}, other CZK {}
-  \u2022 Both enter: higher quiz score earns CZK {}, lower earns CZK {}"""
+V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se současně a nezávisle rozhodnete, zda vstoupíte na trh, nebo nevstoupíte.
 
-meConfidenceText = "Out of the {} questions you just answered, how many do you think you answered correctly?"
+<b>Připomenutí výplaty:</b>
+•  Oba nevstoupí: každý {} Kč
+•  Jeden vstoupí, jeden nevstoupí: vstupující {} Kč, druhý {} Kč
+•  Oba vstoupí: vyšší skóre v kvízu získá {} Kč, nižší {} Kč"""
 
-meRoundResultText = """<b>Round {} result</b>
+meConfidenceText = "Kolik z právě zodpovězených {} otázek si myslíte, že jste zodpověděl(a) správně?"
 
-Your decision:\t\t{}
-Number of entrants:\t{}
-Your payoff this round:\tCZK {}"""
+meRoundResultText = """<b>Výsledek kola {}</b>
+
+Vaše rozhodnutí:\t\t{}
+Počet vstupujících:\t{}
+Vaše odměna v tomto kole:\t{} Kč"""
 
 # Control questions
-meControl1 = "What happens if both participants stay out?"
-meAnswers1 = ["CZK {} each".format(MARKET_ENDOWMENT),
-			  "CZK 0",
-			  "CZK {}".format(MARKET_WIN)]
-meFeedback1 = ["Correct.",
-			   "Incorrect. If both stay out, each receives CZK {}.".format(MARKET_ENDOWMENT),
-			   "Incorrect. If both stay out, each receives CZK {}.".format(MARKET_ENDOWMENT)]
+meControl1 = "Co se stane, pokud oba účastníci nevstoupí na trh?"
+meAnswers1 = ["Oba dostanou {} Kč".format(MARKET_ENDOWMENT),
+			  "Oba dostanou 0 Kč",
+			  "Oba dostanou {} Kč".format(MARKET_WIN)]
+meFeedback1 = ["Správně.",
+			   "Nesprávně. Pokud oba nevstoupí, oba obdrží {} Kč.".format(MARKET_ENDOWMENT),
+			   "Nesprávně. Pokud oba nevstoupí, oba obdrží {} Kč.".format(MARKET_ENDOWMENT)]
 
-meControl2 = "What happens if both participants enter the market?"
-meAnswers2 = ["Outcome depends on quiz score",
-			  "Always CZK {}".format(MARKET_WIN),
-			  "Both get CZK {}".format(MARKET_ENDOWMENT)]
-meFeedback2 = ["Correct. The participant with the higher quiz score wins CZK {}.".format(MARKET_WIN),
-			   "Incorrect. The outcome depends on quiz scores.",
-			   "Incorrect. The outcome depends on quiz scores."]
+meControl2 = "Co se stane, pokud oba účastníci vstoupí na trh?"
+meAnswers2 = ["Výsledek bude záviset na skóre v kvízu",
+			  "Oba dostanou {} Kč".format(MARKET_WIN),
+			  "Oba dostanou {} Kč".format(MARKET_ENDOWMENT)]
+meFeedback2 = ["Správně. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN),
+			   "Nesprávně. Výsledek bude záviset na skóre v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN),
+			   "Nesprávně. Výsledek bude záviset na skóre v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN)]
 
-meControl3 = "How many rounds will be played?"
-meAnswers3 = [str(MARKET_ROUNDS),
-			  str(MARKET_ROUNDS + 1),
-			  str(MARKET_ROUNDS - 1)]
-meFeedback3 = ["Correct.",
-			   "Incorrect. There are {} rounds.".format(MARKET_ROUNDS),
-			   "Incorrect. There are {} rounds.".format(MARKET_ROUNDS)]
 
 meControlTexts = [
 	[meControl1, meAnswers1, meFeedback1],
 	[meControl2, meAnswers2, meFeedback2],
-	[meControl3, meAnswers3, meFeedback3],
 ]
 
 # Quiz question sets: one set per round.
@@ -88,39 +80,39 @@ meControlTexts = [
 ME_QUIZ_QUESTIONS = [
 	# Round 1
 	[
-		("What is the straight-line distance between Berlin and Vienna in kilometers?", 524),
-		("What is the population of Berlin?", 3_600_000),
-		("What is the population of Norway?", 5_400_000),
-		("What is the height of the tallest mountain in Europe in meters?", 5_642),
-		("What is the GDP per capita of Luxembourg in CZK (2024)?", 3_000_000),
+		("Jaká je vzdušná vzdálenost mezi Berlínem a Vídní v kilometrech?", 524),
+		("Jaký je počet obyvatel Berlína?", 3_600_000),
+		("Jaký je počet obyvatel Norska?", 5_400_000),
+		("Jaká je výška nejvyšší hory Evropy v metrech?", 5_642),
+		("Jaké je HDP na obyvatele v Lucembursku v Kč (2024)?", 3_000_000),
 	],
 	# Round 2 – replace with actual questions
 	[
-		("What is the straight-line distance from Prague to Paris in kilometers?", 1_050),
-		("What is the population of Vienna?", 1_900_000),
-		("What is the area of Switzerland in km\u00b2?", 41_285),
-		("What is the height of Mont Blanc in meters?", 4_808),
-		("What is the GDP per capita of Switzerland in CZK (2024)?", 2_000_000),
+		("Jaká je vzdušná vzdálenost z Prahy do Paříže v kilometrech?", 1_050),
+		("Jaký je počet obyvatel Vídně?", 1_900_000),
+		("Jaká je rozloha Švýcarska v km\u00b2?", 41_285),
+		("Jaká je výška Mont Blancu v metrech?", 4_808),
+		("Jaké je HDP na obyvatele ve Švýcarsku v Kč (2024)?", 2_000_000),
 	],
 	# Round 3 – replace with actual questions
 	[
-		("What is the straight-line distance from London to Madrid in kilometers?", 1_265),
-		("What is the population of Munich?", 1_500_000),
-		("What is the area of Sweden in km\u00b2?", 450_295),
-		("What is the length of the Rhine river in kilometers?", 1_230),
-		("What is the GDP per capita of Denmark in CZK (2024)?", 1_700_000),
+		("Jaká je vzdušná vzdálenost z Londýna do Madridu v kilometrech?", 1_265),
+		("Jaký je počet obyvatel Mnichova?", 1_500_000),
+		("Jaká je rozloha Švédska v km\u00b2?", 450_295),
+		("Jaká je délka řeky Rýn v kilometrech?", 1_230),
+		("Jaké je HDP na obyvatele v Dánsku v Kč (2024)?", 1_700_000),
 	],
 	# Round 4 – replace with actual questions
 	[
-		("What is the straight-line distance from Rome to Athens in kilometers?", 1_050),
-		("What is the population of Hamburg?", 1_900_000),
-		("What is the area of Finland in km\u00b2?", 338_145),
-		("What is the height of the Zugspitze in meters?", 2_962),
-		("What is the GDP per capita of Austria in CZK (2024)?", 1_200_000),
+		("Jaká je vzdušná vzdálenost z Říma do Athén v kilometrech?", 1_050),
+		("Jaký je počet obyvatel Hamburku?", 1_900_000),
+		("Jaká je rozloha Finska v km\u00b2?", 338_145),
+		("Jaká je výška Zugspitze v metrech?", 2_962),
+		("Jaké je HDP na obyvatele v Rakousku v Kč (2024)?", 1_200_000),
 	],
 ]
 
-understandingPrompt = "<b>Please answer the following control questions to check your understanding of the instructions.</b>"
+understandingPrompt = "<b>Odpovězte prosím na následující kontrolní otázky, abyste si ověřil(a), že pokynům rozumíte.</b>"
 
 ################################################################################
 
@@ -166,7 +158,7 @@ class MarketEntryQuiz(ExperimentFrame):
 	# ------------------------------------------------------------------
 	def _build_quiz(self):
 		header = ttk.Label(self,
-						   text="Quiz \u2013 Round {}/{}".format(self.block, MARKET_ROUNDS),
+					   text="Kvíz \u2013 kolo {}/{}".format(self.block, MARKET_ROUNDS),
 						   font="helvetica 15 bold", background="white")
 		header.grid(row=0, column=0, columnspan=3, pady=15)
 
@@ -204,7 +196,7 @@ class MarketEntryQuiz(ExperimentFrame):
 		for widget in self.winfo_children():
 			widget.destroy()
 
-		header = ttk.Label(self, text="Confidence estimate",
+		header = ttk.Label(self, text="Odhad úspěšnosti",
 						   font="helvetica 15 bold", background="white")
 		header.grid(row=0, column=0, columnspan=3, pady=15)
 
@@ -309,21 +301,21 @@ class MarketEntryGame(InstructionsFrame):
 
 		choice_frame = Canvas(self, background="white",
 							  highlightbackground="white", highlightcolor="white")
-		ttk.Radiobutton(choice_frame, text="Enter the market",
+		ttk.Radiobutton(choice_frame, text="Vstoupit na trh",
 						variable=self.decision_var, value="enter",
 						command=self._selected).grid(row=0, column=0, padx=20, pady=10, sticky=W)
-		ttk.Radiobutton(choice_frame, text="Stay out",
+		ttk.Radiobutton(choice_frame, text="Nevstoupit",
 						variable=self.decision_var, value="stayout",
 						command=self._selected).grid(row=1, column=0, padx=20, pady=10, sticky=W)
 		choice_frame.grid(row=2, column=1, pady=15)
 
 		note = ttk.Label(self,
-						 text="Your quiz performance may determine outcomes when both participants choose to enter.",
+						 text="Výsledek kvízu může rozhodnout o výsledku v případě, že oba účastníci vstoupí na trh.",
 						 font="helvetica 13 italic", background="white", wraplength=600)
 		note.grid(row=3, column=0, columnspan=3, pady=5)
 
 		self.trialLabel = ttk.Label(self,
-									text="Round {}/{}".format(block, MARKET_ROUNDS),
+									text="Kolo {}/{}".format(block, MARKET_ROUNDS),
 									font="helvetica 15", background="white")
 		self.trialLabel.grid(row=0, column=2, pady=15, padx=20, sticky=NE)
 
@@ -379,11 +371,11 @@ InstructionsMarketEntry = (InstructionsAndUnderstanding, {
 							MARKET_WIN, MARKET_LOSS) + "\n\n",
 	"height": "auto",
 	"width": 90,
-	"name": "Market Entry Control Questions",
+	"name": "Kontrolní otázky ke hře vstupu na trh",
 	"randomize": False,
 	"controlTexts": meControlTexts,
 	"fillerHeight": 150,
-	"finalButton": "Continue to the game",
+	"finalButton": "Pokračovat ke hře",
 	"prompt": understandingPrompt,
 })
 
