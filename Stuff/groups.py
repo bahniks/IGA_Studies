@@ -20,12 +20,12 @@ from constants import TESTING, URL
 # TEXTS
 NUMGROUPS = 5
 
-closeText = f"""<center>Ze skupin níže vyberte kliknutím na tlačítko {NUMGROUPS} skupin, které jsou Vám nejbližší.
+closeText = f"""<center>Ze slov níže vyberte kliknutím na tlačítko {NUMGROUPS} slov, které jsou Vám nejbližší.
 (Dalším kliknutím na tlačítko můžete volbu zrušit.)</center>"""
 
-remainingText = "Zbývá vybrat skupin: {}"
+remainingText = "Zbývá vybrat slov: {}"
 
-introGroups = """V následující úloze bude Vaším úkolem vybrat z uvedených skupin, které jsou Vám nejbližší a následně ty, které jsou Vám nejvzdálenější."""
+introGroups = """V následující úloze bude Vaším úkolem vybrat z uvedených slov, které jsou Vám nejbližší."""
 
 ################################################################################
 
@@ -39,7 +39,7 @@ class Groups(InstructionsFrame):
             self.groups = [line.strip() for line in file if line.strip()]
         random.shuffle(self.groups)
 
-        columns = 3
+        columns = 4
 
         self.chosen = set()
 
@@ -49,7 +49,7 @@ class Groups(InstructionsFrame):
 
         self.buttons = {}
         for i, group in enumerate(self.groups):
-            self.buttons[group] = ttk.Button(self.groupFrame, text = group, command = lambda g = group: self.clicked(g), width = 35)
+            self.buttons[group] = ttk.Button(self.groupFrame, text = group, command = lambda g = group: self.clicked(g), width = 25)
             self.buttons[group].config(style="Padded.TButton")    
             self.buttons[group].grid(row = i // columns, column = i % columns, padx = 10, pady = 10)
 
@@ -123,7 +123,6 @@ InstructionsGroups = (InstructionsFrame, {"text": introGroups, "height": 5})
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([#InstructionsGroups,
-         Groups,
-         InstructionsGroups
+    GUI([InstructionsGroups,
+         Groups
          ])

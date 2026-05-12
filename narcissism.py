@@ -35,19 +35,20 @@ from questionnaire import Narcissism
 from games import GamesIntro, WaitResults
 from groups import Groups, InstructionsGroups
 from trustgame import IntroTrust, InstructionsTrust, Trust, WaitGroups
-from coordination import IntroCoordination, InstructionsCoordination, CoordinationGame, WaitCoordination, CoordinationRoundResult
+from coordination import IntroCoordination, InstructionsCoordination, CoordinationGame, WaitCoordination, CoordinationRoundResult, NextRoundInfo
 from marketentry import IntroMarketEntry, InstructionsMarketEntry, MarketEntryQuiz, MarketEntryGame
 from constants import TRUST_ROUNDS, COORDINATION_ROUNDS, MARKET_ROUNDS
 
 
 
 frames = [Login,          
+          GamesIntro,
           InstructionsGroups,
           Groups,
-          GamesIntro,
           IntroCoordination,
           InstructionsCoordination,
-          *([CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame] * COORDINATION_ROUNDS),
+          *([CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame, NextRoundInfo] * (COORDINATION_ROUNDS - 1)),
+          CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame,
 		  IntroMarketEntry,
 		  InstructionsMarketEntry,
 		  *([MarketEntryQuiz, MarketEntryGame] * MARKET_ROUNDS),	  

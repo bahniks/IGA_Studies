@@ -68,23 +68,23 @@ trustFeedback1 = [
 ]
 
 
-trustControl2 = "Jakou odměnu obdrží hráč A, pokud hráči B pošle 40 Kč a ten mu pošle zpět 60 Kč?"
-trustAnswers2 = ["40 Kč (100 - 3 × 40 + 60)", "120 Kč (100 - 40 + 60)", "160 Kč (100 + 3 × (60 - 40))", "240 Kč (100 - 40 + 3 × 60)"]
+trustControl2 = "Jakou odměnu obdrží hráč A, pokud hráči B pošle 20 Kč a ten mu pošle zpět 30 Kč?"
+trustAnswers2 = ["20 Kč (40 - 3 × 20 + 30)", "50 Kč (40 - 20 + 30)", "80 Kč (40 + 3 × (30 - 20))", "130 Kč (40 - 20 + 3 × 30)"]
 trustFeedback2 = [
-    "Chybná odpověď. Hráč A obdrží 100 Kč, z kterých 40 Kč pošle hráči B, zbyde mu tedy 60 Kč, ke kterým obdrží od hráče B 60 Kč, tj. na konec obdrží 120 Kč (100 - 40 + 60).",
+    "Chybná odpověď. Hráč A obdrží 40 Kč, z kterých 20 Kč pošle hráči B, zbyde mu tedy 20 Kč, ke kterým obdrží od hráče B 30 Kč, tj. na konec obdrží 50 Kč (40 - 20 + 30).",
     "Správná odpověď.",
-    "Chybná odpověď. Hráč A obdrží 100 Kč, z kterých 40 Kč pošle hráči B, zbyde mu tedy 60 Kč, ke kterým obdrží od hráče B 60 Kč, tj. na konec obdrží 120 Kč (100 - 40 + 60).",
-    "Chybná odpověď. Hráč A obdrží 100 Kč, z kterých 40 Kč pošle hráči B, zbyde mu tedy 60 Kč, ke kterým obdrží od hráče B 60 Kč, tj. na konec obdrží 120 Kč (100 - 40 + 60).",
+    "Chybná odpověď. Hráč A obdrží 40 Kč, z kterých 20 Kč pošle hráči B, zbyde mu tedy 20 Kč, ke kterým obdrží od hráče B 30 Kč, tj. na konec obdrží 50 Kč (40 - 20 + 30).",
+    "Chybná odpověď. Hráč A obdrží 40 Kč, z kterých 20 Kč pošle hráči B, zbyde mu tedy 20 Kč, ke kterým obdrží od hráče B 30 Kč, tj. na konec obdrží 50 Kč (40 - 20 + 30).",
 ]
 
 
-trustControl3 = "Jakou odměnu obdrží hráč B, pokud hráč A pošle 40 Kč a hráč B mu pošle zpět 60 Kč?"
-trustAnswers3 = ["80 Kč (100 + 40 - 60)", "160 Kč (100 + 3 × 40 - 60)", "240 Kč (100 + 3 × 60 - 40)", "280 Kč (100 + 3 × 40 + 60)"]
+trustControl3 = "Jakou odměnu obdrží hráč B, pokud hráč A pošle 20 Kč a hráč B mu pošle zpět 30 Kč?"
+trustAnswers3 = ["30 Kč (40 + 20 - 30)", "70 Kč (40 + 3 × 20 - 30)", "100 Kč (40 + 3 × 30 - 20)", "130 Kč (40 + 3 × 20 + 30)"]
 trustFeedback3 = [
-    "Chybná odpověď. Hráč B obdrží 100 Kč, ke kterým obdrží 120 Kč od hráče A (poslaných 40 Kč se ztrojnásobí) a následně pošle hráči A 60 Kč, tj. na konec obdrží 160 Kč (100 + 3 × 40 - 60).",
+    "Chybná odpověď. Hráč B obdrží 40 Kč, ke kterým obdrží 60 Kč od hráče A (poslaných 20 Kč se ztrojnásobí) a následně pošle hráči A 30 Kč, tj. na konec obdrží 70 Kč (40 + 3 × 20 - 30).",
     "Správná odpověď.",
-    "Chybná odpověď. Hráč B obdrží 100 Kč, ke kterým obdrží 120 Kč od hráče A (poslaných 40 Kč se ztrojnásobí) a následně pošle hráči A 60 Kč, tj. na konec obdrží 160 Kč (100 + 3 × 40 - 60).",
-    "Chybná odpověď. Hráč B obdrží 100 Kč, ke kterým obdrží 120 Kč od hráče A (poslaných 40 Kč se ztrojnásobí) a následně pošle hráči A 60 Kč, tj. na konec obdrží 160 Kč (100 + 3 × 40 - 60).",
+    "Chybná odpověď. Hráč B obdrží 40 Kč, ke kterým obdrží 60 Kč od hráče A (poslaných 20 Kč se ztrojnásobí) a následně pošle hráči A 30 Kč, tj. na konec obdrží 70 Kč (40 + 3 × 20 - 30).",
+    "Chybná odpověď. Hráč B obdrží 40 Kč, ke kterým obdrží 60 Kč od hráče A (poslaných 20 Kč se ztrojnásobí) a následně pošle hráči A 30 Kč, tj. na konec obdrží 70 Kč (40 + 3 × 20 - 30).",
 ]
 
 
@@ -97,12 +97,12 @@ checkButtonText = "Uvedl(a) jsem své rozhodnutí"
 
 
 class ScaleFrame(Canvas):
-    def __init__(self, root, font=15, maximum=0, player="A", returned=0, endowment=100):
+    def __init__(self, root, font=15, maximum=0, player="A", returned=0, endowment=TRUST_ENDOWMENT):
         super().__init__(root, background="white", highlightbackground="white", highlightcolor="white")
 
         self.parent = root
         self.root = root.root
-        self.rounding = maximum / 5 if player == "A" else 10
+        self.rounding = maximum / 5 if player == "A" else endowment / 5
         self.player = player
         self.returned = returned
         self.font = font

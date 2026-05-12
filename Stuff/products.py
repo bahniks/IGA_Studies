@@ -115,6 +115,7 @@ conditions = [
     ("sale", "baseline"),
     ("baseline", "transparent")
 ]
+conditions2 = [("baseline", "baseline"), ("sale", "sale")]
 
 
 class Choices(ExperimentFrame):
@@ -196,17 +197,20 @@ class Choices(ExperimentFrame):
 
         total_products = len(self.infos)
         condition_price_pairs = [(condition_pair, price_level) for condition_pair in conditions for price_level in prices]
+        conditions2_price_pairs = [(condition_pair, price_level) for condition_pair in conditions2 for price_level in prices]
+
         pair_count = len(condition_price_pairs)
         per_pair = total_products // pair_count
         remainder = total_products % pair_count
 
-        shuffled_condition_price_pairs = list(condition_price_pairs)
-        random.shuffle(shuffled_condition_price_pairs)
-
         balanced_pairs = []
-        for idx, condition_price_pair in enumerate(shuffled_condition_price_pairs):
-            extra = 1 if idx < remainder else 0
-            balanced_pairs.extend([condition_price_pair] * (per_pair + extra))
+        for condition_price_pair in condition_price_pairs:
+            balanced_pairs.extend([condition_price_pair] * per_pair)
+
+        # Assign remaining products to conditions2 x prices combinations.
+        for idx in range(remainder):
+            balanced_pairs.append(conditions2_price_pairs[idx % len(conditions2_price_pairs)])
+
         random.shuffle(balanced_pairs)
 
         generated = {}

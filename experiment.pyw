@@ -42,7 +42,7 @@ from Stuff.questionnaire import (
 )
 from Stuff.groups import InstructionsGroups, Groups
 from Stuff.games import games as GamesIntro, WaitResults
-from Stuff.coordination import IntroCoordination, InstructionsCoordination, CoordinationGame, WaitCoordination, CoordinationRoundResult
+from Stuff.coordination import IntroCoordination, InstructionsCoordination, CoordinationGame, WaitCoordination, CoordinationRoundResult, NextRoundInfo
 from Stuff.marketentry import IntroMarketEntry, InstructionsMarketEntry, MarketEntryQuiz, MarketEntryGame
 from Stuff.trustgame import WaitGroups, IntroTrust, InstructionsTrust, Trust
 from Stuff.fires import (
@@ -69,12 +69,13 @@ from Stuff.constants import COORDINATION_ROUNDS, MARKET_ROUNDS, TRUST_ROUNDS
 frames = [Login,          
           Initial,
           Intro,
+          GamesIntro,
           InstructionsGroups,
           Groups,
-          #GamesIntro,
           IntroCoordination,
           InstructionsCoordination,
-          *([CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame] * COORDINATION_ROUNDS),
+	      *([CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame, NextRoundInfo] * (COORDINATION_ROUNDS - 1)),
+          CoordinationGame, WaitCoordination, CoordinationRoundResult, CoordinationGame,
 		  IntroMarketEntry,
 		  InstructionsMarketEntry,
 		  *([MarketEntryQuiz, MarketEntryGame] * MARKET_ROUNDS),	  

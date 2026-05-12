@@ -27,6 +27,7 @@ Nejprve absolvujete krátký trénink, ve kterém se naučíte, jak hra funguje.
 
 Před každým kolem dostanete přesné informace o tom, jak se bude výsledek daného kola vyhodnocovat.
 Po skončení této části bude jedno z hlavních kol náhodně vybráno jako rozhodné pro výplatu podle pravidel, která budou uvedena v průběhu hry.
+
 Prosíme, čtěte veškeré instrukce pozorně."""
 
 fires_rules = """Každé kolo budete začínat s počáteční částkou 100 Kč.

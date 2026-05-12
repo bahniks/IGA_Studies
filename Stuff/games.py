@@ -9,9 +9,12 @@ from common import InstructionsFrame, Wait
 from constants import URL, TRUST_ENDOWMENT, MARKET_ENDOWMENT, MARKET_WIN, MARKET_LOSS, COORDINATION_SUCCESS
 
 
-games = """In this part of the study, you will take part in several independent decision-making tasks. Some of your decisions will be paid based on real monetary outcomes. All your responses are anonymous.
+games = """V první části studie se zúčastníte několika nezávislých rozhodovacích úloh. Některá Vaše rozhodnutí budou odměněna na základě skutečných peněžních výsledků.
 
-Please read the instructions carefully, as your earnings depend on your decisions and on the decisions of other participants."""
+Přestože jsou odpovědi v úlohách anonymní, některé preference mohou být zobrazeny ostatním účastníkům.
+
+Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí na Vašich rozhodnutích a ve všech úlohách také na rozhodnutích ostatních účastníků."""
+
 
 
 
@@ -23,7 +26,8 @@ trustResultTextB = """V úloze s dělením peněz Vám byla náhodně vybrána r
 marketResultText = """V úloze vstupu na trh bylo náhodně vybráno kolo {}. Vy jste se rozhodl(a) {} a druhý účastník {}. Do trhu vstoupilo celkem {} hráč(ů). V tomto kole jste získal(a) {} Kč."""
 marketResultBothEnterText = """Oba jste vstoupili na trh. Váš výsledek v kvízu byl {} správně, druhý účastník měl {} správně."""
 marketResultTieText = """Skóre bylo shodné, proto byl výherce určen náhodně: {}."""
-coordinationResultText = """V koordinační úloze bylo náhodně vybráno kolo {} (pokus {}). Vy jste zvolil(a) možnost {} a druhý účastník možnost {}. Koordinace byla {}. V tomto kole jste získal(a) {} Kč."""
+
+coordinationResultText = """V koordinační úloze bylo náhodně vybráno {} kolo s {} partnerem. Vy jste měl(a) roli Hráče {} a zvolil(a) možnost {}. Druhý účastník možnost {}. V tomto kole jste tedy získal(a) {} Kč."""
 
 
 
@@ -187,17 +191,24 @@ class WaitResults(Wait):
         chosen_block, chosen_trial, selected = random.choice(flat)
         my_decision = selected.get("my_decision", "A")
         partner_decision = selected.get("partner_decision", "A")
-        coordinated = selected.get("coordinated", False)
         payoff = int(selected.get("payoff", 0))
+        partner_payoff = int(selected.get("partner_payoff", 0))
+        role_label = str(chosen_trial)
+        partner_ordinals = {
+            1: "prvním",
+            2: "druhým",
+            3: "třetím",
+        }
+        partner_label = partner_ordinals.get(chosen_block, f"{chosen_block}.")
 
-        coord_text = "úspěšná" if coordinated else "neúspěšná"
         result_text = coordinationResultText.format(
-            chosen_block,
             chosen_trial,
+            partner_label,
+            role_label,
             my_decision,
             partner_decision,
-            coord_text,
             payoff,
+            partner_payoff,
         )
 
         reward_so_far = self.root.status.get("reward", 0)
@@ -214,10 +225,12 @@ class WaitResults(Wait):
         self.root.status["coordination_result"] = {
             "round": chosen_block,
             "trial": chosen_trial,
+            "role": role_label,
+            "partner": partner_label,
             "my_decision": my_decision,
             "partner_decision": partner_decision,
-            "coordinated": coordinated,
             "reward": payoff,
+            "partner_reward": partner_payoff,
         }
         self.root.status["coordination_result_recorded"] = True
 
