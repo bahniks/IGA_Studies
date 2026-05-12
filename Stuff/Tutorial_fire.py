@@ -160,59 +160,6 @@ class FireTutorialGame(ExperimentGame):
             hint_label.pack(anchor="w", fill="x", pady=(14, 0))
             self.stage_blocks.append((body_label, hint_label))
 
-        self.end_overlay = tk.Frame(self.root, bg=RIGHT_BG)
-        self.end_overlay.place_forget()
-        self.end_title = tk.Label(
-            self.end_overlay,
-            text="TUTORIÁL DOKONČEN",
-            font=("Trebuchet MS", 24, "bold"),
-            bg=RIGHT_BG,
-            fg="#000000",
-        )
-        self.end_title.place(relx=0.5, rely=0.40, anchor="center")
-        self.end_label = tk.Label(
-            self.end_overlay,
-            text="Tutoriál hašení ohňů je hotový. Mezerníkem pokračujte do další části tutoriálu.",
-            font=("Trebuchet MS", 18, "bold"),
-            bg=RIGHT_BG,
-            fg="#c1121f",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_label.place(relx=0.5, rely=0.54, anchor="center")
-        self.end_hint = tk.Label(
-            self.end_overlay,
-            text="Mezerník = pokračovat dál",
-            font=("Trebuchet MS", 16, "bold"),
-            bg=RIGHT_BG,
-            fg="#000000",
-            justify="center",
-            wraplength=1040,
-        )
-        self.end_hint.place(relx=0.5, rely=0.66, anchor="center")
-
-        self.start_overlay = tk.Frame(self.root, bg=RIGHT_BG)
-        self.start_title_label = tk.Label(
-            self.start_overlay,
-            text="Tutoriál - Hašení ohňů",
-            font=("Georgia", 34, "bold"),
-            bg=RIGHT_BG,
-            fg="#8b2f17",
-        )
-        self.start_title_label.place(relx=0.5, rely=0.42, anchor="center")
-        self.start_hint_label = tk.Label(
-            self.start_overlay,
-            text="Stiskněte mezerník a projděte si ovládání hašení ohně",
-            font=("Trebuchet MS", 18, "bold"),
-            bg=RIGHT_BG,
-            fg="#000000",
-            justify="center",
-            wraplength=1040,
-        )
-        self.start_hint_label.place(relx=0.5, rely=0.54, anchor="center")
-        self.start_overlay.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.start_overlay.lift()
-
         self.root.bind_all("<KeyPress-space>", self.on_space_press)
         self.info_panel.bind("<Configure>", self._resize_instruction_wraps)
         self.root.after(100, self.root.focus_force)
