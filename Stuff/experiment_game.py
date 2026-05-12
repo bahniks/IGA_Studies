@@ -12,7 +12,7 @@ from constants import TESTING
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 1024
 LEFT_BG = "#7bc96f"
-RIGHT_BG = "#f7f4ec"
+RIGHT_BG = "white"
 
 RIGHT_PANEL_PADDING = 10
 WATER_LABEL_COLOR = "#d7ebfb"
@@ -87,7 +87,7 @@ class ExperimentGame(ExperimentFrame):
         self.start_overlay = tk.Frame(self.root, bg=RIGHT_BG)
         self.start_title_label = tk.Label(
             self.start_overlay,
-            text="Experiment připraven",
+            text="Hra připravena",
             font=("Georgia", 34, "bold"),
             bg=RIGHT_BG,
             fg="#2b2b2b"
@@ -95,10 +95,10 @@ class ExperimentGame(ExperimentFrame):
         self.start_title_label.place(relx=0.5, rely=0.44, anchor="center")
         self.start_hint_label = tk.Label(
             self.start_overlay,
-            text="Stiskněte mezerník pro start",
+            text="Po zmáčknutí mezerníku začne krátký odpočet a hra začne.\nStiskněte mezerník pro start.",
             font=("Georgia", 20),
             bg=RIGHT_BG,
-            fg="#5a5a5a",
+            fg="#000000",
             justify="center",
             wraplength=1040,
         )
@@ -119,7 +119,7 @@ class ExperimentGame(ExperimentFrame):
             text="",
             font=("Georgia", 22, "bold"),
             bg=RIGHT_BG,
-            fg="#4f3c2f",
+            fg="#000000",
             wraplength=1040,
             justify="center"
         )
@@ -186,7 +186,6 @@ class ExperimentGame(ExperimentFrame):
         self.sprinkler_anim_end_at = 0.0
         self.sprinkler_next_extinguish_at = 0.0
         self.sprinkler_pending_fires = []
-        self.finish_overlay_after_sprinkler = False
         self.countdown_running = False
         self.countdown_value = 0
         self.countdown_after_id = None
@@ -687,7 +686,7 @@ class ExperimentGame(ExperimentFrame):
                 pipe_x,
                 head_y - 34,
                 text="ŽÁDNÝ TLAK",
-                fill="#2c1a12",
+                fill="#000000",
                 font=(RIGHT_UI_FONT_ACCENT, 12, "bold")
             )
 
@@ -697,7 +696,7 @@ class ExperimentGame(ExperimentFrame):
             canvas.create_text(
                 (profile_left + profile_right) * 0.5,
                 ground_y - 30,
-                fill="#5a2d16",
+                fill="#000000",
                 font=(RIGHT_UI_FONT, 10, "bold")
             )
             left_width = max(1, self.left_canvas.winfo_width())
@@ -788,16 +787,13 @@ class ExperimentGame(ExperimentFrame):
         if self.sprinkler_on:
             return
         self.sprinkler_on = True
-        self.game_over = True
         self.fires_paused = True
-        self.finish_overlay_after_sprinkler = True
         if self.valve_hold_after_id is not None:
             self.root.after_cancel(self.valve_hold_after_id)
             self.valve_hold_after_id = None
         self.active_valve_index = None
         self.active_valve_progress = 0.0
         self._draw_right_scene()
-        self.finish_overlay_after_sprinkler = True
         self._start_sprinkler_extinguish_animation()
 
     def _start_sprinkler_extinguish_animation(self):
@@ -814,6 +810,12 @@ class ExperimentGame(ExperimentFrame):
 
     def _tick_sprinkler_extinguish_animation(self):
         if not self.sprinkler_animating:
+            self.sprinkler_anim_after_id = None
+            return
+        if self.game_over:
+            self.left_canvas.delete("sprinkler_rain")
+            self.left_canvas.delete("sprinkler_splash")
+            self.sprinkler_animating = False
             self.sprinkler_anim_after_id = None
             return
 
@@ -866,17 +868,6 @@ class ExperimentGame(ExperimentFrame):
                 self._draw_splash(center[0], center[1])
             self.remove_fire(tag)
             self.sprinkler_next_extinguish_at = now + 0.2
-
-        if now >= self.sprinkler_anim_end_at and not self.active_fires:
-            self.left_canvas.delete("sprinkler_rain")
-            self.left_canvas.delete("sprinkler_splash")
-            self.sprinkler_animating = False
-            self.sprinkler_anim_after_id = None
-            if self.finish_overlay_after_sprinkler:
-                self.finish_overlay_after_sprinkler = False
-                self._record_round_outcome()
-                self.show_end_overlay()
-            return
 
         self.sprinkler_anim_after_id = self.root.after(90, self._tick_sprinkler_extinguish_animation)
 

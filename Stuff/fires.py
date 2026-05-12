@@ -26,10 +26,8 @@ fires_intro_2 = """V této části studie budete hrát počítačovou hru.
 Nejprve absolvujete krátký trénink, ve kterém se naučíte, jak hra funguje. Poté odehrajete dvě kola hry.
 
 Před každým kolem dostanete přesné informace o tom, jak se bude výsledek daného kola vyhodnocovat.
-
-Na konci experimentu bude jedno z kol náhodně vybráno a jeho výsledek se projeví v konečné odměně za experiment podle pravidel, která budou vysvětlena dále.
-
-Prosíme, čtěte pozorně veškeré instrukce."""
+Po skončení této části bude jedno z hlavních kol náhodně vybráno jako rozhodné pro výplatu podle pravidel, která budou uvedena v průběhu hry.
+Prosíme, čtěte veškeré instrukce pozorně."""
 
 fires_rules = """Každé kolo budete začínat s počáteční částkou 100 Kč.
 

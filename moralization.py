@@ -72,12 +72,12 @@ frames = [
 
 if __name__ == "__main__":
     try:
-        print("Starting experiment...")
+        print("Starting game...")
         gui = GUI(frames, load = os.path.exists("temp.json"))
         print("GUI session finished")
-        print("Experiment completed")
+        print("Game completed")
     except Exception as e:
-        print(f"Error during experiment execution: {e}")
+        print(f"Error during game execution: {e}")
         import traceback
         print("Full traceback:")
         traceback.print_exc()
