@@ -232,7 +232,7 @@ class Choices(ExperimentFrame):
         self.order += 1
         self.trialText["text"] = f"Produkt {self.order + 1:>3}/{len(self.trials)}"
 
-        if self.order == len(self.trials) or (TESTING and self.order == 10):
+        if self.order == len(self.trials):
             if self.condition_index == 1:
                 drawn = random.sample(self.all_choices, min(2, len(self.all_choices)))
                 while len(drawn) < 2:
