@@ -15,8 +15,8 @@ COORDINATION_SUCCESS = 30
 COORDINATION_PREFERENCE = 10
 
 AUTOFILL = False
-TESTING = True
-GOTHROUGH = True
+TESTING = False
+GOTHROUGH = False
 URL = "https://dlab-bahnik.pythonanywhere.com/"
 #URL = "TEST"
 #URL = "http://127.0.0.1:8000/"

@@ -104,8 +104,9 @@ class Ending(InstructionsFrame):
         self.update()
         # Wait slightly above InstructionsFrame default wait=2 before triggering proceed.
         sleep(2.1)
+        self.sendInfo()
         # KeyPress is sufficient because the frame binds progression on key press.
-        self.update_idletasks()
+        self.update_idletasks()        
         self.after(100, lambda: self.event_generate("<KeyPress-G>", when="tail"))
 
 
