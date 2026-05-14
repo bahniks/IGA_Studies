@@ -245,8 +245,7 @@ class WaitResults(Wait):
                     response = self.test()
                 else:
                     try:
-                        offer = "trust" if self._has_trust_data() else "results"
-                        data = urllib.parse.urlencode({"id": self.id, "round": "wait", "offer": offer})
+                        data = urllib.parse.urlencode({"id": self.id, "round": "wait", "offer": "results"})
                         data = data.encode("ascii")
                         with urllib.request.urlopen(URL, data=data) as f:
                             response = f.read().decode("utf-8")
@@ -271,19 +270,12 @@ class WaitResults(Wait):
             block = random.choice(list(co_decisions.keys()))
             trials = co_decisions[block]
             trial_keys = list(trials.keys())
-            if len(trial_keys) >= 2:
-                t1, t2 = trial_keys[:2]
-            elif len(trial_keys) == 1:
-                t1 = t2 = trial_keys[0]
-            else:
-                t1 = t2 = 1
-            self1 = trials.get(t1, {}).get("decision", "A")
-            other1 = random.choice(["A", "B"])
-            self2 = trials.get(t2, {}).get("decision", "B")
-            other2 = random.choice(["A", "B"])
-            co_part = f"coordination:{block},{self1},{other1},{self2},{other2}"
+            trial = random.choice(trial_keys) if trial_keys else 1
+            co_self = trials.get(trial, {}).get("decision", "A")
+            co_other = random.choice(["A", "B"])
+            co_part = f"coordination:{block},{trial},{co_self},{co_other}"
         else:
-            co_part = "coordination:1,A,B,B,A"
+            co_part = "coordination:1,1,A,B"
 
         # Market
         me_decisions = self.root.status.get("me_decisions", {})
@@ -320,7 +312,7 @@ class WaitResults(Wait):
             self._append_coordination_result()
             return
 
-        # Parse new format: coordination:<round>,<self1>,<other1>,<self2>,<other2>|market:<round>,<decision_self>,<quiz_self>,<decision_other>,<quiz_other>|trust:<round>,<sentA>,<sentB>
+        # Parse format: coordination:<round>,<trial>,<self>,<other>|market:<round>,<decision_self>,<quiz_self>,<decision_other>,<quiz_other>|trust:<round>,<sentA>,<sentB>
         sections = response.split("|")
         results = self.root.status.get("results")
         if not isinstance(results, list):
@@ -331,29 +323,26 @@ class WaitResults(Wait):
 
         for section in sections:
             if section.startswith("coordination:"):
-                # coordination:<round>,<self1>,<other1>,<self2>,<other2>
+                # coordination:<round>,<trial>,<self>,<other>
                 _, data = section.split(":", 1)
                 parts = data.split(",")
-                if len(parts) == 5:
+                if len(parts) == 4:
                     round_idx = int(parts[0])
-                    self1 = parts[1]
-                    other1 = parts[2]
-                    self2 = parts[3]
-                    other2 = parts[4]
-                    # Example: use first trial for result text
-                    payoff = COORDINATION_SUCCESS if self1 == other1 else 0
+                    trial_idx = int(parts[1])
+                    co_self = parts[2]
+                    co_other = parts[3]
+                    payoff = COORDINATION_SUCCESS if co_self == co_other else 0
                     partner_label = f"{round_idx}."
                     role_label = "Hráč A"  # or B if you have role info
                     result_text = coordinationResultText.format(
-                        round_idx, partner_label, role_label, self1, other1, payoff, 0
+                        trial_idx, partner_label, role_label, co_self, co_other, payoff, 0
                     )
                     results.append(result_text)
                     self.root.status["coordination_result"] = {
                         "round": round_idx,
-                        "my_decision1": self1,
-                        "partner_decision1": other1,
-                        "my_decision2": self2,
-                        "partner_decision2": other2,
+                        "trial": trial_idx,
+                        "my_decision": co_self,
+                        "partner_decision": co_other,
                         "reward": payoff,
                     }
                     reward_so_far += payoff
@@ -364,25 +353,33 @@ class WaitResults(Wait):
                 parts = data.split(",")
                 if len(parts) == 5:
                     round_idx = int(parts[0])
-                    decision_self = parts[1]
+                    decision_self = parts[1].strip().lower()
                     quiz_self = int(parts[2])
-                    decision_other = parts[3]
+                    decision_other = parts[3].strip().lower()
                     quiz_other = int(parts[4])
+
+                    self_entered = decision_self in ("in", "enter")
+                    other_entered = decision_other in ("in", "enter")
+
+                    self_text = "vstoupit na trh" if self_entered else "nevstoupit na trh"
+                    other_text = "vstoupil(a) na trh" if other_entered else "nevstoupil(a) na trh"
+
                     # Calculate payoff
-                    if decision_self == "in" and decision_other == "in":
+                    if self_entered and other_entered:
                         if quiz_self > quiz_other:
                             payoff = MARKET_WIN
                         elif quiz_self < quiz_other:
                             payoff = MARKET_LOSS
                         else:
                             payoff = random.choice([MARKET_WIN, MARKET_LOSS])
-                        result_text = marketResultBothEnterText.format(quiz_self, quiz_other)
-                    elif decision_self == "in":
+                        result_text = marketResultText.format(round_idx, self_text, other_text, payoff)
+                        result_text += " " + marketResultBothEnterText.format(quiz_self, quiz_other)
+                    elif self_entered:
                         payoff = MARKET_WIN
-                        result_text = marketResultText.format(round_idx, decision_self, decision_other, payoff)
+                        result_text = marketResultText.format(round_idx, self_text, other_text, payoff)
                     else:
                         payoff = MARKET_ENDOWMENT
-                        result_text = marketResultText.format(round_idx, decision_self, decision_other, payoff)
+                        result_text = marketResultText.format(round_idx, self_text, other_text, payoff)
                     results.append(result_text)
                     self.root.status["market_result"] = {
                         "round": round_idx,
@@ -423,10 +420,6 @@ class WaitResults(Wait):
 
         self.root.status["results"] = results
         self.root.status["reward"] = reward_so_far
-
-        # Optionally call these if you want to keep old logic
-        self._append_market_result()
-        self._append_coordination_result()
 
     def write(self, response):
         self.file.write("Final Results\n")

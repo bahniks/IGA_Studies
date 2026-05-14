@@ -45,14 +45,7 @@ class Login(InstructionsFrame):
                             response = f.read().decode("utf-8") 
                     except Exception:
                         self.changeText("Server nedostupný")
-                if response:
-                    self.root.status["selected_products"] = self._parse_selected_products_response(response)
-                    self.root.status["co_roles"] = self._parse_coordination_roles_response(response)
-                    self.progressBar.stop()
-                    self.write(response)
-                    self.nextFun()                      
-                    break
-                elif response == "login_successful" or response == "already_logged":
+                if response == "login_successful" or response == "already_logged":
                     self.changeText("Přihlášen")
                     self.root.status["logged"] = True
                 elif response == "ongoing":
@@ -63,6 +56,15 @@ class Login(InstructionsFrame):
                     self.changeText("Studie je uzavřena pro přihlašování")
                 elif response == "not_grouped":
                     self.changeText("V experimentu nezbylo místo. Zavolejte prosím experimentátora zvednutím ruky.")
+                elif self._is_login_payload(response):
+                    self.root.status["selected_products"] = self._parse_selected_products_response(response)
+                    self.root.status["co_roles"] = self._parse_coordination_roles_response(response)
+                    self.progressBar.stop()
+                    self.write(response)
+                    self.nextFun()
+                    break
+                elif response:
+                    self.changeText("Neplatná odpověď serveru při přihlašování")
             count += 1                  
             sleep(0.1)    
 
@@ -85,6 +87,11 @@ class Login(InstructionsFrame):
     def _parse_selected_products_response(self, response):
         token1, token2, _ = str(response).split("|")
         return [self._parse_product_token(token1), self._parse_product_token(token2)]
+
+    @staticmethod
+    def _is_login_payload(response):
+        parts = str(response).split("|")
+        return len(parts) == 3 and all(str(p).strip() for p in parts)
 
     @staticmethod
     def _parse_coordination_roles_response(response):

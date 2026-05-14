@@ -1,12 +1,15 @@
 from tkinter import *
 from tkinter import ttk
+from time import perf_counter
 
 import random
 import os
+import urllib.request
+import urllib.parse
 
 from common import ExperimentFrame, InstructionsFrame, InstructionsAndUnderstanding, Wait
 from gui import GUI
-from constants import COORDINATION_ROUNDS, COORDINATION_SUCCESS, COORDINATION_PREFERENCE
+from constants import URL, COORDINATION_ROUNDS, COORDINATION_SUCCESS, COORDINATION_PREFERENCE
 from login import Login
 
 
@@ -395,20 +398,58 @@ class WaitCoordination(Wait):
         super().__init__(root, what="coordination")
 
     def test(self):
-        return random.choice(["A", "B"])
+        return "A"
+
+    @staticmethod
+    def _parse_partner_decision(response):
+        text = str(response).strip().upper()
+        if text.startswith("COORDINATION:"):
+            text = text.split(":", 1)[1].strip()
+        if text not in ("A", "B"):
+            raise ValueError("Invalid coordination wait response: {}".format(response))
+        return text
+
+    def checkUpdate(self):
+        t0 = perf_counter() - 4
+        while True:
+            self.update()
+            if perf_counter() - t0 > 5:
+                t0 = perf_counter()
+                if URL == "TEST":
+                    response = self.test()
+                else:
+                    try:
+                        block = int(self.root.status.get("co_block", 1))
+                        data = urllib.parse.urlencode({
+                            'id': self.id,
+                            'round': "coordination{}_1".format(block),
+                            'offer': "coordination",
+                        })
+                        data = data.encode('ascii')
+                        with urllib.request.urlopen(URL, data=data) as f:
+                            response = f.read().decode("utf-8")
+                    except Exception:
+                        continue
+
+                if not response:
+                    continue
+
+                self.processResponse(response)
+                self.write(response)
+                self.progressBar.stop()
+                self.nextFun()
+                return
 
     def processResponse(self, response):
         block = self.root.status.get("co_block", 1)
         trial = 1
-        role = self.root.status.get("co_roles", {}).get(block, "A")
+        role = self.root.status["co_roles"][block]
 
-        partner_decision = response.strip().upper()
-        if partner_decision not in ("A", "B"):
-            partner_decision = random.choice(["A", "B"])
+        partner_decision = self._parse_partner_decision(response)
 
-        my_trial = self.root.status.get("co_decisions", {}).get(block, {}).get(trial, {})
-        my_decision = my_trial.get("decision", "A")
-        prediction = int(my_trial.get("prediction", 50))
+        my_trial = self.root.status["co_decisions"][block][trial]
+        my_decision = my_trial["decision"]
+        prediction = int(my_trial["prediction"])
 
         coordinated = my_decision == partner_decision
         my_payoff, partner_payoff = _coordination_payoffs(my_decision, partner_decision)

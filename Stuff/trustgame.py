@@ -372,14 +372,24 @@ class WaitGroups(Wait):
         with open(groups_path, "r", encoding="utf-8") as f:
             all_groups = [line.strip() for line in f if line.strip()]
         persons = []
+        ids = []
         for _ in range(TRUST_ROUNDS):
+            ids.append("real{}".format(_ + 1))
             close = "_".join(random.sample(all_groups, min(5, len(all_groups))))
             persons.append(close)
-        return "~".join(persons)
+        return "_".join(ids) + "!" + "~".join(persons)
 
     def processResponse(self, response):
-        persons = response.split("~")
-        order = ["real{}".format(i + 1) for i in range(len(persons))]
+        text = str(response).strip()
+        if "!" in text:
+            ids_part, groups_part = text.split("!", 1)
+            order = [pid for pid in ids_part.split("_") if pid]
+            persons = [grp for grp in groups_part.split("~") if grp]
+            if len(order) != len(persons):
+                order = ["real{}".format(i + 1) for i in range(len(persons))]
+        else:
+            persons = [grp for grp in text.split("~") if grp]
+            order = ["real{}".format(i + 1) for i in range(len(persons))]
         self.root.status["trust_groups_order"] = order
         self.root.status["trust_groups"] = dict(zip(order, persons))
         self.root.status.setdefault("trustblock", 1)

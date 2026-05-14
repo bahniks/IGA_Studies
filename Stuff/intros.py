@@ -10,7 +10,7 @@ from time import sleep
 from common import InstructionsFrame
 from gui import GUI
 
-from constants import PARTICIPATION_FEE, URL, ATTENTION_BONUS
+from constants import PARTICIPATION_FEE, URL
 from login import Login
 
 
@@ -73,12 +73,12 @@ class Ending(InstructionsFrame):
         root.texts["results"] = "\n" + "\n\n".join(root.status["results"]) + "\n"
 
         root.texts["reward"] = str(root.status["reward"])
-        root.texts["rounded_reward"] = ceil(root.status["reward"] / 10) * 10
-        root.texts["participation_fee"] = PARTICIPATION_FEE
+        root.texts["rounded_reward"] = str(ceil(root.status["reward"] / 10) * 10)
+        root.texts["participation_fee"] = str(PARTICIPATION_FEE)
         updates = ["results", "participation_fee", "reward", "rounded_reward"]
         super().__init__(root, text = ending, keys = ["g", "G"], proceed = False, height = "auto", update = updates, width = 110)
         self.file.write("Ending\n")
-        self.file.write(self.id + "\t" + root.texts["reward"] + "\n\n")
+        self.file.write(self.id + "\t" + root.texts["reward"] + "\t" + root.texts["rounded_reward"] + "\n\n")
 
     def run(self):
         self.sendInfo()
@@ -86,7 +86,7 @@ class Ending(InstructionsFrame):
     def sendInfo(self):
         while True:
             self.update()    
-            data = urllib.parse.urlencode({'id': self.root.id, 'round': -99, 'offer': self.root.texts["reward"]})
+            data = urllib.parse.urlencode({'id': self.root.id, 'round': -99, 'offer': self.root.texts["rounded_reward"]})
             data = data.encode('ascii')
             if URL == "TEST":
                 response = "ok"

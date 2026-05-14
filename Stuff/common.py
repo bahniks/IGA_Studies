@@ -44,10 +44,10 @@ class ExperimentFrame(Canvas):
     def gothrough(self):        
         self.nextFun()
 
-    def sendData(self, message, pause = 0.1, trials = -1): 
+    def sendData(self, message, pause = 0.1, trials = -1):
         if URL == "http://127.0.0.1:8000/":
             print(message)
-        count = 0           
+        count = 0
         while trials != count:
             count += 1
             data = urllib.parse.urlencode(message)
@@ -57,14 +57,14 @@ class ExperimentFrame(Canvas):
             else:
                 try:
                     with urllib.request.urlopen(URL, data = data) as f:
-                        response = f.read().decode("utf-8")       
+                        response = f.read().decode("utf-8")
                         if URL == "http://127.0.0.1:8000/":
                             print(response)
                 except Exception:
                     continue
-            if response == "ok":                    
-                return            
-            sleep(pause)               
+            if response == "ok":
+                return
+            sleep(pause)
         return
 
 

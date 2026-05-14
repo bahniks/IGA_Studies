@@ -129,25 +129,6 @@ offer: "A"
 - Participant role in each block is taken from login response (`root.status["co_roles"]`)
 - Payoff determined by match: both A → both get coordination bonus + preference bonus, both B → Player2 gets bonus, mismatch → base payoff only
 
-### 3b. Coordination Wait (Partner Decision Fetch)
-
-**Frame:** `coordination.WaitCoordination`  
-**File:** `Stuff/coordination.py`  
-**Purpose:** Poll server for partner decision after participant submits coordination decision for a trial.  
-**Timing:** Immediately after `coordination.CoordinationGame` submit for a waited trial.
-
-**Request Format:**
-```
-id: <participant_id>
-round: "coordination<round>_1"
-offer: "coordination"
-```
-
-**Response Handling:**
-- Client proceeds only when response contains a valid partner decision token (`A` or `B`).
-- Placeholder/ack responses such as `ok` are ignored and polling continues.
-- Supported decision extraction is robust to simple wrappers (for example `coordination:A` or delimited payloads containing `A`/`B`).
-
 ---
 
 ### 4. Market Entry Quiz (Multi-player prep)
@@ -406,7 +387,7 @@ Results (final payoff shown)
 
 3. **Responses:** Server should respond with "ok" on success. Any other response triggers retry.
 
-4. **Login Special:** Login loop handles known status/error messages first (for example `already_logged`, `no_open`, `closed`, `ongoing`, `not_grouped`). Parsing into `<token1>|<token2>|<coord_roles>` is attempted only when response matches the 3-token payload format.
+4. **Login Special:** Login loop runs continuously until server returns a non-empty response in exact format `<token1>|<token2>|<coord_roles>`.
 
 5. **UTF-8 Handling:** All text (id, round, offer) should be UTF-8 encoded; URL encoding handles special characters automatically.
 

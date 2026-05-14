@@ -5,8 +5,13 @@ import sys
 import os
 import time
 
+
+temp_json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "temp.json")
+if os.path.exists(temp_json_path):
+    os.remove(temp_json_path)
+
 # Number of simultaneous instances to run
-NUM_INSTANCES = 3
+NUM_INSTANCES = 10
 
 # Path to experiment.pyw (one directory up from current script)
 experiment_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "experiment.pyw")
