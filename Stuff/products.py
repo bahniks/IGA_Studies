@@ -347,11 +347,16 @@ class Choices(ExperimentFrame):
 
     def gothrough(self):
         # Simulate a full run with random purchase decisions.
-        while self.order < len(self.trials) - 1 and (not TESTING or self.order < 10):
+        while self.winfo_exists() and self.order < len(self.trials):
+            if self.current is None:
+                self.proceed()
+                if self.current is None:
+                    break
             choice = random.choice(["yes", "no"])
             self.record_choice(choice)
-            self.update()
-            sleep(0.02)
+            if self.winfo_exists():
+                self.update()
+                sleep(0.02)
 
 
 class OneProduct(Canvas):

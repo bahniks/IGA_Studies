@@ -1,3 +1,0 @@
-time: 1777907923.6971025	0	SprinklerTutorialGame
-
-time: 1777907986.6688535	1	end

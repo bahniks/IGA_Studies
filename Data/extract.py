@@ -57,6 +57,24 @@ SECTION_COLUMNS = {
     "Demographics": ["id", "sex", "age", "language", "student", "field"],
     "Comments": ["id", "comment"],
     "Ending": ["id", "reward"],
+    "FiresRound": ["id", "trial", "condition", "chosen_condition"],
+    "FiresGame": [
+        "id",
+        "frame",
+        "round_condition",
+        "chosen_condition",
+        "score_halers",
+        "reward_crowns",
+        "time_left_seconds",
+        "fires_spawned",
+        "fires_remaining",
+        "sprinkler_used",
+        "completed_valves",
+        "mouse_left_seconds",
+        "mouse_right_seconds",
+        "mouse_left_proportion",
+        "mouse_right_proportion",
+    ],
 }
 
 SECTION_FILENAME = {name: f"{name.lower().replace(' ', '_')}_results.tsv" for name in SECTION_COLUMNS}

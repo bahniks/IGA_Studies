@@ -35,6 +35,7 @@ selfEndingText = """Ve hře s hašením ohňů bylo náhodně vybráno kolo, kde
 
 class ExperimentGame(ExperimentFrame):
     ROUND_CONTEXT_ENABLED = True
+    GAME_LOG_SECTION = "FiresGame"
 
     def __init__(self, root):
         super().__init__(root)
@@ -189,6 +190,13 @@ class ExperimentGame(ExperimentFrame):
         self.countdown_running = False
         self.countdown_value = 0
         self.countdown_after_id = None
+        self.timer_counting = False
+        self.mouse_tracking_active = False
+        self.mouse_tracking_after_id = None
+        self.mouse_tracking_last_update = None
+        self.mouse_tracking_last_side = None
+        self.mouse_left_seconds = 0.0
+        self.mouse_right_seconds = 0.0
         self.game_started = False
         self.root.bind_all("<KeyPress-space>", self.on_space_press)
         self.root.bind("<Configure>", self._on_root_configure)
@@ -788,6 +796,7 @@ class ExperimentGame(ExperimentFrame):
             return
         self.sprinkler_on = True
         self.fires_paused = True
+        self._freeze_time_tracking()
         if self.valve_hold_after_id is not None:
             self.root.after_cancel(self.valve_hold_after_id)
             self.valve_hold_after_id = None
@@ -1274,6 +1283,8 @@ class ExperimentGame(ExperimentFrame):
         self.countdown_after_id = None
         self._refresh_countdown_overlay()
         self.game_started = True
+        self.timer_counting = True
+        self._start_mouse_tracking()
         self.root.after(FIRE_INTERVAL_MS, self.spawn_fire)
         self.root.after(1000, self.on_fire_tick)
         self.root.after(1000, self.on_timer_tick)
@@ -1338,6 +1349,7 @@ class ExperimentGame(ExperimentFrame):
         if self.game_over:
             return
         self.game_over = True
+        self._freeze_time_tracking()
         if self.countdown_after_id is not None:
             self.root.after_cancel(self.countdown_after_id)
             self.countdown_after_id = None
@@ -1401,7 +1413,7 @@ class ExperimentGame(ExperimentFrame):
         self.root.after(1000, self.on_fire_tick)
 
     def on_timer_tick(self):
-        if not self.game_started or self.game_over:
+        if not self.game_started or self.game_over or not self.timer_counting:
             return
         self.time_left -= 1
         if self.time_left <= 0:
@@ -1991,6 +2003,149 @@ class ExperimentGame(ExperimentFrame):
         minutes = total_seconds // 60
         seconds = total_seconds % 60
         return f"{minutes:02d}:{seconds:02d}"
+
+    def _mouse_side_from_pointer(self):
+        if not hasattr(self, "left_canvas") or not hasattr(self, "right_canvas"):
+            return None
+        try:
+            pointer_x = self.root.winfo_pointerx()
+            pointer_y = self.root.winfo_pointery()
+        except tk.TclError:
+            return None
+
+        left_x0 = self.left_canvas.winfo_rootx()
+        left_y0 = self.left_canvas.winfo_rooty()
+        left_x1 = left_x0 + self.left_canvas.winfo_width()
+        left_y1 = left_y0 + self.left_canvas.winfo_height()
+        if left_x0 <= pointer_x < left_x1 and left_y0 <= pointer_y < left_y1:
+            return "left"
+
+        right_x0 = self.right_canvas.winfo_rootx()
+        right_y0 = self.right_canvas.winfo_rooty()
+        right_x1 = right_x0 + self.right_canvas.winfo_width()
+        right_y1 = right_y0 + self.right_canvas.winfo_height()
+        if right_x0 <= pointer_x < right_x1 and right_y0 <= pointer_y < right_y1:
+            return "right"
+
+        return None
+
+    def _ensure_tracking_state(self):
+        if not hasattr(self, "timer_counting"):
+            self.timer_counting = False
+        if not hasattr(self, "mouse_tracking_active"):
+            self.mouse_tracking_active = False
+        if not hasattr(self, "mouse_tracking_after_id"):
+            self.mouse_tracking_after_id = None
+        if not hasattr(self, "mouse_tracking_last_update"):
+            self.mouse_tracking_last_update = None
+        if not hasattr(self, "mouse_tracking_last_side"):
+            self.mouse_tracking_last_side = None
+        if not hasattr(self, "mouse_left_seconds"):
+            self.mouse_left_seconds = 0.0
+        if not hasattr(self, "mouse_right_seconds"):
+            self.mouse_right_seconds = 0.0
+
+    def _accumulate_mouse_side_time(self, now=None, current_side=None):
+        self._ensure_tracking_state()
+        if now is None:
+            now = time.monotonic()
+        if current_side is None:
+            current_side = self._mouse_side_from_pointer()
+        if self.mouse_tracking_last_update is not None and self.mouse_tracking_last_side in {"left", "right"}:
+            elapsed = max(0.0, now - self.mouse_tracking_last_update)
+            if self.mouse_tracking_last_side == "left":
+                self.mouse_left_seconds += elapsed
+            else:
+                self.mouse_right_seconds += elapsed
+        self.mouse_tracking_last_update = now
+        self.mouse_tracking_last_side = current_side
+
+    def _start_mouse_tracking(self):
+        self._ensure_tracking_state()
+        self._stop_mouse_tracking()
+        self.mouse_tracking_active = True
+        self._accumulate_mouse_side_time(current_side=self._mouse_side_from_pointer())
+        self.mouse_tracking_after_id = self.root.after(100, self._tick_mouse_tracking)
+
+    def _stop_mouse_tracking(self):
+        self._ensure_tracking_state()
+        if self.mouse_tracking_active:
+            self._accumulate_mouse_side_time(current_side=self._mouse_side_from_pointer())
+        self.mouse_tracking_active = False
+        if self.mouse_tracking_after_id is not None:
+            self.root.after_cancel(self.mouse_tracking_after_id)
+            self.mouse_tracking_after_id = None
+        self.mouse_tracking_last_update = None
+        self.mouse_tracking_last_side = None
+
+    def _freeze_time_tracking(self):
+        self._ensure_tracking_state()
+        self.timer_counting = False
+        self._stop_mouse_tracking()
+
+    def _tick_mouse_tracking(self):
+        self._ensure_tracking_state()
+        if not self.mouse_tracking_active:
+            self.mouse_tracking_after_id = None
+            return
+        self._accumulate_mouse_side_time(current_side=self._mouse_side_from_pointer())
+        self.mouse_tracking_after_id = self.root.after(100, self._tick_mouse_tracking)
+
+    def _mouse_side_seconds_and_proportions(self):
+        if not hasattr(self, "left_canvas") or not hasattr(self, "right_canvas"):
+            return "NA", "NA", "NA", "NA"
+
+        self._ensure_tracking_state()
+        left_seconds = float(self.mouse_left_seconds)
+        right_seconds = float(self.mouse_right_seconds)
+        if self.mouse_tracking_active:
+            now = time.monotonic()
+            current_side = self._mouse_side_from_pointer()
+            if self.mouse_tracking_last_update is not None and self.mouse_tracking_last_side in {"left", "right"}:
+                elapsed = max(0.0, now - self.mouse_tracking_last_update)
+                if self.mouse_tracking_last_side == "left":
+                    left_seconds += elapsed
+                else:
+                    right_seconds += elapsed
+            self.mouse_tracking_last_update = now
+            self.mouse_tracking_last_side = current_side
+        total_seconds = left_seconds + right_seconds
+        if total_seconds > 0:
+            left_proportion = left_seconds / total_seconds
+            right_proportion = right_seconds / total_seconds
+        else:
+            left_proportion = "NA"
+            right_proportion = "NA"
+        return left_seconds, right_seconds, left_proportion, right_proportion
+
+    @staticmethod
+    def _na_if_none(value):
+        return "NA" if value is None else value
+
+    def write(self):
+        score_value = getattr(self, "score", 0)
+        score_halers = int(score_value) if isinstance(score_value, (int, float)) else "NA"
+        reward_crowns = (score_halers + 50) // 100 if isinstance(score_halers, int) else "NA"
+        mouse_left_seconds, mouse_right_seconds, mouse_left_proportion, mouse_right_proportion = self._mouse_side_seconds_and_proportions()
+        fields = [
+            self.id,
+            self.__class__.__name__,
+            str(getattr(self, "round_condition", "NA")),
+            str(self._na_if_none(getattr(self, "round_chosen", None))),
+            str(score_halers),
+            str(reward_crowns),
+            str(getattr(self, "time_left", "NA")),
+            str(getattr(self, "fire_counter", "NA")),
+            str(len(getattr(self, "active_fires", [])) if hasattr(self, "active_fires") else "NA"),
+            "1" if getattr(self, "sprinkler_on", False) else "0",
+            str(getattr(self, "completed_valves", "NA")),
+            str(mouse_left_seconds),
+            str(mouse_right_seconds),
+            str(mouse_left_proportion),
+            str(mouse_right_proportion),
+        ]
+        self.file.write(self.GAME_LOG_SECTION + "\n")
+        self.file.write("\t".join(fields) + "\n")
 
 
 if __name__ == "__main__":

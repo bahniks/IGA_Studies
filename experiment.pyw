@@ -41,7 +41,7 @@ from Stuff.questionnaire import (
     TransactionValue,
 )
 from Stuff.groups import InstructionsGroups, Groups
-from Stuff.games import games as GamesIntro, WaitResults
+from Stuff.games import GamesIntro, WaitResults
 from Stuff.coordination import IntroCoordination, InstructionsCoordination, CoordinationGame, WaitCoordination, CoordinationRoundResult, NextRoundInfo
 from Stuff.marketentry import IntroMarketEntry, InstructionsMarketEntry, MarketEntryQuiz, MarketEntryGame
 from Stuff.trustgame import WaitGroups, IntroTrust, InstructionsTrust, Trust

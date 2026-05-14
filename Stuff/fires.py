@@ -161,8 +161,11 @@ class FiresRoundIntro(InstructionsFrame):
         order = root.status["fires_round_order"]
         condition = order[root.status["fires_round_index"]]
         root.status["fires_round_index"] += 1
+        trial = root.status["fires_round_index"]
+        chosen = root.status.get("fires_round_chosen", "NA")
         text = fires_round_self if condition == "self" else fires_round_charity
-        root.file.write(f"FiresRound\t{condition}\n")
+        root.file.write("FiresRound\n")
+        root.file.write("\t".join([root.id, str(trial), condition, str(chosen)]) + "\n\n")
         super().__init__(root, text=text, height="auto")
 
 

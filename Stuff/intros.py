@@ -19,19 +19,15 @@ from login import Login
 
 intro = """Studie se skládá z několika různých úkolů a otázek. Níže je uveden přehled toho, co Vás čeká:
 
-<b>1) Skupiny:</b> Budete uvádět, jaké skupiny jsou Vám blízké a jaké vzdálené.
-<b>2) Preference:</b> Budete uvádět, jaká možnost z dvojice se Vám více líbí.
-<b>3) Články:</b> Budete vybírat články pro přečtení.
-<b>4) Dělení peněz:</b> Budete se rozhodovat, jak dělit peníze v páru s jiným účastníkem studie.
-<b>5) Přidělování peněz:</b> Budete rozdělovat peníze mezi další účastníky studie. V tomto úkolu můžete od ostatních účastníků získat peníze.
-<b>6) Podobnost:</b> Budete hodnotit, nakolik jsou Vám další účastníci studie podobní. V tomto úkolu můžete také získat peníze.
-<b>7) Výběr výrobků:</b> Budete si vybírat výrobky, které budete moct získat.
-<b>8) Čtení článků:</b> Budete mít čas si dříve vybrané články přečíst.
-<b>9) Příspěvek charitě:</b> Budete se rozhodovat, zda přispějete na charitu, pokud získáte peníze v loterii.
-<b>10) Loterie:</b> Můžete se rozhodnout zúčastnit se další loterie a získat peníze v závislosti na výsledcích této loterie.
-<b>11) Konec studie a platba:</b> Poté, co skončíte, půjdete do vedlejší místnosti, kde podepíšete pokladní doklad, na základě kterého obdržíte vydělané peníze v hotovosti. Jelikož v dokumentu bude uvedena pouze celková suma, experimentátor, který Vám bude vyplácet odměnu, nebude vědět, kolik jste vydělali v jednotlivých částech studie.
+<b>1) Skupiny:</b> Budete uvádět, jaké skupiny jsou Vám blízké.
+<b>2) Rozhodovací úlohy:</b> Čeká Vás několik typů interaktivních úloh s opakovanými rozhodnutími, jejichž výsledky závisí na Vašich volbách a na volbách ostatních účastníků.
+<b>3) Hra s hašením ohňů:</b> Nejprve absolvujete krátký tutoriál, poté odehrajete dvě hlavní kola hry.
+<b>4) Výběr výrobků:</b> Ve dvou blocích budete vybírat výrobky, které budete moct získat.
+<b>5) Dotazníky:</b> Vyplníte několik krátkých dotazníků.
+<b>6) Závěrečné otázky:</b> Uvedete základní demografické údaje.
+<b>7) Konec studie a platba:</b> Poté, co skončíte, půjdete do vedlejší místnosti, kde podepíšete pokladní doklad, na základě kterého obdržíte vydělané peníze v hotovosti. Jelikož v dokumentu bude uvedena pouze celková suma, experimentátor, který Vám bude vyplácet odměnu, nebude vědět, kolik jste vydělali v jednotlivých částech studie.
 
-Veškeré interakce s ostatními účastniky studie proběhnou pouze přes počítač a anonymně. Nikdy nebudete navzájem vědět, s kým v rámci experimentu interagujete.
+Veškeré interakce s ostatními účastníky studie proběhnou pouze přes počítač a anonymně. Nikdy nebudete navzájem vědět, s kým v rámci experimentu interagujete.
 
 V případě, že máte otázky nebo narazíte na technický problém během úkolů, prosíme, zvedněte ruku a tiše vyčkejte příchodu výzkumného asistenta.
 
@@ -80,7 +76,7 @@ class Ending(InstructionsFrame):
         root.texts["rounded_reward"] = ceil(root.status["reward"] / 10) * 10
         root.texts["participation_fee"] = PARTICIPATION_FEE
         updates = ["results", "participation_fee", "reward", "rounded_reward"]
-        super().__init__(root, text = ending, keys = ["g", "G"], proceed = False, height = "auto", update = updates)
+        super().__init__(root, text = ending, keys = ["g", "G"], proceed = False, height = "auto", update = updates, width = 100)
         self.file.write("Ending\n")
         self.file.write(self.id + "\t" + root.texts["reward"] + "\n\n")
 
