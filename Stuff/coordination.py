@@ -213,7 +213,11 @@ class CoordinationGame(InstructionsFrame):
     def __init__(self, root):
         block = root.status.get("co_block", 1)
         trial = root.status.get("co_trial", 1)
-        role = self._coordination_role(block)
+        roles = root.status.get("co_roles", {})
+        role = roles.get(block, "A")
+        role = "A" if str(role) == "1" else str(role)
+        if role not in ("A", "B"):
+            role = "A"
         role_label = f"Hráč {role}"
         order_index = max(0, min(len(order) - 1, block - 1))
         partner_ordinal = order[order_index]
@@ -433,7 +437,10 @@ class CoordinationRoundResult(InstructionsFrame):
 
         my_choice = result.get("my_decision", "-")
         partner_choice = result.get("partner_decision", "-")
-        role = result.get("role") or self.root.status.get("co_roles", {}).get(block, "A")
+        role = result.get("role") or root.status.get("co_roles", {}).get(block, "A")
+        role = "A" if str(role) == "1" else str(role)
+        if role not in ("A", "B"):
+            role = "A"
         role_label = f"Hráč {role}"
         payoff = result.get("payoff")
         partner_payoff = result.get("partner_payoff")

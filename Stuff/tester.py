@@ -6,7 +6,7 @@ import os
 import time
 
 # Number of simultaneous instances to run
-NUM_INSTANCES = 23
+NUM_INSTANCES = 3
 
 # Path to experiment.pyw (one directory up from current script)
 experiment_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "experiment.pyw")

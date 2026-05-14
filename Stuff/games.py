@@ -264,71 +264,167 @@ class WaitResults(Wait):
         self.checkUpdate()
 
     def test(self):
-        if not self._has_trust_data():
-            return "ok"
-        # Simulate trust result: randomly pick payoff round and role.
-        decisions = self.root.status.get("trust_decisions", {})
-        if not decisions:
-            return "ok"
-        step = max(1, TRUST_ENDOWMENT // 5)
-        chosen_round = random.choice(list(decisions.keys()))
-        role = random.choice(["A", "B"])
-        d = decisions[chosen_round]
-        if role == "A":
-            sentA = d["sentA"]
-            max_b_steps = (sentA * 3 + TRUST_ENDOWMENT) // step
-            sentB = random.randint(0, max_b_steps) * step
+        # Simulate the new format for all three games
+        # Coordination
+        co_decisions = self.root.status.get("co_decisions", {})
+        if co_decisions:
+            block = random.choice(list(co_decisions.keys()))
+            trials = co_decisions[block]
+            trial_keys = list(trials.keys())
+            if len(trial_keys) >= 2:
+                t1, t2 = trial_keys[:2]
+            elif len(trial_keys) == 1:
+                t1 = t2 = trial_keys[0]
+            else:
+                t1 = t2 = 1
+            self1 = trials.get(t1, {}).get("decision", "A")
+            other1 = random.choice(["A", "B"])
+            self2 = trials.get(t2, {}).get("decision", "B")
+            other2 = random.choice(["A", "B"])
+            co_part = f"coordination:{block},{self1},{other1},{self2},{other2}"
         else:
-            idx = random.randint(0, 5)
-            sentA = idx * step
-            sentB = d["sentB_list"][idx]
-        return "_".join(map(str, [role, chosen_round, sentA, sentB]))
+            co_part = "coordination:1,A,B,B,A"
+
+        # Market
+        me_decisions = self.root.status.get("me_decisions", {})
+        me_quiz_scores = self.root.status.get("me_quiz_scores", {})
+        if me_decisions:
+            block = random.choice(list(me_decisions.keys()))
+            decision_self = me_decisions[block]
+            quiz_self = me_quiz_scores.get(block, random.randint(0, 5))
+            decision_other = random.choice(["in", "out"])
+            quiz_other = random.randint(0, 5)
+            me_part = f"market:{block},{decision_self},{quiz_self},{decision_other},{quiz_other}"
+        else:
+            me_part = "market:1,in,3,out,2"
+
+        # Trust
+        if self._has_trust_data():
+            decisions = self.root.status.get("trust_decisions", {})
+            if decisions:
+                chosen_round = random.choice(list(decisions.keys()))
+                d = decisions[chosen_round]
+                sentA = d.get("sentA", TRUST_ENDOWMENT // 2)
+                sentB = d.get("sentB", TRUST_ENDOWMENT // 2)
+                trust_part = f"trust:{chosen_round},{sentA},{sentB}"
+            else:
+                trust_part = f"trust:1,{TRUST_ENDOWMENT//2},{TRUST_ENDOWMENT//2}"
+        else:
+            trust_part = f"trust:1,{TRUST_ENDOWMENT//2},{TRUST_ENDOWMENT//2}"
+
+        return f"{co_part}|{me_part}|{trust_part}"
 
     def processResponse(self, response):
-        # Trust expected format: role_round_sentA_sentB
-        if response != "ok":
-            role, round_str, sentA_str, sentB_str = response.split("_")
-            sentA, sentB = int(sentA_str), int(sentB_str)
-            if role == "A":
-                reward = TRUST_ENDOWMENT - sentA + sentB
-                result_text = trustResultTextA.format(
-                    sentA,
-                    sentA * 3,
-                    TRUST_ENDOWMENT + sentA * 3,
-                    sentB,
-                    TRUST_ENDOWMENT - sentA + sentB,
-                    TRUST_ENDOWMENT + sentA * 3 - sentB,
-                )
-            else:
-                reward = TRUST_ENDOWMENT + sentA * 3 - sentB
-                result_text = trustResultTextB.format(
-                    sentA,
-                    sentA * 3,
-                    TRUST_ENDOWMENT + sentA * 3,
-                    sentB,
-                    TRUST_ENDOWMENT + sentA * 3 - sentB,
-                    TRUST_ENDOWMENT - sentA + sentB,
-                )
+        if response == "ok":
+            self._append_market_result()
+            self._append_coordination_result()
+            return
 
-            reward_so_far = self.root.status.get("reward", 0)
-            if not isinstance(reward_so_far, (int, float)):
-                reward_so_far = 0
-            self.root.status["reward"] = reward_so_far + reward
+        # Parse new format: coordination:<round>,<self1>,<other1>,<self2>,<other2>|market:<round>,<decision_self>,<quiz_self>,<decision_other>,<quiz_other>|trust:<round>,<sentA>,<sentB>
+        sections = response.split("|")
+        results = self.root.status.get("results")
+        if not isinstance(results, list):
+            results = []
+        reward_so_far = self.root.status.get("reward", 0)
+        if not isinstance(reward_so_far, (int, float)):
+            reward_so_far = 0
 
-            results = self.root.status.get("results")
-            if not isinstance(results, list):
-                results = []
-            results.append(result_text)
-            self.root.status["results"] = results
+        for section in sections:
+            if section.startswith("coordination:"):
+                # coordination:<round>,<self1>,<other1>,<self2>,<other2>
+                _, data = section.split(":", 1)
+                parts = data.split(",")
+                if len(parts) == 5:
+                    round_idx = int(parts[0])
+                    self1 = parts[1]
+                    other1 = parts[2]
+                    self2 = parts[3]
+                    other2 = parts[4]
+                    # Example: use first trial for result text
+                    payoff = COORDINATION_SUCCESS if self1 == other1 else 0
+                    partner_label = f"{round_idx}."
+                    role_label = "Hráč A"  # or B if you have role info
+                    result_text = coordinationResultText.format(
+                        round_idx, partner_label, role_label, self1, other1, payoff, 0
+                    )
+                    results.append(result_text)
+                    self.root.status["coordination_result"] = {
+                        "round": round_idx,
+                        "my_decision1": self1,
+                        "partner_decision1": other1,
+                        "my_decision2": self2,
+                        "partner_decision2": other2,
+                        "reward": payoff,
+                    }
+                    reward_so_far += payoff
 
-            self.root.status["trust_result"] = {
-                "role": role,
-                "round": int(round_str),
-                "sentA": sentA,
-                "sentB": sentB,
-                "reward": reward,
-            }
+            elif section.startswith("market:"):
+                # market:<round>,<decision_self>,<quiz_self>,<decision_other>,<quiz_other>
+                _, data = section.split(":", 1)
+                parts = data.split(",")
+                if len(parts) == 5:
+                    round_idx = int(parts[0])
+                    decision_self = parts[1]
+                    quiz_self = int(parts[2])
+                    decision_other = parts[3]
+                    quiz_other = int(parts[4])
+                    # Calculate payoff
+                    if decision_self == "in" and decision_other == "in":
+                        if quiz_self > quiz_other:
+                            payoff = MARKET_WIN
+                        elif quiz_self < quiz_other:
+                            payoff = MARKET_LOSS
+                        else:
+                            payoff = random.choice([MARKET_WIN, MARKET_LOSS])
+                        result_text = marketResultBothEnterText.format(quiz_self, quiz_other)
+                    elif decision_self == "in":
+                        payoff = MARKET_WIN
+                        result_text = marketResultText.format(round_idx, decision_self, decision_other, payoff)
+                    else:
+                        payoff = MARKET_ENDOWMENT
+                        result_text = marketResultText.format(round_idx, decision_self, decision_other, payoff)
+                    results.append(result_text)
+                    self.root.status["market_result"] = {
+                        "round": round_idx,
+                        "decision_self": decision_self,
+                        "quiz_self": quiz_self,
+                        "decision_other": decision_other,
+                        "quiz_other": quiz_other,
+                        "reward": payoff,
+                    }
+                    reward_so_far += payoff
 
+            elif section.startswith("trust:"):
+                # trust:<round>,<sentA>,<sentB>
+                _, data = section.split(":", 1)
+                parts = data.split(",")
+                if len(parts) == 3:
+                    round_idx = int(parts[0])
+                    sentA = int(parts[1])
+                    sentB = int(parts[2])
+                    # Assume role A for participant
+                    reward = TRUST_ENDOWMENT - sentA + sentB
+                    result_text = trustResultTextA.format(
+                        sentA,
+                        sentA * 3,
+                        TRUST_ENDOWMENT + sentA * 3,
+                        sentB,
+                        TRUST_ENDOWMENT - sentA + sentB,
+                        TRUST_ENDOWMENT + sentA * 3 - sentB,
+                    )
+                    results.append(result_text)
+                    self.root.status["trust_result"] = {
+                        "round": round_idx,
+                        "sentA": sentA,
+                        "sentB": sentB,
+                        "reward": reward,
+                    }
+                    reward_so_far += reward
+
+        self.root.status["results"] = results
+        self.root.status["reward"] = reward_so_far
+
+        # Optionally call these if you want to keep old logic
         self._append_market_result()
         self._append_coordination_result()
 
@@ -337,7 +433,8 @@ class WaitResults(Wait):
         if response == "ok":
             self.file.write(self.id + "\tok\n\n")
             return
-        self.file.write(self.id + "\t" + response.replace("_", "\t") + "\n\n")
+        # Write each section on a new line for readability
+        self.file.write(self.id + "\t" + response.replace("|", "\n\t") + "\n\n")
 
 
 
