@@ -103,13 +103,6 @@ def _coordination_payoffs(my_choice, partner_choice):
         partner_payoff += COORDINATION_SUCCESS
     return my_payoff, partner_payoff
 
-
-def _coordination_role(root, block):
-    roles = root.status.setdefault("co_roles", {})
-    if block not in roles:
-        roles[block] = random.choice(["A", "B"])
-    return roles[block]
-
 nextRoundText = """Nyní budete hrát další kolo s jiným partnerem. Vaše role může zůstat stejná nebo se změnit."""
 
 
@@ -220,7 +213,7 @@ class CoordinationGame(InstructionsFrame):
     def __init__(self, root):
         block = root.status.get("co_block", 1)
         trial = root.status.get("co_trial", 1)
-        role = _coordination_role(root, block)
+        role = self._coordination_role(block)
         role_label = f"Hráč {role}"
         order_index = max(0, min(len(order) - 1, block - 1))
         partner_ordinal = order[order_index]
@@ -325,6 +318,10 @@ class CoordinationGame(InstructionsFrame):
         self.columnconfigure(0, weight=2)
         self.columnconfigure(2, weight=2)
 
+    def _coordination_role(self, block):
+        role = self.root.status["co_roles"][block]
+        return "A" if str(role) == "1" else "B"
+
     def _selected(self, decision):
         self.decision_var.set(decision)
         self.option_a_button.config(state="disabled")
@@ -366,7 +363,7 @@ class CoordinationGame(InstructionsFrame):
         data = {
             "id": self.id,
             "round": "coordination{}_{}".format(self.block, self.trial),
-            "offer": "{}_{}".format(decision, prediction),
+            "offer": decision,
         }
         self.sendData(data)
 

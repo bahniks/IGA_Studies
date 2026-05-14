@@ -11,10 +11,11 @@ import random
 import os
 import urllib.request
 import urllib.parse
+import csv
 
 from common import InstructionsFrame
 from gui import GUI
-from constants import TESTING, URL
+from constants import TESTING, URL, COORDINATION_ROUNDS
 
 
 
@@ -36,14 +37,7 @@ class Login(InstructionsFrame):
                 data = urllib.parse.urlencode({'id': self.root.id, 'round': self.root.status["code"], 'offer': "login"})
                 data = data.encode('ascii')
                 if URL == "TEST":                                                       
-                    bag = str(random.randint(1, 10)) if random.random() < 0.4 else "-1"
-                    if random.random() < 0.5:
-                        trustRoles = random.choice(["A", "B"]) + "X"
-                        trustPairs = str(random.randint(1, 10)) + "_-1" 
-                    else:
-                        trustRoles = random.choice(["A", "B"]) + random.choice(["A", "B"])
-                        trustPairs = "_".join([str(random.randint(1, 10)) for i in range(2)])
-                    response = "|".join(["start", bag, trustPairs, trustRoles]) 
+                    response = self._test_login_response()
                 else:
                     response = ""
                     try:
@@ -51,11 +45,9 @@ class Login(InstructionsFrame):
                             response = f.read().decode("utf-8") 
                     except Exception:
                         self.changeText("Server nedostupný")
-                if "start" in response:
-                    info, bag, trustPairs, trustRoles = response.split("|")              
-                    self.root.status["bag"] = bag
-                    self.root.status["trust_roles"] = list(trustRoles)
-                    self.root.status["trust_pairs"] = trustPairs.split("_")         
+                if response:
+                    self.root.status["selected_products"] = self._parse_selected_products_response(response)
+                    self.root.status["co_roles"] = self._parse_coordination_roles_response(response)
                     self.progressBar.stop()
                     self.write(response)
                     self.nextFun()                      
@@ -81,6 +73,42 @@ class Login(InstructionsFrame):
     def write(self, response):
         self.file.write("Login" + "\n")
         self.file.write(self.id + "\t" + "\t".join(response.split("|")) + "\n\n")        
+
+    @staticmethod
+    def _parse_product_token(token):
+        token = str(token).strip()
+        if "_" in token:
+            code, presentation = token.rsplit("_", 1)
+            return {"code": code.strip(), "presentation": presentation.strip().upper()}
+        return {"code": token, "presentation": "CONTROL"}
+
+    def _parse_selected_products_response(self, response):
+        token1, token2, _ = str(response).split("|")
+        return [self._parse_product_token(token1), self._parse_product_token(token2)]
+
+    @staticmethod
+    def _parse_coordination_roles_response(response):
+        _, _, roles_token = str(response).split("|")
+        role_values = roles_token.split("_")
+        return {i + 1: ("A" if role == "1" else "B") for i, role in enumerate(role_values)}
+
+    def _test_login_response(self):
+        products_path = os.path.join(os.path.dirname(__file__), "products.tsv")
+        with open(products_path, encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f, delimiter="\t")
+            product_ids = [row.get("id", "").strip() for row in reader if row.get("id")]
+
+        control_products_path = os.path.join(os.path.dirname(__file__), "products_control.tsv")
+        with open(control_products_path, encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f, delimiter="\t")
+            control_ids = [row.get("id", "").strip() for row in reader if row.get("id")]
+
+        token_pool = [f"{pid}_{random.choice(['1', '2'])}" for pid in product_ids]
+        token_pool.extend(control_ids)
+
+        chosen = random.sample(token_pool, 2)
+        coord_roles = "_".join([random.choice(["1", "2"]) for _ in range(COORDINATION_ROUNDS)])
+        return "|".join(chosen + [coord_roles])
 
     def gothrough(self):
         self.run()

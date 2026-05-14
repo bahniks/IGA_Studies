@@ -304,9 +304,18 @@ class Trust(InstructionsFrame):
 
     def send(self):
         block = self.root.status["trustblock"]
-        self.responses = [self.frames[i].valueVar.get().strip() for i in range(7)]
-        data = {'id': self.id, 'round': "trust" + str(block), 'offer': "_".join(self.responses[:7])}
-        self.sendData(data)
+        sent_a = self.frames[6].valueVar.get().strip()
+        sent_b_list = [self.frames[i].valueVar.get().strip() for i in range(6)]
+
+        # Server contract: trustA<round> carries A's sent amount; trustB<round> carries
+        # B's six contingency returns for A sending [0, 8, 16, 24, 32, 40].
+        # Send role A decision for this round.
+        data_a = {'id': self.id, 'round': "trustA" + str(block), 'offer': sent_a}
+        self.sendData(data_a)
+
+        # Send role B contingency decisions for this round (prediction excluded).
+        data_b = {'id': self.id, 'round': "trustB" + str(block), 'offer': "_".join(sent_b_list)}
+        self.sendData(data_b)
 
     def write(self):
         block = self.root.status["trustblock"]

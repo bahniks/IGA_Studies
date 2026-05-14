@@ -249,9 +249,15 @@ class MarketEntryQuiz(ExperimentFrame):
 			self.phase = 2
 			self._build_confidence()
 		else:
+			self.send()
 			self.write()
 			self.destroy()
 			self.root.nextFrame()
+
+	def send(self):
+		score = self._score_quiz()
+		data = {'id': self.id, 'round': "market_entry_quiz" + str(self.block), 'offer': "{}".format(score)}
+		self.sendData(data)
 
 	def write(self):
 		score = self._score_quiz()
@@ -326,9 +332,16 @@ class MarketEntryGame(InstructionsFrame):
 	def nextFun(self):
 		if not self.decision_var.get():
 			return
+		self.send()
 		self.write()
 		self.destroy()
 		self.root.nextFrame()
+
+	def send(self):
+		decision = self.decision_var.get()
+		score = self.root.status.get("me_quiz_scores", {}).get(self.block, 0)
+		data = {'id': self.id, 'round': "market_entry" + str(self.block), 'offer': "{}_{}".format(decision, score)}
+		self.sendData(data)
 
 	def write(self):
 		decision = self.decision_var.get()

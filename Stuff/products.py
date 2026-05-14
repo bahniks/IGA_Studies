@@ -234,9 +234,20 @@ class Choices(ExperimentFrame):
 
         if self.order == len(self.trials):
             if self.condition_index == 1:
-                drawn = random.sample(self.all_choices, min(2, len(self.all_choices)))
+                drawn = []
+                targets = self.root.status.get("selected_products", [])
+                for target in targets[:2]:
+                    code = str(target.get("code", "")).strip()
+                    presentation = str(target.get("presentation", "CONTROL")).strip().upper() or "CONTROL"
+                    selected_choice = self._find_selected_product_choice(code, presentation)
+                    if selected_choice is not None:
+                        drawn.append(selected_choice)
+                    else:
+                        drawn.append({"label": code, "shown_price": "0 Kč", "choice": "no"})
+
                 while len(drawn) < 2:
-                    drawn.append(drawn[0] if drawn else {"label": "", "shown_price": "", "choice": "no"})
+                    drawn.append({"label": "", "shown_price": "0 Kč", "choice": "no"})
+
                 lines = []
                 total_spent = 0
                 bought_number = 0
@@ -319,6 +330,7 @@ class Choices(ExperimentFrame):
             "label": self.current["label"],
             "shown_price": self.current["shown_price"],
             "choice": choice,
+            "presentation": str(self.run_index + 1),
         })
 
         elapsed = time() - self.t0
@@ -339,11 +351,56 @@ class Choices(ExperimentFrame):
 
     def nextFun(self):
         self.root.status["products_run_index"] = self.run_index + 1
-        if self.root.status["bag"] != "-1":
-            data = "_".join([i for i in self.selected.keys()]) + "|" + "_".join([i for i in self.selected.values()])
-            data = {'id': self.id, 'round': "products", 'offer': data}
-            self.sendData(data)
+        if self.condition_index == 1:
+            self._send_selected_products_outcomes()
         super().nextFun()
+
+    def _find_selected_product_choice(self, code, presentation):
+        presentation = str(presentation).upper()
+        for ch in self.all_choices:
+            if ch.get("id") != code:
+                continue
+            if presentation == "CONTROL" or str(ch.get("presentation", "")).upper() == presentation:
+                return ch
+        return None
+
+    def _send_selected_products_outcomes(self):
+        targets = self.root.status.get("selected_products", [])
+        if not isinstance(targets, list):
+            return
+
+        targets = targets[:2]
+        resolved = []
+
+        for target in targets:
+            if not isinstance(target, dict):
+                continue
+            code = str(target.get("code", "")).strip()
+            presentation = str(target.get("presentation", "CONTROL")).strip().upper() or "CONTROL"
+            choice = self._find_selected_product_choice(code, presentation)
+            if choice is not None:
+                resolved.append({
+                    "code": code,
+                    "choice": choice.get("choice", "NA"),
+                })
+            else:
+                resolved.append({
+                    "code": code,
+                    "choice": "NA",
+                })
+
+        self.root.status["selected_products_choices"] = resolved
+
+        offer_parts = [
+            "{}:{}".format(item["code"], item["choice"])
+            for item in resolved
+        ]
+        data = {
+            'id': self.id,
+            'round': "products_selected",
+            'offer': "|".join(offer_parts),
+        }
+        self.sendData(data)
 
     def gothrough(self):
         # Simulate a full run with random purchase decisions.
