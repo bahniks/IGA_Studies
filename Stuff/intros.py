@@ -51,7 +51,7 @@ Děkujeme za Vaši účast!
 Decision Lab Prague při FPH VŠE""" 
 
 
-login = """Vítejte na výzkumné studii pořádané Fakultou podnikohospodářskou Vysoké školy ekonomické v Praze ve spolupráci s Univerzitou Karlovou! 
+login = """Vítejte na výzkumné studii pořádané Fakultou podnikohospodářskou Vysoké školy ekonomické v Praze! 
 
 Za účast na studii obdržíte {} Kč. Kromě toho můžete vydělat další peníze v průběhu studie. 
 

@@ -13,7 +13,7 @@ games = """V první části studie se zúčastníte několika nezávislých rozh
 
 Přestože jsou odpovědi v úlohách anonymní, některé preference mohou být zobrazeny ostatním účastníkům.
 
-Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí na Vašich rozhodnutích a ve všech úlohách také na rozhodnutích ostatních účastníků."""
+Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí na Vašich rozhodnutích a na rozhodnutích ostatních účastníků."""
 
 
 
