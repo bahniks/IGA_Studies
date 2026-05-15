@@ -18,18 +18,18 @@ meIntro0 = """Nyní začíná další úloha.
 
 Vaše rozhodnutí v této úloze budou mít finanční důsledky pro Vás a pro dalšího přítomného účastníka v laboratoři.
 
-Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) studii a své roli v ní."""
+Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) úloze a své roli v ní."""
 
 meIntro1 = """Tato úloha se skládá z {} kol.
 
-V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávající z 5 odhadovacích otázek. 
+V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávající z 5 odhadovacích otázek, kde za správnou odpověď bude považována taková, která spadá do rozmezí ±10 % od skutečné hodnoty.  
 
 V každém kole budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>"Vstoupit na trh"</i> nebo <i>"Nevstoupit"</i>
 
 <b>Výplaty:</b>
 • Pokud oba účastníci nevstoupí, každý obdrží {} Kč
 • Pokud jeden vstoupí a druhý nevstoupí, vstupující obdrží {} Kč a druhý {} Kč
-• Pokud vstoupí oba, účastník s vyšším skóre v kvízu obdrží {} Kč a druhý {} Kč (v případě shody je vítěz vybrán náhodně)
+• Pokud vstoupí oba, účastník s vyšším počtem správně zodpovězených otázek v kvízu obdrží {} Kč a druhý {} Kč. V případě shody bude vítěz vybrán náhodně. 
 
 Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. 
 
@@ -44,7 +44,7 @@ V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se roz
 <b>Připomenutí výplaty:</b>
 •  Oba nevstoupí: každý {} Kč
 •  Jeden vstoupí, jeden nevstoupí: vstupující {} Kč, druhý {} Kč
-•  Oba vstoupí: ten s vyšším skóre v kvízu získá {} Kč, ten s nižším {} Kč"""
+•  Oba vstoupí: ten s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč, ten s nižším {} Kč; v případě shody bude vítěz vybrán náhodně."""
 
 meConfidenceText = "Kolik z právě zodpovězených {} otázek si myslíte, že jste zodpověděl(a) správně?"
 
@@ -58,12 +58,12 @@ meFeedback1 = ["Správně.",
 			   "Nesprávně. Pokud oba nevstoupí, oba obdrží {} Kč.".format(MARKET_ENDOWMENT)]
 
 meControl2 = "Co se stane, pokud oba účastníci vstoupí na trh?"
-meAnswers2 = ["Výsledek bude záviset na skóre v kvízu",
+meAnswers2 = ["Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu",
 			  "Oba dostanou {} Kč".format(MARKET_WIN),
 			  "Oba dostanou {} Kč".format(MARKET_ENDOWMENT)]
-meFeedback2 = ["Správně. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN),
-			   "Nesprávně. Výsledek bude záviset na skóre v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN),
-			   "Nesprávně. Výsledek bude záviset na skóre v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN)]
+meFeedback2 = ["Správně. Účastník s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč.".format(MARKET_WIN),
+			   "Nesprávně. Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN),
+			   "Nesprávně. Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN)]
 
 
 meControlTexts = [

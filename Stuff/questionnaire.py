@@ -20,7 +20,7 @@ from constants import TESTING, AUTOFILL, ATTENTION_BONUS
 ################################################################################
 # TEXTS questionnaire
 
-questintro = """V následující části studie budete odpovídat na otázky o sobě a řešit krátké číselné úlohy."""
+questintro = """V následující části studie budete řešit krátké číselné úlohy a odpovídat na otázky o sobě."""
 
 questintro2 = """V následující části studie budete odpovídat na otázky o sobě, Vašich postojích a názorech."""
 
@@ -46,7 +46,7 @@ narcissismIntro = "Uveďte prosím, do jaké míry je pro Vás každé z násled
 transactionValueIntro = """Níže jsou uvedena tvrzení týkající se cenových nabídek. U každého tvrzení označte, nakolik s ním souhlasíte."""
 
 numeracyIntro = """Na této obrazovce budete řešit několik krátkých početních úloh.
-Odpovězte prosím na následující otázky. Nepoužívejte mobilní telefon, ale pro poznámky můžete využít volný papír."""
+Odpovězte prosím na následující otázky."""
 
 salesPronenessIntro = """Níže jsou uvedena tvrzení týkající se cenových nabídek produktů. U každého tvrzení označte, nakolik s ním souhlasíte."""
 

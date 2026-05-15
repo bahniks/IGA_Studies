@@ -313,7 +313,7 @@ class Choices(ExperimentFrame):
                         discount_pct = 0
                     self.current["shown_price"] = middle_price
                     self.current["discount_pct"] = discount_pct
-                    self.current["transparent_text"] = transparent.format(high_price) if display_condition == "transparent" else ""
+                    self.current["transparent_text"] = transparent.format(baseline_price) if display_condition == "transparent" else ""
 
             self.product.showProduct(self.current)
             self.t0 = time()

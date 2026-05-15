@@ -13,9 +13,7 @@ games = """V první části studie se zúčastníte několika nezávislých rozh
 
 Přestože jsou odpovědi v úlohách anonymní, některé preference mohou být zobrazeny ostatním účastníkům.
 
-Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí na Vašich rozhodnutích a na rozhodnutích ostatních účastníků."""
-
-
+Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí jak na Vašich rozhodnutích, tak na rozhodnutích ostatních účastníků, a obdobně jejich odměna závisí na Vašich."""
 
 
 
@@ -47,21 +45,17 @@ class WaitResults(Wait):
         return bool(self.root.status.get("trust_decisions"))
 
     @staticmethod
-    def _normalize_coordination_role(role_raw):
-        if role_raw == "A":
-            return "1"
-        if role_raw == "B":
-            return "2"
+    def _coordination_role(role_raw):
         role = str(role_raw)
-        if role in ("1", "2"):
-            return role
-        raise ValueError(f"Invalid role value: {role_raw}")
+        if role not in ("1", "2"):
+            raise ValueError(f"Invalid role value: {role_raw}")
+        return role
 
     def _coordination_role_for_block(self, block):
         roles = self.root.status["co_roles"]
         if block not in roles:
             raise KeyError(f"Role for block {block} not found in co_roles")
-        return self._normalize_coordination_role(roles[block])
+        return self._coordination_role(roles[block])
 
     def _coordination_payoffs(self, role, my_decision, partner_decision):
         """Return (my_payoff, partner_payoff) for the coordination game.
@@ -206,7 +200,7 @@ class WaitResults(Wait):
                 partner_decision = random.choice(["A", "B"])
                 coordinated = my_decision == partner_decision
                 if "role" in d and d["role"]:
-                    role = self._normalize_coordination_role(d["role"])
+                    role = self._coordination_role(d["role"])
                 else:
                     role = self._coordination_role_for_block(block)
                 payoff, partner_payoff = self._coordination_payoffs(role, my_decision, partner_decision)
@@ -244,7 +238,7 @@ class WaitResults(Wait):
         payoff = int(selected.get("payoff", 0))
         partner_payoff = int(selected.get("partner_payoff", 0))
         if "role" in selected and selected["role"]:
-            role = self._normalize_coordination_role(selected["role"])
+            role = self._coordination_role(selected["role"])
         else:
             role = self._coordination_role_for_block(chosen_block)
         role_label = f"Hráč {role}"
@@ -478,12 +472,8 @@ class WaitResults(Wait):
         self.root.status["reward"] = reward_so_far
 
     def write(self, response):
-        self.file.write("Final Results\n")
-        if response == "ok":
-            self.file.write(self.id + "\tok\n\n")
-            return
-        # Write each section on a new line for readability
-        self.file.write(self.id + "\t" + response.replace("|", "\n\t") + "\n\n")
+        self.file.write("Final Results\n")        
+        self.file.write(self.id + "\t" + response.replace("|", "\t") + "\n\n")
 
 
 

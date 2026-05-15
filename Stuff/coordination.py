@@ -20,11 +20,11 @@ instructionsC0 = """Nyní začíná první rozhodovací úloha.
 
 Vaše rozhodnutí v této úloze budou mít finanční důsledky pro Vás a pro dalšího přítomného účastníka v laboratoři.
 
-Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) studii a své roli v ní."""
+Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) úloze a své roli v ní."""
 
 instructionsC1a = f"""V této úloze budete náhodně spárováni s {COORDINATION_ROUNDS} účastníky a s každým z nich budete hrát dvě kola.
 
-V každém kole si oba současně zvolíte jednu možnost: Volbu A nebo Volbu B. Vaše odměna závisí na Vaší volbě i na volbě druhého účastníka.
+V každém kole se dozvíte, jaká role Vám byla přidělena (Hráč 1 nebo Hráč 2), a následně si oba současně zvolíte jednu možnost: Volbu A nebo Volbu B. Vaše odměna závisí na Vaší volbě i na volbě druhého účastníka.
 
 <b>Výplatní tabulka je uvedena níže:</b>"""
 
@@ -219,15 +219,9 @@ class CoordinationGame(InstructionsFrame):
         roles = root.status.get("co_roles", {})
         if block not in roles:
             raise KeyError(f"Role for block {block} not found in co_roles")
-        role_raw = roles[block]
-        if role_raw == "A":
-            role = "1"
-        elif role_raw == "B":
-            role = "2"
-        elif str(role_raw) in ("1", "2"):
-            role = str(role_raw)
-        else:
-            raise ValueError(f"Invalid role value: {role_raw}")
+        role = str(roles[block])
+        if role not in ("1", "2"):
+            raise ValueError(f"Invalid role value: {roles[block]}")
         role_label = f"Hráč {role}"
         order_index = max(0, min(len(order) - 1, block - 1))
         partner_ordinal = order[order_index]
@@ -336,15 +330,10 @@ class CoordinationGame(InstructionsFrame):
         roles = self.root.status["co_roles"]
         if block not in roles:
             raise KeyError(f"Role for block {block} not found in co_roles")
-        role_raw = roles[block]
-        if role_raw == "A":
-            return "1"
-        elif role_raw == "B":
-            return "2"
-        elif str(role_raw) in ("1", "2"):
-            return str(role_raw)
-        else:
-            raise ValueError(f"Invalid role value: {role_raw}")
+        role = str(roles[block])
+        if role not in ("1", "2"):
+            raise ValueError(f"Invalid role value: {roles[block]}")
+        return role
 
     def _selected(self, decision):
         self.decision_var.set(decision)
@@ -463,15 +452,9 @@ class WaitCoordination(Wait):
         roles = self.root.status["co_roles"]
         if block not in roles:
             raise KeyError(f"Role for block {block} not found in co_roles")
-        role_raw = roles[block]
-        if role_raw == "A":
-            role = "1"
-        elif role_raw == "B":
-            role = "2"
-        elif str(role_raw) in ("1", "2"):
-            role = str(role_raw)
-        else:
-            raise ValueError(f"Invalid role value: {role_raw}")
+        role = str(roles[block])
+        if role not in ("1", "2"):
+            raise ValueError(f"Invalid role value: {roles[block]}")
 
         partner_decision = self._parse_partner_decision(response)
 
@@ -513,13 +496,8 @@ class CoordinationRoundResult(InstructionsFrame):
             if block not in roles:
                 raise KeyError(f"Role for block {block} not found in co_roles")
             role_raw = roles[block]
-        if role_raw == "A":
-            role = "1"
-        elif role_raw == "B":
-            role = "2"
-        elif str(role_raw) in ("1", "2"):
-            role = str(role_raw)
-        else:
+        role = str(role_raw)
+        if role not in ("1", "2"):
             raise ValueError(f"Invalid role value: {role_raw}")
         role_label = f"Hráč {role}"
         payoff = result.get("payoff")

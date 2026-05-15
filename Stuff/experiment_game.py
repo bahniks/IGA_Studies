@@ -796,7 +796,6 @@ class ExperimentGame(ExperimentFrame):
             return
         self.sprinkler_on = True
         self.fires_paused = True
-        self._freeze_time_tracking()
         if self.valve_hold_after_id is not None:
             self.root.after_cancel(self.valve_hold_after_id)
             self.valve_hold_after_id = None

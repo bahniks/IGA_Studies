@@ -97,7 +97,13 @@ class Login(InstructionsFrame):
     def _parse_coordination_roles_response(response):
         _, _, roles_token = str(response).split("|")
         role_values = roles_token.split("_")
-        return {i + 1: ("A" if role == "1" else "B") for i, role in enumerate(role_values)}
+        parsed = {}
+        for i, role in enumerate(role_values, start=1):
+            role_text = str(role).strip()
+            if role_text not in ("1", "2"):
+                raise ValueError(f"Invalid coordination role value from server: {role}")
+            parsed[i] = role_text
+        return parsed
 
     def _test_login_response(self):
         products_path = os.path.join(os.path.dirname(__file__), "products.tsv")

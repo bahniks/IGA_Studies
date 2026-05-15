@@ -204,9 +204,9 @@ def main():
 
     GUI([
         Login,
-        # FiresIntro1,
-        # FiresIntro2,
-        # FiresRules,
+        FiresIntro1,
+        FiresIntro2,
+        FiresRules,
         # FiresTutorialBucket,
         # FireTutorialGame,
         # FiresTutorialSprinkler,

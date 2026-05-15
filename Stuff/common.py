@@ -100,7 +100,7 @@ class InstructionsFrame(ExperimentFrame):
         if self.height == "auto":
             self.text.update_idletasks()
             num_lines = self.count_lines()
-            if "</b>" in text:
+            if "</b>" in text or "</i>" in text:
                 num_lines += 1
             self.text.config(height = int(num_lines))
 

@@ -17,7 +17,7 @@ instructionsT0 = """Nyní začíná další úloha.
 
 Vaše rozhodnutí v této úloze budou mít finanční důsledky pro Vás a pro dalšího přítomného účastníka v laboratoři.
 
-Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) studii a své roli v ní."""
+Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) úloze a své roli v ní."""
 
 
 instructionsT1 = """Tato úloha se skládá z {} kol. V každém kole budete náhodně spárován(a) s dalším účastníkem studie. Oba obdržíte {} Kč.
@@ -39,7 +39,7 @@ Pro ověření pochopení úlohy odpovězte na kontrolní otázky níže."""
 intstuctionsT2a = "Pro účastníka studie, s kterým jste spárován(a), jsou blízká tato slova:"
 
 
-instructionsT2 = """On podobně bude vědět, jaká slova jsou Vám blízká.
+instructionsT2 = """On podobně bude vědět, jaká slova jsou blízká Vám.
 
 <i>Hráč A:</i> Má možnost poslat hráči B od 0 do {} Kč (po {} Kč). Poslaná částka se ztrojnásobí a obdrží ji hráč B.
 <i>Hráč B:</i> Může poslat zpět hráči A jakékoli množství peněz získaných v této úloze, tedy úvodních {} Kč a ztrojnásobenou částku poslanou hráčem A.
