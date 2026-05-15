@@ -6,7 +6,7 @@ import urllib.request
 import urllib.parse
 
 from common import InstructionsFrame, Wait
-from constants import URL, TRUST_ENDOWMENT, MARKET_ENDOWMENT, MARKET_WIN, MARKET_LOSS, COORDINATION_SUCCESS
+from constants import URL, TRUST_ENDOWMENT, MARKET_ENDOWMENT, MARKET_WIN, MARKET_LOSS, COORDINATION_SUCCESS, COORDINATION_PREFERENCE
 
 
 games = """V první části studie se zúčastníte několika nezávislých rozhodovacích úloh. Některá Vaše rozhodnutí budou odměněna na základě skutečných peněžních výsledků.
@@ -62,6 +62,33 @@ class WaitResults(Wait):
         if block not in roles:
             raise KeyError(f"Role for block {block} not found in co_roles")
         return self._normalize_coordination_role(roles[block])
+
+    def _coordination_payoffs(self, role, my_decision, partner_decision):
+        """Return (my_payoff, partner_payoff) for the coordination game.
+
+        Role 1 prefers A, role 2 prefers B. Both get success bonus when choices match.
+        """
+        my_payoff = 0
+        partner_payoff = 0
+
+        if role == "1":
+            if my_decision == "A":
+                my_payoff += COORDINATION_PREFERENCE
+            if partner_decision == "B":
+                partner_payoff += COORDINATION_PREFERENCE
+        elif role == "2":
+            if my_decision == "B":
+                my_payoff += COORDINATION_PREFERENCE
+            if partner_decision == "A":
+                partner_payoff += COORDINATION_PREFERENCE
+        else:
+            raise ValueError(f"Invalid role value: {role}")
+
+        if my_decision == partner_decision:
+            my_payoff += COORDINATION_SUCCESS
+            partner_payoff += COORDINATION_SUCCESS
+
+        return my_payoff, partner_payoff
 
     def _append_market_result(self):
         if self.root.status.get("market_result_recorded"):
@@ -178,14 +205,20 @@ class WaitResults(Wait):
                 my_decision = d.get("decision", "A")
                 partner_decision = random.choice(["A", "B"])
                 coordinated = my_decision == partner_decision
-                payoff = COORDINATION_SUCCESS if coordinated else 0
+                if "role" in d and d["role"]:
+                    role = self._normalize_coordination_role(d["role"])
+                else:
+                    role = self._coordination_role_for_block(block)
+                payoff, partner_payoff = self._coordination_payoffs(role, my_decision, partner_decision)
                 self.root.status["co_results"].setdefault(block, {})
                 self.root.status["co_results"][block][trial] = {
                     "my_decision": my_decision,
                     "partner_decision": partner_decision,
                     "coordinated": coordinated,
                     "payoff": payoff,
+                    "partner_payoff": partner_payoff,
                     "prediction": int(d.get("prediction", 50)),
+                    "role": role,
                 }
 
     def _append_coordination_result(self):
@@ -351,12 +384,12 @@ class WaitResults(Wait):
                     trial_idx = int(parts[1])
                     co_self = parts[2]
                     co_other = parts[3]
-                    payoff = COORDINATION_SUCCESS if co_self == co_other else 0
-                    partner_label = f"{round_idx}."
                     role = self._coordination_role_for_block(round_idx)
+                    payoff, partner_payoff = self._coordination_payoffs(role, co_self, co_other)
+                    partner_label = f"{round_idx}."
                     role_label = f"Hráč {role}"
                     result_text = coordinationResultText.format(
-                        trial_idx, partner_label, role_label, co_self, co_other, payoff, 0
+                        trial_idx, partner_label, role_label, co_self, co_other, payoff, partner_payoff
                     )
                     results.append(result_text)
                     self.root.status["coordination_result"] = {
@@ -366,6 +399,7 @@ class WaitResults(Wait):
                         "my_decision": co_self,
                         "partner_decision": co_other,
                         "reward": payoff,
+                        "partner_reward": partner_payoff,
                     }
                     reward_so_far += payoff
 
