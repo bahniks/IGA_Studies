@@ -94,19 +94,32 @@ Vaše výplata v tomto kole: {} Kč
 Výplata druhého účastníka v tomto kole: {} Kč"""
 
 
-def _coordination_payoffs(my_choice, partner_choice):
+nextRoundText = """Nyní budete hrát další kolo s jiným partnerem. Vaše role může zůstat stejná nebo se změnit."""
+
+
+
+def _coordination_payoffs(role, my_choice, partner_choice):
     my_payoff = 0
     partner_payoff = 0
-    if my_choice == "A":
-        my_payoff += COORDINATION_PREFERENCE
-    if partner_choice == "B":
-        partner_payoff += COORDINATION_PREFERENCE
+
+    if role == "1":
+        if my_choice == "A":
+            my_payoff += COORDINATION_PREFERENCE
+        if partner_choice == "B":
+            partner_payoff += COORDINATION_PREFERENCE
+    elif role == "2":
+        if my_choice == "B":
+            my_payoff += COORDINATION_PREFERENCE
+        if partner_choice == "A":
+            partner_payoff += COORDINATION_PREFERENCE
+    else:
+        raise ValueError(f"Invalid role value: {role}")
+
     if my_choice == partner_choice:
         my_payoff += COORDINATION_SUCCESS
         partner_payoff += COORDINATION_SUCCESS
     return my_payoff, partner_payoff
 
-nextRoundText = """Nyní budete hrát další kolo s jiným partnerem. Vaše role může zůstat stejná nebo se změnit."""
 
 
 class CoordinationPayoffTable(Frame):
@@ -326,15 +339,6 @@ class CoordinationGame(InstructionsFrame):
         self.columnconfigure(0, weight=2)
         self.columnconfigure(2, weight=2)
 
-    def _coordination_role(self, block):
-        roles = self.root.status["co_roles"]
-        if block not in roles:
-            raise KeyError(f"Role for block {block} not found in co_roles")
-        role = str(roles[block])
-        if role not in ("1", "2"):
-            raise ValueError(f"Invalid role value: {roles[block]}")
-        return role
-
     def _selected(self, decision):
         self.decision_var.set(decision)
         self.option_a_button.config(state="disabled")
@@ -404,7 +408,7 @@ class WaitCoordination(Wait):
         super().__init__(root, what="coordination")
 
     def test(self):
-        return "A"
+        return random.choice(["A", "B"])
 
     @staticmethod
     def _parse_partner_decision(response):
@@ -463,7 +467,7 @@ class WaitCoordination(Wait):
         prediction = int(my_trial["prediction"])
 
         coordinated = my_decision == partner_decision
-        my_payoff, partner_payoff = _coordination_payoffs(my_decision, partner_decision)
+        my_payoff, partner_payoff = _coordination_payoffs(role, my_decision, partner_decision)
 
         self.root.status.setdefault("co_results", {})
         self.root.status["co_results"].setdefault(block, {})
@@ -504,7 +508,7 @@ class CoordinationRoundResult(InstructionsFrame):
         partner_payoff = result.get("partner_payoff")
         if payoff is None or partner_payoff is None:
             if my_choice in ("A", "B") and partner_choice in ("A", "B"):
-                payoff, partner_payoff = _coordination_payoffs(my_choice, partner_choice)
+                payoff, partner_payoff = _coordination_payoffs(role, my_choice, partner_choice)
             else:
                 payoff, partner_payoff = 0, 0
         order_index = max(0, min(len(order) - 1, block - 1))

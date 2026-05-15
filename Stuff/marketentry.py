@@ -325,8 +325,7 @@ class MarketEntryGame(InstructionsFrame):
 
 	def send(self):
 		decision = self.decision_var.get()
-		score = self.root.status.get("me_quiz_scores", {}).get(self.block, 0)
-		data = {'id': self.id, 'round': "market_entry" + str(self.block), 'offer': "{}_{}".format(decision, score)}
+		data = {'id': self.id, 'round': "market_entry" + str(self.block), 'offer': "{}".format(decision)}
 		self.sendData(data)
 
 	def write(self):
