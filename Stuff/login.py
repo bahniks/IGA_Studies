@@ -100,8 +100,6 @@ class Login(InstructionsFrame):
         parsed = {}
         for i, role in enumerate(role_values, start=1):
             role_text = str(role).strip()
-            if role_text not in ("1", "2"):
-                raise ValueError(f"Invalid coordination role value from server: {role}")
             parsed[i] = role_text
         return parsed
 
