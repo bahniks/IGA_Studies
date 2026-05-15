@@ -27,7 +27,7 @@ marketResultText = """V úloze vstupu na trh bylo náhodně vybráno kolo {}. Vy
 marketResultBothEnterText = """Oba jste vstoupili na trh. Váš výsledek v kvízu byl {} správně, druhý účastník měl {} správně."""
 marketResultTieText = """Skóre bylo shodné, proto byl výherce určen náhodně: {}."""
 
-coordinationResultText = """V koordinační úloze bylo náhodně vybráno {} kolo s {} partnerem. Vy jste měl(a) roli Hráče {} a zvolil(a) možnost {}. Druhý účastník možnost {}. V tomto kole jste tedy získal(a) {} Kč."""
+coordinationResultText = """V koordinační úloze bylo náhodně vybráno {} kolo s {} partnerem. Vy jste měl(a) roli {} a zvolil(a) možnost {}. Druhý účastník zvolil možnost {}. V tomto kole jste tedy získal(a) {} Kč."""
 
 
 
@@ -45,6 +45,23 @@ class WaitResults(Wait):
 
     def _has_trust_data(self):
         return bool(self.root.status.get("trust_decisions"))
+
+    @staticmethod
+    def _normalize_coordination_role(role_raw):
+        if role_raw == "A":
+            return "1"
+        if role_raw == "B":
+            return "2"
+        role = str(role_raw)
+        if role in ("1", "2"):
+            return role
+        raise ValueError(f"Invalid role value: {role_raw}")
+
+    def _coordination_role_for_block(self, block):
+        roles = self.root.status["co_roles"]
+        if block not in roles:
+            raise KeyError(f"Role for block {block} not found in co_roles")
+        return self._normalize_coordination_role(roles[block])
 
     def _append_market_result(self):
         if self.root.status.get("market_result_recorded"):
@@ -193,7 +210,10 @@ class WaitResults(Wait):
         partner_decision = selected.get("partner_decision", "A")
         payoff = int(selected.get("payoff", 0))
         partner_payoff = int(selected.get("partner_payoff", 0))
-        role = selected.get("role") or self.root.status.get("co_roles", {}).get(chosen_block, "A")
+        if "role" in selected and selected["role"]:
+            role = self._normalize_coordination_role(selected["role"])
+        else:
+            role = self._coordination_role_for_block(chosen_block)
         role_label = f"Hráč {role}"
         partner_ordinals = {
             1: "prvním",
@@ -333,7 +353,8 @@ class WaitResults(Wait):
                     co_other = parts[3]
                     payoff = COORDINATION_SUCCESS if co_self == co_other else 0
                     partner_label = f"{round_idx}."
-                    role_label = "Hráč A"  # or B if you have role info
+                    role = self._coordination_role_for_block(round_idx)
+                    role_label = f"Hráč {role}"
                     result_text = coordinationResultText.format(
                         trial_idx, partner_label, role_label, co_self, co_other, payoff, 0
                     )
@@ -341,6 +362,7 @@ class WaitResults(Wait):
                     self.root.status["coordination_result"] = {
                         "round": round_idx,
                         "trial": trial_idx,
+                        "role": role,
                         "my_decision": co_self,
                         "partner_decision": co_other,
                         "reward": payoff,

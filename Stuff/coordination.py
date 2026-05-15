@@ -36,9 +36,9 @@ Obecně lze výplaty shrnout takto:
 • Navíc oba účastníci obdrží {COORDINATION_SUCCESS} Kč, pokud zvolí stejnou volbu.
     
 
-Po každém kole obdržíte informaci o volbě druhého hráče a výplatě v daném kole.
+Po prvním kole obdržíte informaci o vlastní volbě, volbě druhého hráče, úspěchu koordinace a výplatě v daném kole.
 
-Jedno náhodně vybrané kolo určí Vaši odměnu za tuto úlohu. Na konci studie se dozvíte, jaká byla Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
+Jedno náhodně vybrané kolo určí Vaši odměnu za tuto úlohu. Na konci studie se dozvíte, jaká byla ve vybraném kole Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
 
 Odpovězte prosím na následující kontrolní otázky, abychom ověřili, že jste instrukcím porozuměli."""
 
@@ -70,7 +70,7 @@ coordFeedback1 = [
 
 coordControl2 = "Co se stane, pokud si oba účastníci zvolí Volbu B?"
 coordAnswers2 = [
-        f"Hráč 1 obdrží {COORDINATION_PREFERENCE} Kč a Hráč 2 obdrží {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč",
+        f"Hráč 1 obdrží {COORDINATION_SUCCESS} Kč a Hráč 2 obdrží {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč",
         f"Oba obdrží {COORDINATION_SUCCESS} Kč",
         f"Výplata bude zvolena náhodně v rozmezí mezi 0 Kč a {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč",
 ]
@@ -186,7 +186,7 @@ class InstructionsCoordination(InstructionsAndUnderstanding):
             relief="flat",
             background="white",
             width=90,
-            height=14,
+            height=15,
             wrap="word",
             highlightbackground="white",
             pady=8,
@@ -217,10 +217,17 @@ class CoordinationGame(InstructionsFrame):
         block = root.status.get("co_block", 1)
         trial = root.status.get("co_trial", 1)
         roles = root.status.get("co_roles", {})
-        role = roles.get(block, "A")
-        role = "A" if str(role) == "1" else str(role)
-        if role not in ("A", "B"):
-            role = "A"
+        if block not in roles:
+            raise KeyError(f"Role for block {block} not found in co_roles")
+        role_raw = roles[block]
+        if role_raw == "A":
+            role = "1"
+        elif role_raw == "B":
+            role = "2"
+        elif str(role_raw) in ("1", "2"):
+            role = str(role_raw)
+        else:
+            raise ValueError(f"Invalid role value: {role_raw}")
         role_label = f"Hráč {role}"
         order_index = max(0, min(len(order) - 1, block - 1))
         partner_ordinal = order[order_index]
@@ -326,8 +333,18 @@ class CoordinationGame(InstructionsFrame):
         self.columnconfigure(2, weight=2)
 
     def _coordination_role(self, block):
-        role = self.root.status["co_roles"][block]
-        return "A" if str(role) == "1" else "B"
+        roles = self.root.status["co_roles"]
+        if block not in roles:
+            raise KeyError(f"Role for block {block} not found in co_roles")
+        role_raw = roles[block]
+        if role_raw == "A":
+            return "1"
+        elif role_raw == "B":
+            return "2"
+        elif str(role_raw) in ("1", "2"):
+            return str(role_raw)
+        else:
+            raise ValueError(f"Invalid role value: {role_raw}")
 
     def _selected(self, decision):
         self.decision_var.set(decision)
@@ -443,7 +460,18 @@ class WaitCoordination(Wait):
     def processResponse(self, response):
         block = self.root.status.get("co_block", 1)
         trial = 1
-        role = self.root.status["co_roles"][block]
+        roles = self.root.status["co_roles"]
+        if block not in roles:
+            raise KeyError(f"Role for block {block} not found in co_roles")
+        role_raw = roles[block]
+        if role_raw == "A":
+            role = "1"
+        elif role_raw == "B":
+            role = "2"
+        elif str(role_raw) in ("1", "2"):
+            role = str(role_raw)
+        else:
+            raise ValueError(f"Invalid role value: {role_raw}")
 
         partner_decision = self._parse_partner_decision(response)
 
@@ -478,10 +506,21 @@ class CoordinationRoundResult(InstructionsFrame):
 
         my_choice = result.get("my_decision", "-")
         partner_choice = result.get("partner_decision", "-")
-        role = result.get("role") or root.status.get("co_roles", {}).get(block, "A")
-        role = "A" if str(role) == "1" else str(role)
-        if role not in ("A", "B"):
-            role = "A"
+        if "role" in result and result["role"]:
+            role_raw = result["role"]
+        else:
+            roles = root.status.get("co_roles", {})
+            if block not in roles:
+                raise KeyError(f"Role for block {block} not found in co_roles")
+            role_raw = roles[block]
+        if role_raw == "A":
+            role = "1"
+        elif role_raw == "B":
+            role = "2"
+        elif str(role_raw) in ("1", "2"):
+            role = str(role_raw)
+        else:
+            raise ValueError(f"Invalid role value: {role_raw}")
         role_label = f"Hráč {role}"
         payoff = result.get("payoff")
         partner_payoff = result.get("partner_payoff")

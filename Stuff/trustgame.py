@@ -20,7 +20,7 @@ Vaše rozhodnutí v této úloze budou mít finanční důsledky pro Vás a pro 
 Pozorně si přečtěte pokyny na další obrazovce, abyste porozuměl(a) studii a své roli v ní."""
 
 
-instructionsT1 = """V rámci této úlohy jste spárován(a) s dalším účastníkem studie. Oba obdržíte {} Kč.
+instructionsT1 = """Tato úloha se skládá z {} kol. V každém kole budete náhodně spárován(a) s dalším účastníkem studie. Oba obdržíte {} Kč.
 
 Bude Vám náhodně přidělena jedna ze dvou rolí: budete buď hráčem A, nebo hráčem B.
 
@@ -29,9 +29,9 @@ Bude Vám náhodně přidělena jedna ze dvou rolí: budete buď hráčem A, neb
 
 Předem nebudete vědět, jaká je Vaše role a uvedete tedy rozhodnutí pro obě role. Protože nebudete předem vědět, jak by se rozhodl druhý účastník jako hráč A, budete uvádět své volby pro různé možnosti jeho rozhodnutí.
 
-Tuto úlohu budete hrát celkem {}krát. Před každým kolem dostanete informaci o slovech blízkých druhému hráči, která vybral v dřívější části studie. On bude podobně vědět, jaká slova jsou Vám blízká. 
+Tuto úlohu budete hrát celkem {}krát. Před každým kolem dostanete informaci o slovech blízkých druhému hráči, která vybral v dřívější části studie. On bude podobně vědět, jaká slova jsou blízká Vám. 
 
-Vaše odměna bude záviset na jednom náhodně vybraném kole. Na konci studie se dozvíte, jaká byla Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
+Vaše odměna bude záviset na jednom náhodně vybraném kole. Na konci studie se dozvíte, jaká byla ve vybraném kole Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
 
 Pro ověření pochopení úlohy odpovězte na kontrolní otázky níže."""
 
@@ -400,7 +400,7 @@ IntroTrust = (InstructionsFrame, {"text": instructionsT0, "height": 6, "width": 
 InstructionsTrust = (
     InstructionsAndUnderstanding,
     {
-        "text": instructionsT1.format(TRUST_ENDOWMENT, TRUST_ENDOWMENT, TRUST_ENDOWMENT // 5, TRUST_ENDOWMENT, TRUST_ROUNDS) + "\n\n",
+        "text": instructionsT1.format(TRUST_ROUNDS, TRUST_ENDOWMENT, TRUST_ENDOWMENT, TRUST_ENDOWMENT // 5, TRUST_ENDOWMENT, TRUST_ROUNDS) + "\n\n",
         "height": 22,
         "width": 100,
         "name": "Trust Control Questions",

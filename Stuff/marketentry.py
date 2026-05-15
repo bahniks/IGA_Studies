@@ -33,7 +33,7 @@ V každém kole budete náhodně spárován(a) s dalším účastníkem a budete
 
 Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. 
 
-O Vaší odměně za tuto část studie rozhodne jedno náhodně vybrané kolo. Výsledek se dozvíte na konci studie."""
+O Vaší odměně za tuto část studie rozhodne jedno náhodně vybrané kolo. Výsledek se dozvíte na konci studie. Výsledky za jednotlivá kola neuvidíte."""
 
 meIntro2 = """Odpovězte prosím na následující otázky. U každé otázky uveďte svůj nejlepší číselný odhad. Odpovědi, které jsou v rozmezí ±10 % od skutečné hodnoty, budou považovány za správné."""
 
@@ -44,15 +44,9 @@ V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se roz
 <b>Připomenutí výplaty:</b>
 •  Oba nevstoupí: každý {} Kč
 •  Jeden vstoupí, jeden nevstoupí: vstupující {} Kč, druhý {} Kč
-•  Oba vstoupí: vyšší skóre v kvízu získá {} Kč, nižší {} Kč"""
+•  Oba vstoupí: ten s vyšším skóre v kvízu získá {} Kč, ten s nižším {} Kč"""
 
 meConfidenceText = "Kolik z právě zodpovězených {} otázek si myslíte, že jste zodpověděl(a) správně?"
-
-meRoundResultText = """<b>Výsledek kola {}</b>
-
-Vaše rozhodnutí:\t\t{}
-Počet vstupujících:\t{}
-Vaše odměna v tomto kole:\t{} Kč"""
 
 # Control questions
 meControl1 = "Co se stane, pokud oba účastníci nevstoupí na trh?"
@@ -80,41 +74,33 @@ meControlTexts = [
 # Quiz question sets: one set per round.
 # Each question: (display text, true value for scoring)
 # Scoring: answer within 10 % of the true value counts as correct.
-# Rounds 2+ use placeholder questions – replace before deployment.
 ME_QUIZ_QUESTIONS = [
-	# Round 1
-	[
+
+    [
 		("Jaká je vzdušná vzdálenost mezi Berlínem a Vídní v kilometrech?", 524),
-		("Jaký je počet obyvatel Berlína?", 3_600_000),
-		("Jaký je počet obyvatel Norska?", 5_400_000),
-		("Jaká je výška nejvyšší hory Evropy v metrech?", 5_642),
-		("Jaké je HDP na obyvatele v Lucembursku v Kč (2024)?", 3_000_000),
-	],
-	# Round 2 – replace with actual questions
-	[
-		("Jaká je vzdušná vzdálenost z Prahy do Paříže v kilometrech?", 1_050),
-		("Jaký je počet obyvatel Vídně?", 1_900_000),
-		("Jaká je rozloha Švýcarska v km\u00b2?", 41_285),
-		("Jaká je výška Mont Blancu v metrech?", 4_808),
-		("Jaké je HDP na obyvatele ve Švýcarsku v Kč (2024)?", 2_000_000),
-	],
-	# Round 3 – replace with actual questions
-	[
-		("Jaká je vzdušná vzdálenost z Londýna do Madridu v kilometrech?", 1_265),
-		("Jaký je počet obyvatel Mnichova?", 1_500_000),
-		("Jaká je rozloha Švédska v km\u00b2?", 450_295),
-		("Jaká je délka řeky Rýn v kilometrech?", 1_230),
-		("Jaké je HDP na obyvatele v Dánsku v Kč (2024)?", 1_700_000),
-	],
-	# Round 4 – replace with actual questions
-	[
-		("Jaká je vzdušná vzdálenost z Říma do Athén v kilometrech?", 1_050),
-		("Jaký je počet obyvatel Hamburku?", 1_900_000),
-		("Jaká je rozloha Finska v km\u00b2?", 338_145),
-		("Jaká je výška Zugspitze v metrech?", 2_962),
-		("Jaké je HDP na obyvatele v Rakousku v Kč (2024)?", 1_200_000),
-	],
+		("Jaký je počet obyvatel Berlína?", 3600000),
+		("Jaký je počet obyvatel Norska?", 5400000),
+		("Jaká je výška nejvyšší hory v Evropě v metrech?", 5642),
+		("Kolik zemí Evropské unie oficiálně používá euro jako svou měnu?", 21),
+    ],
+
+    [
+		("Jaký je počet obyvatel Vídně?", 2000000),
+		("Jaká je vzdušná vzdálenost mezi Paříží a Berlínem v kilometrech?", 878),
+		("Jaká je rozloha Slovinska v kilometrech čtverečních?", 20273),
+		("Jaký je počet obyvatel Finska?", 5600000),
+		("Jaká je výška Eiffelovy věže v metrech?", 330),
+    ],
+
+    [
+		("Jaká je oficiální cílová míra inflace Evropské centrální banky v procentech?", 2),
+		("Jaká je celková délka řeky Dunaj v kilometrech?", 2850),
+		("Jaký je počet obyvatel Rakouska?", 9100000),
+		("Jaká je výška London Eye v metrech?", 135),
+		("Kolik let trvá oficiální funkční období prezidenta Evropské centrální banky?", 8),
+    ],
 ]
+
 
 understandingPrompt = "<b>Odpovězte prosím na následující kontrolní otázky, abyste si ověřil(a), že pokynům rozumíte.</b>"
 
