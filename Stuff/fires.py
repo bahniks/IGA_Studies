@@ -88,7 +88,7 @@ fires_understanding_questions = [
         [
             "Ventily je možné otevřít v libovolném pořadí a každý z nich hned snižuje počet nových ohňů.",
             "Stačí otevřít jeden ventil a postřikovač se spustí.",
-            "Ventily je potřeba otevřít ve správném pořadí a po dokončení všech čtyř se spustí zavlažovací systém.",
+            "Ventily je potřeba otevřít ve správném pořadí a po otevření všech čtyř se spustí zavlažovací systém.",
         ],
         [
             "To není správně. Ventily je potřeba otevřít ve správném pořadí a po otevření všech čtyř se spustí postřikovač a další ohně se poté přestanou objevovat.",

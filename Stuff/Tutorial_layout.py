@@ -14,7 +14,7 @@ LAYOUT_TUTORIAL_STAGE_GUIDE_TEXTS = [
     (
         "Tady už vidíte celou obrazovku experimentu",
         "Obě varianty už máte vyzkoušené, takže tady jde jen o rychlou orientaci. "
-        "Vlevo se objevují ohně, vpravo ovládáte zavlažovací systém a nahoře "
+        "Vlevo můžete hasit ohně kyblíkem, vpravo ovládáte zavlažovací systém a nahoře "
         "po celou dobu sledujete peníze a zbývající čas.",
         "Stiskněte mezerník a ukážeme si přesně, kde se odečítají peníze.",
     ),
@@ -22,7 +22,7 @@ LAYOUT_TUTORIAL_STAGE_GUIDE_TEXTS = [
         "Nahoře uprostřed vidíte, kolik peněz vám zbývá",
         "Z této částky se průběžně odečítají ztráty. Za každý nový oheň zmizí 0,85 Kč. "
         "Za každou sekundu, kdy oheň hoří, zmizí dalších 0,04 Kč za každý aktivní oheň. "
-        "Čím více ohňů necháte oheň hořet, tím rychleji peníze klesají.",
+        "Čím více ohňů necháte hořet, tím rychleji peníze klesají.",
         "Stiskněte mezerník a podíváme se na odpočet času.",
     ),
     (
