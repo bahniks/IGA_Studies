@@ -43,6 +43,37 @@ class DurableAppendFile:
 
 
 class GUI(Tk):
+    @staticmethod
+    def _intify_mapping_keys(mapping):
+        if not isinstance(mapping, dict):
+            return mapping
+
+        normalized = {}
+        for key, value in mapping.items():
+            if isinstance(key, str) and key.isdigit():
+                normalized[int(key)] = value
+            else:
+                normalized[key] = value
+        return normalized
+
+    def _normalize_loaded_state(self):
+        if not isinstance(self.status, dict):
+            return
+
+        # temp.json stores object keys as strings; restore numeric round/trial keys
+        # for structures that are indexed with integers throughout the codebase.
+        for status_key in ("co_roles", "me_decisions", "me_quiz_scores", "trust_decisions"):
+            if status_key in self.status:
+                self.status[status_key] = self._intify_mapping_keys(self.status[status_key])
+
+        for status_key in ("co_decisions", "co_results"):
+            if status_key in self.status:
+                top = self._intify_mapping_keys(self.status[status_key])
+                if isinstance(top, dict):
+                    for block_key, block_value in list(top.items()):
+                        top[block_key] = self._intify_mapping_keys(block_value)
+                self.status[status_key] = top
+
     def __init__(self, frames, load = False):
         super().__init__()
         self.restart_requested = False
@@ -122,6 +153,7 @@ class GUI(Tk):
                     if response == "continue":
                         for key, value in data.items():
                             setattr(self, key, value)  
+                        self._normalize_loaded_state()
                     else:
                         load = False  
                 else:

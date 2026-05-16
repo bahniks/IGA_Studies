@@ -13,16 +13,18 @@ games = """V první části studie se zúčastníte několika nezávislých rozh
 
 Přestože jsou odpovědi v úlohách anonymní, některé preference mohou být zobrazeny ostatním účastníkům.
 
-Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí jak na Vašich rozhodnutích, tak na rozhodnutích ostatních účastníků, a obdobně jejich odměna závisí na Vašich."""
+Prosím, čtěte instrukce pečlivě, protože Vaše odměna závisí jak na Vašich rozhodnutích, tak na rozhodnutích ostatních účastníků, a obdobně jejich odměna závisí na Vašich.
+
+S každým z dalších účastníků budete hrát maximálně jednu z úloh. Partneři, s kterými budete hrát, se tedy neopakují, pokud není přímo uvedeno jinak."""
 
 
 
-trustResultTextA = """V úloze s dělením peněz bylo náhodně vybráno kolo {} role hráče A. Rozhodl(a) jste se poslat {} Kč. Tato částka byla ztrojnásobena na {} Kč. Ze svých {} Kč Vám poslal hráč B {} Kč. V této úloze jste tedy získal(a) {} Kč a hráč B {} Kč."""
+trustResultTextA = """V úloze s dělením peněz bylo náhodně vybráno kolo {} a Vám byla přidělena role hráče A. Rozhodl(a) jste se poslat {} Kč. Tato částka byla ztrojnásobena na {} Kč. Ze svých {} Kč Vám poslal hráč B {} Kč. V této úloze jste tedy získal(a) {} Kč a hráč B {} Kč."""
 
-trustResultTextB = """V úloze s dělením peněz bylo náhodně vybráno kolo {} role hráče B. Hráč A se rozhodl(a) poslat {} Kč. Tato částka byla ztrojnásobena na {} Kč. Ze svých {} Kč jste poslal(a) hráči A {} Kč. V této úloze jste tedy získal(a) {} Kč a hráč A {} Kč."""
+trustResultTextB = """V úloze s dělením peněz bylo náhodně vybráno kolo {} a Vám byla přidělena role hráče B. Hráč A se rozhodl(a) poslat {} Kč. Tato částka byla ztrojnásobena na {} Kč. Ze svých {} Kč jste poslal(a) hráči A {} Kč. V této úloze jste tedy získal(a) {} Kč a hráč A {} Kč."""
 
-marketResultText = """V úloze vstupu na trh bylo náhodně vybráno kolo {}. Vy jste se rozhodl(a) {} a druhý účastník {}. V tomto kole jste tedy získal(a) {} Kč."""
-marketResultBothEnterText = """Oba jste vstoupili na trh. Váš výsledek v kvízu byl {} správně, druhý účastník měl {} správně."""
+marketResultText = """V úloze vstupu na trh jste získal(a) {} Kč. Bylo náhodně vybráno kolo {}. Vy jste se rozhodl(a) {} a druhý účastník {}."""
+marketResultBothEnterText = """Váš výsledek v kvízu byl {} správně, druhý účastník měl {} správně."""
 marketResultTieText = """Skóre bylo shodné, proto byl výherce určen náhodně: {}."""
 
 coordinationResultText = """V koordinační úloze bylo náhodně vybráno {} kolo s {} partnerem. Vy jste měl(a) roli {} a zvolil(a) možnost {}. Druhý účastník zvolil možnost {}. V tomto kole jste tedy získal(a) {} Kč."""
@@ -127,8 +129,8 @@ class WaitResults(Wait):
         if decisions:
             chosen_round = random.choice(list(decisions.keys()))
             d = decisions[chosen_round]
-            role = str(d.get("role", "1"))
-            if role == "1":
+            role = str(d.get("role", "A"))
+            if role == "A":
                 sentA = int(d.get("sentA", TRUST_ENDOWMENT // 2))
                 max_return = TRUST_ENDOWMENT + sentA * 3
                 sentB = random.choice(list(range(0, max_return + 1, 8)))
@@ -140,7 +142,7 @@ class WaitResults(Wait):
                 sentB = int(sentB_list[idx])
             trust_part = f"trust:{chosen_round},{role},{sentA},{sentB}"
         else:
-            trust_part = f"trust:1,1,{TRUST_ENDOWMENT//2},{TRUST_ENDOWMENT//2}"
+            trust_part = f"trust:1,A,{TRUST_ENDOWMENT//2},{TRUST_ENDOWMENT//2}"
 
         return f"{co_part}|{me_part}|{trust_part}"
 
@@ -219,16 +221,16 @@ class WaitResults(Wait):
                             else:
                                 payoff = random.choice([MARKET_WIN, MARKET_LOSS])
                                 winner_text = "výhru získal(a) Vy" if payoff == MARKET_WIN else "výhru získal druhý účastník"
-                        result_text = marketResultText.format(round_idx, self_text, other_text, payoff)
+                        result_text = marketResultText.format(payoff,round_idx, self_text, other_text)
                         result_text += " " + marketResultBothEnterText.format(quiz_self, quiz_other)
                         if quiz_self == quiz_other:
                             result_text += " " + marketResultTieText.format(winner_text)
                     elif self_entered:
                         payoff = MARKET_WIN
-                        result_text = marketResultText.format(round_idx, self_text, other_text, payoff)
+                        result_text = marketResultText.format(payoff, round_idx, self_text, other_text)
                     else:
                         payoff = MARKET_ENDOWMENT
-                        result_text = marketResultText.format(round_idx, self_text, other_text, payoff)
+                        result_text = marketResultText.format(payoff, round_idx, self_text, other_text)
                     results.append(result_text)
                     self.root.status["market_result"] = {
                         "round": round_idx,
@@ -250,7 +252,7 @@ class WaitResults(Wait):
                     role = str(parts[1])
                     sentA = int(parts[2])
                     sentB = int(parts[3])
-                    if role == "1":
+                    if role == "A":
                         reward = TRUST_ENDOWMENT - sentA + sentB
                         result_text = trustResultTextA.format(
                             round_idx,
@@ -261,7 +263,7 @@ class WaitResults(Wait):
                             TRUST_ENDOWMENT - sentA + sentB,
                             TRUST_ENDOWMENT + sentA * 3 - sentB,
                         )
-                    elif role == "2":
+                    elif role == "B":
                         reward = TRUST_ENDOWMENT + sentA * 3 - sentB
                         result_text = trustResultTextB.format(
                             round_idx,

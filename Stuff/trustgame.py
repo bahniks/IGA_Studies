@@ -338,7 +338,9 @@ class Trust(InstructionsFrame):
         # Phase A: choose how much to send as player A.
         sent_a = random.choice([0, 20, 40, 60, 80, 100])
         self.frames[6].value.set(sent_a)
+        self.update()
         self.checkVar.set(True)
+        self.update()
         self.checkbuttoned()
         sleep(0.05)
         self.nextFun()
@@ -347,7 +349,9 @@ class Trust(InstructionsFrame):
         prediction_max = self.frames[7].maximum
         prediction = random.randint(0, prediction_max // 10) * 10
         self.frames[7].value.set(prediction)
+        self.update()
         self.checkVar.set(True)
+        self.update()
         self.checkbuttoned()
         sleep(0.05)
         self.nextFun()
@@ -357,7 +361,9 @@ class Trust(InstructionsFrame):
             max_return = self.frames[i].maximum
             returned = random.randint(0, max_return // 10) * 10
             self.frames[i].value.set(returned)
+            self.update()
         self.checkVar.set(True)
+        self.update()
         self.checkbuttoned()
         sleep(0.05)
         self.nextFun()

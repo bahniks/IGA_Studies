@@ -145,7 +145,6 @@ class MarketEntryQuiz(ExperimentFrame):
 		if hasattr(self, "next"):
 			self.next["state"] = "normal" if self._all_quiz_answers_valid() else "disabled"
 
-	# ------------------------------------------------------------------
 	def _build_quiz(self):
 		header = ttk.Label(self,
 					   text="Kvíz \u2013 kolo {}/{}".format(self.block, MARKET_ROUNDS),
@@ -226,7 +225,6 @@ class MarketEntryQuiz(ExperimentFrame):
 				pass
 		return score
 
-	# ------------------------------------------------------------------
 	def nextFun(self):
 		if self.phase == 1:
 			if not all(v.get().strip() for v in self.entry_vars):
@@ -241,6 +239,7 @@ class MarketEntryQuiz(ExperimentFrame):
 			self.root.nextFrame()
 
 	def send(self):
+		print("Scoring quiz answers:", self.quiz_raw)
 		score = self._score_quiz()
 		data = {'id': self.id, 'round': "market_entry_quiz" + str(self.block), 'offer': "{}".format(score)}
 		self.sendData(data)
@@ -263,16 +262,14 @@ class MarketEntryQuiz(ExperimentFrame):
 			for var in self.entry_vars:
 				var.set("1000")
 			self.quiz_raw = ["1000"] * len(self.entry_vars)
-			self.phase = 2
-			self._build_confidence()
+			if hasattr(self, "next"):
+				self.next.invoke()
 		if self.phase == 2:
 			self.confidence_var.set(str(len(self.question_set) // 2))
 			self._enable_next()
 			sleep(0.1)
-			self.write()
-			self.destroy()
-			self.root.nextFrame()
-
+			if hasattr(self, "next"):
+				self.next.invoke()
 
 ################################################################################
 
@@ -293,12 +290,14 @@ class MarketEntryGame(InstructionsFrame):
 
 		choice_frame = Canvas(self, background="white",
 							  highlightbackground="white", highlightcolor="white")
-		ttk.Button(choice_frame, text="Vstoupit na trh",
-				   width=20,
-				   command=lambda: self._choose("enter")).grid(row=0, column=0, padx=30, pady=10, sticky=E)
-		ttk.Button(choice_frame, text="Nevstoupit",
-				   width=20,
-				   command=lambda: self._choose("stayout")).grid(row=0, column=1, padx=30, pady=10, sticky=W)
+		self.enter_button = ttk.Button(choice_frame, text="Vstoupit na trh",
+							   width=20,
+							   command=lambda: self._choose("enter"))
+		self.enter_button.grid(row=0, column=0, padx=30, pady=10, sticky=E)
+		self.stayout_button = ttk.Button(choice_frame, text="Nevstoupit",
+							   width=20,
+							   command=lambda: self._choose("stayout"))
+		self.stayout_button.grid(row=0, column=1, padx=30, pady=10, sticky=W)
 		choice_frame.grid(row=2, column=0, columnspan=3, pady=15)
 
 		self.trialLabel = ttk.Label(self,
@@ -339,9 +338,17 @@ class MarketEntryGame(InstructionsFrame):
 
 	def gothrough(self):
 		sleep(0.1)
-		self.decision_var.set("enter")
+		if hasattr(self, "enter_button"):
+			if random.random() < 0.5:
+				self.enter_button.invoke()
+			else:
+				self.stayout_button.invoke()
+		else:
+			if random.random() < 0.5:
+				self.decision_var.set("enter")
+			else:
+				self.decision_var.set("stayout")
 		sleep(0.1)
-		self.nextFun()
 
 
 ################################################################################
