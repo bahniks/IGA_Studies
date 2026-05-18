@@ -116,7 +116,7 @@ Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý o
 
 Ohně můžete hasit dvěma způsoby. Můžete hasit jednotlivé ohně pomocí kyblíku, nebo můžete spustit zavlažovací systém postupným otevřením ventilů ve správném pořadí."""
 
-fires_questionnaire_intro = """Ohodnoťte prosím následující tvrzení podle toho, jak jste hru prožíval(a).
+fires_questionnaire_intro = """Ohodnoťte prosím následující tvrzení podle toho, jak jste hru v tomto kole prožíval(a).
 Použijte škálu od 1 (silně nesouhlasím) do 7 (silně souhlasím)."""
 
 selfResult = """V tomto kole zbylo {} Kč z původních 100 Kč. Pokud bude vylosováno toto kolo, tak bude tato částka přičtena k Vaší finální odměně."""

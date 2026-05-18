@@ -62,8 +62,8 @@ meAnswers2 = ["Výsledek bude záviset na počtu správně zodpovězených otáz
 			  "Oba dostanou {} Kč".format(MARKET_WIN),
 			  "Oba dostanou {} Kč".format(MARKET_ENDOWMENT)]
 meFeedback2 = ["Správně. Účastník s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč.".format(MARKET_WIN),
-			   "Nesprávně. Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN),
-			   "Nesprávně. Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu. Účastník s vyšším skóre v kvízu získá {} Kč.".format(MARKET_WIN)]
+			   "Nesprávně. Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu. Účastník s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč.".format(MARKET_WIN),
+			   "Nesprávně. Výsledek bude záviset na počtu správně zodpovězených otázek v kvízu. Účastník s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč.".format(MARKET_WIN)]
 
 
 meControlTexts = [
@@ -78,25 +78,25 @@ ME_QUIZ_QUESTIONS = [
 
     [
 		("Jaká je vzdušná vzdálenost mezi Berlínem a Vídní v kilometrech?", 524),
-		("Jaký je počet obyvatel Berlína?", 3600000),
-		("Jaký je počet obyvatel Norska?", 5400000),
-		("Jaká je výška nejvyšší hory v Evropě v metrech?", 5642),
+		("Kolik států sousedí s Rakouskem?", 8),
+		("Kolik prvků je v periodické tabulce?",118),
+		("Kolik pruhů je na vlajce USA?", 13),
 		("Kolik zemí Evropské unie oficiálně používá euro jako svou měnu?", 21),
     ],
 
     [
-		("Jaký je počet obyvatel Vídně?", 2000000),
+		("Kolik států sousedí s Norskem?", 3),
 		("Jaká je vzdušná vzdálenost mezi Paříží a Berlínem v kilometrech?", 878),
-		("Jaká je rozloha Slovinska v kilometrech čtverečních?", 20273),
-		("Jaký je počet obyvatel Finska?", 5600000),
-		("Jaká je výška Eiffelovy věže v metrech?", 330),
+		("Kolik států mají Spojené státy americké?", 50),
+		("Kolik ročníků má slovinský systém základní školy?", 9),
+		("Jaká je současná oficiální výška Eiffelovy věže v metrech?", 330),
     ],
 
     [
-		("Jaká je oficiální cílová míra inflace Evropské centrální banky v procentech?", 2),
-		("Jaká je celková délka řeky Dunaj v kilometrech?", 2850),
-		("Jaký je počet obyvatel Rakouska?", 9100000),
-		("Jaká je výška London Eye v metrech?", 135),
+		("Jaká je oficiální procentní míra inflace cílená Evropskou centrální bankou?", 2),
+		("S kolika suverénními státy sdílí Brazílie pozemní hranici?", 9),
+		("Jaká je minimální standardní sazba DPH stanovená pravidly EU (v %)?", 15),
+		("Jaká je výška vyhlídkového kola London Eye v metrech?", 135),
 		("Kolik let trvá oficiální funkční období prezidenta Evropské centrální banky?", 8),
     ],
 ]

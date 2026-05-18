@@ -19,7 +19,7 @@ from login import Login
 
 intro = """Studie se skládá z několika různých úkolů a otázek. Níže je uveden přehled toho, co Vás čeká:
 
-<b>1) Skupiny:</b> Budete uvádět, jaké skupiny jsou Vám blízké.
+<b>1) Slova:</b> Budete uvádět, jaká slova jsou Vám blízká.
 <b>2) Rozhodovací úlohy:</b> Čeká Vás několik typů interaktivních úloh s opakovanými rozhodnutími, jejichž výsledky závisí na Vašich volbách a na volbách ostatních účastníků.
 <b>3) Hra s hašením ohňů:</b> Nejprve absolvujete krátký tutoriál, poté odehrajete dvě hlavní kola hry.
 <b>4) Výběr výrobků:</b> Ve dvou blocích budete vybírat výrobky, které budete moct získat.

@@ -30,10 +30,10 @@ V každém kole se dozvíte, jaká role Vám byla přidělena (Hráč 1 nebo Hr�
 
 instructionsC1b = f"""Číslo před lomítkem v tabulce označuje výplatu pro Hráče 1 a číslo za lomítkem označuje výplatu pro Hráče 2.
 
-Obecně lze výplaty shrnout takto:
+Obecně lze výplaty zobrazené v tabulce také shrnout takto:
 • Pokud Hráč 1 zvolí možnost A, obdrží {COORDINATION_PREFERENCE} Kč.
 • Pokud Hráč 2 zvolí možnost B, obdrží {COORDINATION_PREFERENCE} Kč.
-• Navíc oba účastníci obdrží {COORDINATION_SUCCESS} Kč, pokud zvolí stejnou volbu.
+• Navíc každý z účastníků obdrží {COORDINATION_SUCCESS} Kč, pokud oba zvolí stejnou volbu.
     
 
 Po prvním kole obdržíte informaci o vlastní volbě, volbě druhého hráče, úspěchu koordinace a výplatě v daném kole.
@@ -49,7 +49,7 @@ Ve hře s tímto partnerem <b>je Vám přiřazena role {{}}</b>.
 Pro připomenutí:
 • Pokud Hráč 1 zvolí možnost A, obdrží {COORDINATION_PREFERENCE} Kč.
 • Pokud Hráč 2 zvolí možnost B, obdrží {COORDINATION_PREFERENCE} Kč.
-• Navíc oba účastníci obdrží {COORDINATION_SUCCESS} Kč, pokud zvolí stejnou volbu."""
+• Navíc každý z účastníků obdrží {COORDINATION_SUCCESS} Kč, pokud oba zvolí stejnou volbu."""
 
 order = ["prvním", "druhým", "třetím"]
 
@@ -76,8 +76,8 @@ coordAnswers2 = [
 ]
 coordFeedback2 = [
         "Správně.",
-        f"Nesprávně. Pokud si oba účastníci zvolí Volbu B, Hráč 1 obdrží {COORDINATION_PREFERENCE} Kč a Hráč 2 obdrží {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč.",
-        f"Nesprávně. Pokud si oba účastníci zvolí Volbu B, Hráč 1 obdrží {COORDINATION_PREFERENCE} Kč a Hráč 2 obdrží {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč.",
+        f"Nesprávně. Pokud si oba účastníci zvolí Volbu B, Hráč 1 obdrží {COORDINATION_SUCCESS} Kč a Hráč 2 obdrží {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč.",
+        f"Nesprávně. Pokud si oba účastníci zvolí Volbu B, Hráč 1 obdrží {COORDINATION_SUCCESS} Kč a Hráč 2 obdrží {COORDINATION_SUCCESS + COORDINATION_PREFERENCE} Kč.",
 ]
 
 coordControlTexts = [
