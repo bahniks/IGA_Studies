@@ -76,6 +76,7 @@ class ExperimentGame(ExperimentFrame):
         self.score_label.place(relx=0.5, rely=0.55, anchor="center")
 
         self.time_left = TIMER_SECONDS
+        self.game_deadline = None
         self.timer_label = tk.Label(
             self.header,
             text=self._format_time(self.time_left),
@@ -796,6 +797,7 @@ class ExperimentGame(ExperimentFrame):
             return
         self.sprinkler_on = True
         self.fires_paused = True
+        self._stop_mouse_tracking()
         if self.valve_hold_after_id is not None:
             self.root.after_cancel(self.valve_hold_after_id)
             self.valve_hold_after_id = None
@@ -1283,10 +1285,13 @@ class ExperimentGame(ExperimentFrame):
         self._refresh_countdown_overlay()
         self.game_started = True
         self.timer_counting = True
+        self.game_deadline = time.monotonic() + float(TIMER_SECONDS)
+        self.time_left = TIMER_SECONDS
+        self.timer_label.config(text=self._format_time(self.time_left))
         self._start_mouse_tracking()
         self.root.after(FIRE_INTERVAL_MS, self.spawn_fire)
         self.root.after(1000, self.on_fire_tick)
-        self.root.after(1000, self.on_timer_tick)
+        self.root.after(100, self.on_timer_tick)
 
     def _refresh_countdown_overlay(self):
         if hasattr(self, "countdown_label"):
@@ -1414,14 +1419,17 @@ class ExperimentGame(ExperimentFrame):
     def on_timer_tick(self):
         if not self.game_started or self.game_over or not self.timer_counting:
             return
-        self.time_left -= 1
-        if self.time_left <= 0:
+        if self.game_deadline is None:
+            self.game_deadline = time.monotonic() + float(max(0, int(self.time_left)))
+        remaining = self.game_deadline - time.monotonic()
+        if remaining <= 0:
             self.time_left = 0
             self.timer_label.config(text=self._format_time(self.time_left))
             self.end_game()
             return
+        self.time_left = int(math.ceil(remaining))
         self.timer_label.config(text=self._format_time(self.time_left))
-        self.root.after(1000, self.on_timer_tick)
+        self.root.after(100, self.on_timer_tick)
 
     def _draw_fire(self, x, y, size, tag):
         self._draw_fire_on_canvas(self.left_canvas, x, y, size, tag)

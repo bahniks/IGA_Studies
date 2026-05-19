@@ -108,9 +108,9 @@ Ohně můžete hasit dvěma způsoby. Můžete hasit jednotlivé ohně pomocí k
 fires_round_charity = """V tomto kole hrajete <b>o finanční výsledek určený pro charitativní účel</b>.
 V případě, že bude vylosováno toto kolo, tak částka, která Vám zbyde na konci tohoto kola, <b>bude poslána na účet Nadace Dobrý anděl</b>.
 
-Nadace Dobrý anděl je charitativní organizace, která díky příspěvkům dárců, Dobrých andělů, každý měsíc podporuje tisíce rodin s dětmi, které se ocitly v těžké životní situaci vlivem vážného onemocnění některého z členů rodiny, ať už dítěte, maminky nebo tatínka.
+<i>Nadace Dobrý anděl je charitativní organizace, která díky příspěvkům dárců, Dobrých andělů, každý měsíc podporuje tisíce rodin s dětmi, které se ocitly v těžké životní situaci vlivem vážného onemocnění některého z členů rodiny, ať už dítěte, maminky nebo tatínka.
 Dobří andělé podporují rodiny, v nichž se dítě nebo jeden z rodičů potýká s onkologickým nebo jiným vážným onemocněním a které se vlivem této nemoci ocitly ve složité životní situaci. Každý dar jim může pomoci lépe zvládat těžké chvíle související s náročnou léčbou.
-Cílem nadace je vytvořit svět, kde naděje a podpora mají své místo a kde se lidé spojují, aby si navzájem pomáhali překonávat ty nejtěžší chvíle spjaté s vážným onemocněním.
+Cílem nadace je vytvořit svět, kde naděje a podpora mají své místo a kde se lidé spojují, aby si navzájem pomáhali překonávat ty nejtěžší chvíle spjaté s vážným onemocněním.</i>
 
 Každý nově vzniklý oheň způsobí okamžitou finanční ztrátu a každý oheň, který zůstane aktivní, bude způsobovat další ztráty v čase.
 
@@ -217,11 +217,11 @@ def main():
         FiresRoundIntro,
         ExperimentGame,
         ResultGame,
-        FiresQuestionnaire,
+        #FiresQuestionnaire,
         FiresRoundIntro,
         ExperimentGame,
         ResultGame,
-        FiresQuestionnaire,
+        #FiresQuestionnaire,
         Ending,
     ])
 

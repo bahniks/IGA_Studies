@@ -36,7 +36,7 @@ Obecně lze výplaty zobrazené v tabulce také shrnout takto:
 • Navíc každý z účastníků obdrží {COORDINATION_SUCCESS} Kč, pokud oba zvolí stejnou volbu.
     
 
-Po prvním kole obdržíte informaci o vlastní volbě, volbě druhého hráče, úspěchu koordinace a výplatě v daném kole.
+Po prvním kole obdržíte informaci o vlastní volbě, volbě druhého hráče a výplatě v daném kole. Po druhém kole se tyto informace nezobrazí.
 
 Jedno náhodně vybrané kolo určí Vaši odměnu za tuto úlohu. Na konci studie se dozvíte, jaká byla ve vybraném kole Vaše role a jaký je výsledek rozhodnutí Vás a druhého účastníka.
 
@@ -517,7 +517,13 @@ class CoordinationRoundResult(InstructionsFrame):
         text = coordResultText.format(trial, partner_ordinal, role_label, my_choice, partner_choice, payoff, partner_payoff)
         super().__init__(root, text=text, height=9, font=15, width=70)
 
-        highlight = (my_choice, partner_choice) if my_choice in ("A", "B") and partner_choice in ("A", "B") else None
+        if my_choice in ("A", "B") and partner_choice in ("A", "B"):
+            if role == "1":
+                highlight = (my_choice, partner_choice)
+            else:
+                highlight = (partner_choice, my_choice)
+        else:
+            highlight = None
         self.result_table = CoordinationPayoffTable(self, highlight_outcome=highlight)
         self.next.grid_forget()
         self.result_table.grid(row=2, column=0, columnspan=3, pady=(8, 6), sticky="n")

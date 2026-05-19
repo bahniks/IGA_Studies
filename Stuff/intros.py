@@ -35,9 +35,9 @@ Všechny informace, které v průběhu studie uvidíte, jsou pravdivé a nebudet
 
 
 ending = """Toto je konec experimentu.
-{}
-Za účast na studii dostáváte {} Kč.
 
+Za účast na studii dostáváte {} Kč.
+{}
 <b>Vaše odměna za tuto studii je tedy dohromady {} Kč, zaokrouhleno na desítky korun nahoru získáváte {} Kč. Napište prosím tuto (zaokrouhlenou) částku do příjmového dokladu na stole před Vámi.</b>
 
 Výsledky studie založené na datech získaných v tomto experimentu budou volně dostupné na stránkách Decision Lab Prague (decisionlab.vse.cz) krátce po vyhodnocení dat a publikaci výsledků. 

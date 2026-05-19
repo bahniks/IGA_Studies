@@ -83,18 +83,18 @@ class GUI(Tk):
         self.config(bg = "white")
         windowed = TESTING or URL == "http://127.0.0.1:8000/"
         if windowed:
-            #self.geometry("1920x1080")
+            self.geometry("1920x1080")
             #self.geometry("1680x1050")
-            self.geometry("1280x1024")
+            #self.geometry("1280x1024")
         self.attributes("-fullscreen", not windowed)
         self.attributes("-topmost", not windowed)
         self.overrideredirect(not windowed)
         self.protocol("WM_DELETE_WINDOW", lambda: self.closeFun())
 
-        self.screenwidth = 1280 # 1680 # 1920 # adjust
-        self.screenheight = 1024 # 1050 # 1080 # adjust
-        #self.screenwidth = 1920
-        #self.screenheight = 1080
+        #self.screenwidth = 1280 # 1680 # 1920 # adjust
+        #self.screenheight = 1024 # 1050 # 1080 # adjust
+        self.screenwidth = 1920
+        self.screenheight = 1080
 
         # Ensure we're in the project root directory
         # Try to find the project root by looking for experiment.pyw

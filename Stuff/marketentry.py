@@ -27,8 +27,8 @@ V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávaj�
 V každém kole budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>"Vstoupit na trh"</i> nebo <i>"Nevstoupit"</i>
 
 <b>Výplaty:</b>
-• Pokud oba účastníci nevstoupí, každý obdrží {} Kč
-• Pokud jeden vstoupí a druhý nevstoupí, vstupující obdrží {} Kč a druhý {} Kč
+• Pokud oba účastníci nevstoupí, každý obdrží {} Kč.
+• Pokud jeden vstoupí a druhý nevstoupí, vstupující obdrží {} Kč a druhý {} Kč.
 • Pokud vstoupí oba, účastník s vyšším počtem správně zodpovězených otázek v kvízu obdrží {} Kč a druhý {} Kč. V případě shody bude vítěz vybrán náhodně. 
 
 Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. 
@@ -42,8 +42,8 @@ meGameText = """Nyní učiníte své rozhodnutí pro kolo {} z {}.
 V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se rozhodnete, zda vstoupíte na trh, nebo nevstoupíte.
 
 <b>Připomenutí výplaty:</b>
-•  Oba nevstoupí: každý {} Kč
-•  Jeden vstoupí, jeden nevstoupí: vstupující {} Kč, druhý {} Kč
+•  Oba nevstoupí: každý {} Kč.
+•  Jeden vstoupí, jeden nevstoupí: vstupující {} Kč, druhý {} Kč.
 •  Oba vstoupí: ten s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč, ten s nižším {} Kč; v případě shody bude vítěz vybrán náhodně."""
 
 meConfidenceText = "Kolik z právě zodpovězených {} otázek si myslíte, že jste zodpověděl(a) správně?"
@@ -158,28 +158,32 @@ class MarketEntryQuiz(ExperimentFrame):
 		intro.config(state="disabled")
 		intro.grid(row=1, column=0, columnspan=3, pady=5)
 
+		qa_frame = Frame(self, background="white")
+		qa_frame.grid(row=2, column=1, sticky="n")
+
 		self.entry_vars = []
 		vcmd = (self.register(self._validate_numeric_input), "%P")
 		for i, (q_text, _) in enumerate(self.question_set):
-			ttk.Label(self, text=q_text, font="helvetica 15", background="white",
+			ttk.Label(qa_frame, text=q_text, font="helvetica 15", background="white",
 					  wraplength=580, anchor="w", justify="left").grid(
-				row=2 + i, column=0, sticky=W, padx=60, pady=4)
+				row=i, column=0, sticky=W, padx=(0, 12), pady=4)
 			var = StringVar()
 			var.trace_add("write", self._update_quiz_next_state)
-			ent = ttk.Entry(self, textvariable=var, width=14, font="helvetica 15",
+			ent = ttk.Entry(qa_frame, textvariable=var, width=14, font="helvetica 15",
 							validate="key", validatecommand=vcmd)
-			ent.grid(row=2 + i, column=1, sticky=W, padx=10, pady=4)
+			ent.grid(row=i, column=1, sticky=W, pady=4)
 			self.entry_vars.append(var)
 
 		ttk.Style().configure("TButton", font="helvetica 15")
 		self.next = ttk.Button(self, text="Pokračovat", command=self.nextFun)
-		self.next.grid(row=2 + len(self.question_set), column=0, columnspan=3, pady=20)
+		self.next.grid(row=3, column=0, columnspan=3, pady=20)
 		self.next["state"] = "disabled"
 
 		self.columnconfigure(0, weight=1)
+		self.columnconfigure(1, weight=0)
 		self.columnconfigure(2, weight=1)
 		self.rowconfigure(0, weight=2)
-		self.rowconfigure(2 + len(self.question_set), weight=2)
+		self.rowconfigure(3, weight=2)
 
 	def _build_confidence(self):
 		for widget in self.winfo_children():
@@ -219,7 +223,7 @@ class MarketEntryQuiz(ExperimentFrame):
 			try:
 				raw = self._normalize_numeric_string(self.quiz_raw[i])
 				ans = float(raw)
-				if correct > 0 and abs(ans - correct) / correct <= 0.10:
+				if correct > 0 and abs(ans - correct) / correct <= 0.101:
 					score += 1
 			except (ValueError, IndexError):
 				pass

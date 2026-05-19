@@ -21,9 +21,9 @@ from constants import TESTING, BUDGET
 
 questionText = "Chcete koupit tento produkt?"
 
-products_intro_1 = """Tímto končí další část studie.
+products_intro_1 = """Tímto končí tato část studie.
 
-Nyní bude následovat druhá část, která se týká rozhodování o nákupu produktů. Tato část má vlastní mechanismus odměňování. Před jejím začátkem si prosím pečlivě přečtěte následující instrukce.
+Nyní bude následovat další část, která se týká rozhodování o nákupu produktů. Před jejím začátkem si prosím pečlivě přečtěte následující instrukce.
 
 Během této studie budete činit sérii nákupních rozhodnutí u běžných spotřebních produktů.
 V každém kroku uvidíte produkt, jeho charakteristiky, kategorii a cenu. Vaším úkolem bude rozhodnout, zda byste si daný produkt za uvedenou cenu koupil/a.
