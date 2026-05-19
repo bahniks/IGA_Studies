@@ -1,12 +1,16 @@
-V tomto kole mi částka, kterou jsem uchránil(a), připadala morálně významná.
-V tomto kole mi ztráta peněz připadala jako něco, co má důsledky mimo samotnou hru.
-V tomto kole jsem měl(a) pocit, že moje rozhodnutí souvisejí s pomocí někomu.
-V tomto kole mi výsledek připadal jen jako skóre ve hře.
-Když byly viditelné ohně, připadalo mi důležité je okamžitě uhasit.
-Nechat viditelné ohně hořet, zatímco opravuji zavlažovací systém, mi bylo nepříjemné.
-Připadalo mi špatné ignorovat viditelné ohně, i když oprava zavlažovacího systému mohla pomoci víc z dlouhodobého hlediska.
-Když se objevil oheň, měl(a) jsem tendenci jít ho ručně uhasit.
-Cítil(a) jsem se provinile, když v tomto kole mizely peníze.
-Cítil(a) jsem úzkost, když hořely ohně.
-Bylo mi nepříjemné nechávat ohně bez zásahu.
-Cítil(a) jsem frustraci, když jsem nemohl(a) řešit ohně okamžitě.
+Jaká částka zbyla na konci hry, bylo morálně významné.
+Měl(a) jsem pocit, že moje rozhodnutí mají morální důsledky.
+Zdálo se mi, že mohu svým výkonem někomu pomoct.
+Výsledek mi připadal jen jako skóre ve hře.
+Chtěl jsem co nejrychleji zabránit ubývání peněz.
+Měl jsem pocit časového tlaku.
+Připadalo mi, že mám hodně času na rozhodování.
+Bylo potřeba jednat velmi rychle.
+Cítil(a) jsem smutek.
+Cítil(a) jsem frustraci.
+Cítil(a) jsem radost.
+Cítil(a) jsem zklamání. 
+Cítil(a) jsem stres.
+Cítil(a) jsem vinu.
+Cítil(a) jsem úzkost.
+Cítil(a) jsem odpovědnost.

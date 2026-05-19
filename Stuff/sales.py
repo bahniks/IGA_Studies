@@ -3,14 +3,11 @@
 import sys
 import os
 
-# Ensure we're in the correct directory regardless of how the script is executed
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
 
-# Add the Stuff directory to Python path for imports
-stuff_path = os.path.join(script_dir, "Stuff")
-if stuff_path not in sys.path:
-    sys.path.insert(0, stuff_path)
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
 
 # Redirect stdout and stderr to log file for debugging when run from double-click
 log_file_path = os.path.join(script_dir, "log.txt")
@@ -54,7 +51,8 @@ frames = [Login,
 if __name__ == "__main__":
     try:
         print("Starting experiment...")
-        gui = GUI(frames, load = os.path.exists("temp.json"))
+        temp_path = os.path.join(script_dir, "temp.json")
+        gui = GUI(frames, load=os.path.exists(temp_path))
         print("GUI session finished")
         print("Experiment completed")
     except Exception as e:
