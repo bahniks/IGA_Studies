@@ -46,7 +46,7 @@ instructionsT2 = """On podobně bude vědět, jaká slova jsou blízká Vám.
 
 Předem nebudete vědět, jaká je Vaše role a uvedete tedy rozhodnutí pro obě role.
 
-Svou volbu učiňte posunutím modrých ukazatelů níže.
+Svou volbu učiňte posunutím modrých ukazatelů níže. Následně potvrďte svou volbu zaškrtnutím políčka pod posuvníky a klikněte na tlačítko pro pokračování.
 
 {}"""
 
@@ -187,13 +187,16 @@ class ScaleFrame(Canvas):
 class GroupsFrame(Canvas):
     def __init__(self, root, close):
         super().__init__(root, background="white", highlightbackground="white", highlightcolor="white")
+        self.columnconfigure(0, weight=1)
 
         self.label = ttk.Label(self, text=intstuctionsT2a, font="helvetica 15 bold", background="white")
-        self.label.grid(row=0, column=0, pady=10, sticky=W)
+        self.label.grid(row=0, column=0, pady=10)
 
-        self.closeText = Text(self, wrap=WORD, font="helvetica 15", height=5, width=30, background="white", relief="flat")
+        self.closeText = Text(self, wrap=WORD, font="helvetica 15", height=2, width=80, background="white", relief="flat")
         self.closeText.grid(row=1, column=0, pady=10)
-        self.closeText.insert("1.0", "\n".join(close))
+        self.closeText.insert("1.0", "     ".join(close))
+        self.closeText.tag_configure("center", justify="center")
+        self.closeText.tag_add("center", "1.0", "end")
         self.closeText.config(state=DISABLED)
 
 
@@ -201,7 +204,7 @@ class Trust(InstructionsFrame):
     def __init__(self, root):
         endowment = TRUST_ENDOWMENT
         text = instructionsT2.format(endowment, int(endowment / 5), endowment, endA)
-        super().__init__(root, text=text, height=13, font=15, width=90)
+        super().__init__(root, text=text, height="auto", font=15, width=90)
 
         self.person = self.root.status["trust_groups_order"][self.root.status["trustblock"] - 1]
         close = self.root.status["trust_groups"][self.person]
@@ -426,8 +429,8 @@ if __name__ == "__main__":
     GUI([
         Login,
         WaitGroups,
-        IntroTrust,
-        InstructionsTrust,
+        #IntroTrust,
+        #InstructionsTrust,
         *([Trust] * TRUST_ROUNDS),
         WaitResults,
         Ending,
