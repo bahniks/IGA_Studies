@@ -24,12 +24,12 @@ meIntro1 = """Tato úloha se skládá z {} kol.
 
 V rámci každého kola této úlohy nejprve vyplníte krátký kvíz sestávající z 5 odhadovacích otázek, kde za správnou odpověď bude považována taková, která spadá do rozmezí ±10 % od skutečné hodnoty.  
 
-V každém kole budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>"Vstoupit na trh"</i> nebo <i>"Nevstoupit"</i>
+Následně budete náhodně spárován(a) s dalším účastníkem a budete volit mezi možnostmi: <i>"Vstoupit na trh"</i> nebo <i>"Nevstoupit"</i>
 
 <b>Výplaty:</b>
 • Pokud oba účastníci nevstoupí, každý obdrží {} Kč.
 • Pokud jeden vstoupí a druhý nevstoupí, vstupující obdrží {} Kč a druhý {} Kč.
-• Pokud vstoupí oba, účastník s vyšším počtem správně zodpovězených otázek v kvízu obdrží {} Kč a druhý {} Kč. V případě shody bude vítěz vybrán náhodně. 
+• Pokud vstoupí oba, účastník s vyšším počtem správně zodpovězených otázek v předchozím kvízu obdrží {} Kč a druhý {} Kč. V případě shody bude vítěz vybrán náhodně. 
 
 Vaše výsledky v kvízu budou tedy použity při určování výsledků v následné rozhodovací úloze. 
 
@@ -44,7 +44,7 @@ V tomto kole budete náhodně spárován(a) s dalším účastníkem. Oba se roz
 <b>Připomenutí výplaty:</b>
 •  Oba nevstoupí: každý {} Kč.
 •  Jeden vstoupí, jeden nevstoupí: vstupující {} Kč, druhý {} Kč.
-•  Oba vstoupí: ten s vyšším počtem správně zodpovězených otázek v kvízu získá {} Kč, ten s nižším {} Kč; v případě shody bude vítěz vybrán náhodně."""
+•  Oba vstoupí: ten s vyšším počtem správně zodpovězených otázek v předchozím kvízu získá {} Kč, ten s nižším {} Kč; v případě shody bude vítěz vybrán náhodně."""
 
 meConfidenceText = "Kolik z právě zodpovězených {} otázek si myslíte, že jste zodpověděl(a) správně?"
 

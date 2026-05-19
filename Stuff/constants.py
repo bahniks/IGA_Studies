@@ -19,8 +19,8 @@ COORDINATION_PREFERENCE = 10
 SCREEN = (1280, 1024)
 
 AUTOFILL = False
-TESTING = True
+TESTING = False
 GOTHROUGH = False
-#URL = "https://dlab-bahnik.pythonanywhere.com/"
-URL = "TEST"
+URL = "https://dlab-bahnik.pythonanywhere.com/"
+#URL = "TEST"
 #URL = "http://127.0.0.1:8000/"
