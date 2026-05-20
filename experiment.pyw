@@ -66,8 +66,8 @@ from Stuff.constants import COORDINATION_ROUNDS, MARKET_ROUNDS, TRUST_ROUNDS
 
 
 
-frames = [Login,          
-          Initial,
+frames = [Initial,
+          Login,                    
           Intro,
           GamesIntro,
           InstructionsGroups,
